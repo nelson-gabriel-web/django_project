@@ -1,0 +1,31 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>✏️ Editar Contato</h2>
+
+<form method="post" style="max-width: 500px;">
+    {% csrf_token %}
+    
+    <div style="margin-bottom: 15px;">
+        <label style="display: block; font-weight: bold;">Nome:</label>
+        {{ form.nome }}
+    </div>
+    
+    <div style="margin-bottom: 15px;">
+        <label style="display: block; font-weight: bold;">Telefone:</label>
+        {{ form.telefone }}
+    </div>
+    
+    <div style="margin-bottom: 15px;">
+        <label style="display: block; font-weight: bold;">Endereço:</label>
+        {{ form.endereco }}
+    </div>
+    
+    <button type="submit" style="background: #2196F3; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+        💾 Atualizar
+    </button>
+    <a href="{% url 'listar' %}" style="background: #555; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+        ↩️ Voltar
+    </a>
+</form>
+{% endblock %}

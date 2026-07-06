@@ -11,6 +11,7 @@
                 <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Telefone</th>
                 <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Endereço</th>
                 <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Data</th>
+                <th style="border: 1px solid #ddd; padding: 10px; text-align: center;">Ações</th>
             </tr>
         </thead>
         <tbody>
@@ -20,6 +21,11 @@
                 <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.telefone }}</td>
                 <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.endereco }}</td>
                 <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.criado_em|date:"d/m/Y H:i" }}</td>
+                <td style="border: 1px solid #ddd; padding: 10px; text-align: center;">
+                    <a href="{% url 'editar' contato.pk %}" style="background: #2196F3; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px;">
+                        ✏️ Editar
+                    </a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
