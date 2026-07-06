@@ -1,0 +1,39 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>📋 Meus Contatos</h2>
+
+{% if contatos %}
+    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+        <thead>
+            <tr style="background: #f2f2f2;">
+                <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Nome</th>
+                <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Telefone</th>
+                <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Endereço</th>
+                <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Data</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for contato in contatos %}
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.nome }}</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.telefone }}</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.endereco }}</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.criado_em|date:"d/m/Y H:i" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p style="color: #666; margin-top: 20px;">Nenhum contato cadastrado.</p>
+{% endif %}
+
+<div style="margin-top: 20px;">
+    <a href="{% url 'adicionar' %}" style="background: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-right: 10px;">
+        ➕ Adicionar
+    </a>
+    <a href="{% url 'home' %}" style="background: #555; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+        🏠 Início
+    </a>
+</div>
+{% endblock %}

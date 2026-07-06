@@ -1,0 +1,15 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>Bem-vindo à sua Agenda!</h2>
+<p>Gerencie seus contatos de forma simples e rápida.</p>
+
+<div style="margin-top: 30px;">
+    <a href="{% url 'adicionar' %}" style="background: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin-right: 10px;">
+        ➕ Adicionar Contato
+    </a>
+    <a href="{% url 'listar' %}" style="background: #008CBA; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px;">
+        📋 Ver Contatos
+    </a>
+</div>
+{% endblock %}
