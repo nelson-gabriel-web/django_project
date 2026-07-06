@@ -21,9 +21,12 @@
                 <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.telefone }}</td>
                 <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.endereco }}</td>
                 <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.criado_em|date:"d/m/Y H:i" }}</td>
-                <td style="border: 1px solid #ddd; padding: 10px; text-align: center;">
-                    <a href="{% url 'editar' contato.pk %}" style="background: #2196F3; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px;">
-                        ✏️ Editar
+                <td style="border: 1px solid #ddd; padding: 10px; text-align: center; white-space: nowrap;">
+                    <a href="{% url 'editar' contato.pk %}" style="background: #2196F3; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px; margin-right: 5px;">
+                        ✏️
+                    </a>
+                    <a href="{% url 'excluir' contato.pk %}" style="background: #dc3545; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px;">
+                        🗑️
                     </a>
                 </td>
             </tr>

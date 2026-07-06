@@ -1,0 +1,31 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>🗑️ Excluir Contato</h2>
+
+<div style="background: #fff3cd; border: 1px solid #ffc107; padding: 20px; border-radius: 5px; margin: 20px 0; max-width: 500px;">
+    <p style="font-size: 18px; color: #856404;">
+        <strong>Tem certeza que deseja excluir este contato?</strong>
+    </p>
+    
+    <div style="background: white; padding: 15px; border-radius: 5px; margin: 15px 0;">
+        <p><strong>Nome:</strong> {{ contato.nome }}</p>
+        <p><strong>Telefone:</strong> {{ contato.telefone }}</p>
+        <p><strong>Endereço:</strong> {{ contato.endereco }}</p>
+        <p><strong>Cadastrado em:</strong> {{ contato.criado_em|date:"d/m/Y H:i" }}</p>
+    </div>
+    
+    <p style="color: #dc3545; font-weight: bold;">⚠️ Esta ação não pode ser desfeita!</p>
+</div>
+
+<form method="post" style="display: inline;">
+    {% csrf_token %}
+    <button type="submit" style="background: #dc3545; color: white; padding: 10px 25px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+        🗑️ Sim, Excluir
+    </button>
+</form>
+
+<a href="{% url 'listar' %}" style="background: #6c757d; color: white; padding: 10px 25px; text-decoration: none; border-radius: 5px; margin-left: 10px; display: inline-block;">
+    ↩️ Cancelar
+</a>
+{% endblock %}
