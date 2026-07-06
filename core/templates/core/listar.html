@@ -1,7 +1,7 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h2>📋 Meus Contatos</h2>
+<h2>📋 Meus Contactos</h2>
 
 {% if contatos %}
     <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
@@ -11,21 +11,21 @@
                 <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Telefone</th>
                 <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Endereço</th>
                 <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Data</th>
-                <th style="border: 1px solid #ddd; padding: 10px; text-align: center;">Ações</th>
+                <th style="border: 1px solid #ddd; padding: 10px; text-align: center;">Acções</th>
             </tr>
         </thead>
         <tbody>
-            {% for contato in contatos %}
+            {% for contacto in contactos %}
             <tr>
-                <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.nome }}</td>
-                <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.telefone }}</td>
-                <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.endereco }}</td>
-                <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.criado_em|date:"d/m/Y H:i" }}</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">{{ contacto.nome }}</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">{{ contacto.telefone }}</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">{{ contacto.endereco }}</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">{{ contacto.criado_em|date:"d/m/Y H:i" }}</td>
                 <td style="border: 1px solid #ddd; padding: 10px; text-align: center; white-space: nowrap;">
                     <a href="{% url 'editar' contato.pk %}" style="background: #2196F3; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px; margin-right: 5px;">
                         ✏️
                     </a>
-                    <a href="{% url 'excluir' contato.pk %}" style="background: #dc3545; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px;">
+                    <a href="{% url 'excluir' contacto.pk %}" style="background: #dc3545; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px;">
                         🗑️
                     </a>
                 </td>
@@ -34,7 +34,7 @@
         </tbody>
     </table>
 {% else %}
-    <p style="color: #666; margin-top: 20px;">Nenhum contato cadastrado.</p>
+    <p style="color: #666; margin-top: 20px;">Nenhum contacto cadastrado.</p>
 {% endif %}
 
 <div style="margin-top: 20px;">
