@@ -2,14 +2,71 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>LabSec - Agenda de Contactos</title>
+    <title>Agenda de Contactos</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+    <style>
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip-container .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px 12px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        .tooltip-container .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        .mensagem {
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .mensagem-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .mensagem-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .mensagem-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
+    <div style="max-width: 900px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
         <!-- Áudio para sons -->
         <audio id="somSucesso" preload="auto">
             <source src="{% static 'core/sounds/sucesso.mp3' %}" type="audio/mpeg">
@@ -18,19 +75,15 @@
             <source src="{% static 'core/sounds/erro.mp3' %}" type="audio/mpeg">
         </audio>
         
-        <div class="header">
-            <span class="logo">📒</span>
-            <h1>Agenda de Contactos</h1>
-        </div>
+        <h1 style="color: #333;">📒 Agenda de Contactos</h1>
+        <hr>
         
         {% if messages %}
-            <div class="messages">
-                {% for message in messages %}
-                    <div class="message message-{{ message.tags }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
+            {% for message in messages %}
+                <div class="mensagem mensagem-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
         {% endif %}
         
         {% block content %}
@@ -45,12 +98,12 @@
             
             if (input.type === 'password') {
                 input.type = 'text';
-                icon.className = 'fas fa-eye password-toggle';
-                icon.style.color = '#4fc3f7';
+                icon.className = 'fas fa-eye';
+                icon.style.color = '#008CBA';
             } else {
                 input.type = 'password';
-                icon.className = 'fas fa-eye-slash password-toggle';
-                icon.style.color = 'rgba(255,255,255,0.4)';
+                icon.className = 'fas fa-eye-slash';
+                icon.style.color = '#888';
             }
         }
 
@@ -77,16 +130,18 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             // Sons para botões de sucesso
-            document.querySelectorAll('.btn-success, .btn-primary, a[href*="adicionar"], a[href*="editar"], button[type="submit"]:not(.btn-danger)').forEach(function(el) {
-                el.addEventListener('click', function(e) {
-                    if (!this.href || !this.href.includes('excluir')) {
-                        setTimeout(tocarSucesso, 200);
-                    }
-                });
+            document.querySelectorAll('button[type="submit"], .btn-add, a[href*="adicionar"], a[href*="editar"]').forEach(function(el) {
+                if (el.tagName === 'A' || el.tagName === 'BUTTON') {
+                    el.addEventListener('click', function(e) {
+                        if (!this.href || !this.href.includes('excluir')) {
+                            setTimeout(tocarSucesso, 200);
+                        }
+                    });
+                }
             });
 
             // Sons para botões de erro
-            document.querySelectorAll('.btn-danger, a[href*="excluir"], a[href*="logout"]').forEach(function(el) {
+            document.querySelectorAll('a[href*="excluir"], .btn-danger, .btn-cancel, a[href*="logout"]').forEach(function(el) {
                 el.addEventListener('click', function(e) {
                     setTimeout(tocarErro, 200);
                 });
@@ -101,10 +156,10 @@
             }
 
             // Mensagens automáticas
-            if (document.querySelector('.message-error')) {
+            if (document.querySelector('.mensagem-error')) {
                 setTimeout(tocarErro, 500);
             }
-            if (document.querySelector('.message-success')) {
+            if (document.querySelector('.mensagem-success')) {
                 setTimeout(tocarSucesso, 500);
             }
         });
