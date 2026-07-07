@@ -24,8 +24,14 @@
     
     <div style="margin-bottom: 15px;">
         <label style="display: block; font-weight: bold;">Palavra-passe:</label>
-        <input type="password" name="password" placeholder="Digite sua palavra-passe" 
-               style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
+        <div style="position: relative;">
+            <input type="password" id="passwordLogin" name="password" placeholder="Digite sua palavra-passe" 
+                   style="width: 100%; padding: 10px; padding-right: 40px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
+            <span id="eyeLogin" onclick="togglePassword('passwordLogin', 'eyeLogin')" 
+                  style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; color: #888;">
+                <i class="fas fa-eye-slash"></i>
+            </span>
+        </div>
     </div>
     
     <button type="submit" style="background: #008CBA; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px;">
@@ -40,4 +46,8 @@
 <p style="margin-top: 10px; text-align: center;">
     Não tem conta? <a href="{% url 'registar' %}">Registe-se aqui</a>
 </p>
+
+<script>
+    // Função para alternar visibilidade da password (já definida no base.html)
+</script>
 {% endblock %}
