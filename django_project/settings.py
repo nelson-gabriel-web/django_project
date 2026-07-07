@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
+    'webpush',
 ]
 
 MIDDLEWARE = [
@@ -74,17 +75,19 @@ CSRF_TRUSTED_ORIGINS = [
     'https://djangoproject-production-3ec3.up.railway.app',
     'https://*.railway.app',
 ]
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
 SECURE_SSL_REDIRECT = False
 
 # URL de login (para o @login_required)
 LOGIN_URL = 'login'
-# Configuração para envio de email (para recuperar password)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Para teste (mostra no terminal)
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # Para produção
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'seu-email@gmail.com'
-# EMAIL_HOST_PASSWORD = 'sua-senha'
+
+# ============================================
+# WEB PUSH - NOTIFICAÇÕES NO TELEMÓVEL
+# ============================================
+WEBPUSH_SETTINGS = {
+    "VAPID_PRIVATE_KEY": "",
+    "VAPID_PUBLIC_KEY": "",
+    "VAPID_ADMIN_EMAIL": "admin@labsec.com"
+}

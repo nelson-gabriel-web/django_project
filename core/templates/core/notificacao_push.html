@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LabSec - Notificações</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h2>🔔 Ativar Notificações Push</h2>
+    <button id="btn-notificar">🔔 Ativar Notificações</button>
+
+    <script>
+        const applicationServerKey = '{{ public_key }}';
+
+        async function registrarServiceWorker() {
+            if ('serviceWorker' in navigator && 'PushManager' in window) {
+                try {
+                    const registration = await navigator.serviceWorker.register("{% url 'webpush_service_worker' %}");
+                    const subscription = await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: applicationServerKey
+                    });
+
+                    await axios.post("{% url 'webpush_save_info' %}", {
+                        subscription: subscription,
+                        group: 'default'
+                    });
+
+                    alert('✅ Notificações ativadas com sucesso!');
+                } catch (error) {
+                    console.error('Erro:', error);
+                }
+            } else {
+                alert('⚠️ O seu navegador não suporta notificações push.');
+            }
+        }
+
+        document.getElementById('btn-notificar').addEventListener('click', registrarServiceWorker);
+    </script>
+</body>
+</html>

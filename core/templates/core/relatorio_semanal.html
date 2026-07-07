@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial, sans-serif; color: #333; }
+        .header { background: #1a73e8; color: #fff; padding: 20px; text-align: center; }
+        .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 20px 0; }
+        .stat { background: #f8f9fa; padding: 16px; border-radius: 8px; text-align: center; }
+        .stat .num { font-size: 24px; font-weight: bold; }
+        .table { width: 100%; border-collapse: collapse; }
+        .table th { background: #f0f0f0; padding: 8px; text-align: left; }
+        .table td { padding: 8px; border-bottom: 1px solid #eee; }
+        .footer { margin-top: 20px; color: #888; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔒 Relatório Semanal de Segurança</h1>
+        <p>{{ data_inicio }} a {{ data_fim }}</p>
+    </div>
+
+    <div class="stats">
+        <div class="stat">
+            <div class="num">{{ total_eventos }}</div>
+            <div>Eventos Totais</div>
+        </div>
+        <div class="stat">
+            <div class="num">{{ alertas_gerados }}</div>
+            <div>Alertas Gerados</div>
+        </div>
+        <div class="stat">
+            <div class="num">{{ zonas_risco|length }}</div>
+            <div>Zonas de Risco</div>
+        </div>
+    </div>
+
+    <h2>📊 Eventos por Dia</h2>
+    <table class="table">
+        <tr>
+            <th>Data</th>
+            <th>Eventos</th>
+        </tr>
+        {% for dia in dias %}
+        <tr>
+            <td>{{ dia.data }}</td>
+            <td>{{ dia.total }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="footer">
+        <p>Relatório gerado automaticamente pelo Sistema LabSec.</p>
+        <p>Aceda ao dashboard para mais detalhes.</p>
+    </div>
+</body>
+</html>

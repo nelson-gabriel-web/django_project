@@ -98,3 +98,11 @@ class Alerta(models.Model):
 
     def __str__(self):
         return f"Alerta {self.tipo} - {self.enviado_em}"
+class Pessoa(models.Model):
+    nome = models.CharField(max_length=100)
+    foto = models.ImageField(upload_to='faces/')
+    criado_em = models.DateTimeField(auto_now_add=True)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.nome

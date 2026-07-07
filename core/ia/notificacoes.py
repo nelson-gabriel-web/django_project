@@ -5,6 +5,8 @@ import requests
 from django.core.mail import send_mail
 from django.conf import settings
 from core.models import Alerta
+from webpush import send_user_notification
+from django.contrib.auth.models import User
 
 # ============================================
 # TELEGRAM
@@ -76,3 +78,24 @@ def enviar_alerta(evento):
             mensagem=mensagem,
             lido=False
         )
+
+def enviar_push_notification(user, titulo, mensagem, url='/'):
+    """Envia notificação push para o telemóvel do utilizador"""
+    try:
+        payload = {
+            'head': titulo,
+            'body': mensagem,
+            'icon': 'https://labsec.com/icon.png',
+            'url': url,
+            'requireInteraction': True,
+            'tag': 'alerta',
+            'actions': [
+                {'action': 'ver', 'title': 'Ver detalhes'},
+                {'action': 'ignorar', 'title': 'Ignorar'}
+            ]
+        }
+        send_user_notification(user=user, payload=payload, ttl=1000)
+        return True
+    except Exception as e:
+        print(f"Erro push: {e}")
+        return False
