@@ -19,16 +19,28 @@
     {% csrf_token %}
     
     <div style="margin-bottom: 15px;">
-        <label style="display: block; font-weight: bold;">Nova Password:</label>
-        <div style="position: relative;">
-            <input type="password" id="passwordRedefinir1" name="nova_password" placeholder="Digite a nova password (mínimo 8 caracteres)" required
-                   style="width: 100%; padding: 10px; padding-right: 40px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
-            <span id="eyeRedefinir1" onclick="togglePassword('passwordRedefinir1', 'eyeRedefinir1')" 
-                  style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; color: #888;">
-                <i class="fas fa-eye-slash"></i>
-            </span>
-        </div>
+    <label style="display: block; font-weight: bold;">Nova Password:</label>
+    <div style="position: relative;">
+        <input type="password" id="passwordRedefinir1" name="nova_password" placeholder="Digite a nova password (mínimo 8 caracteres)" required
+               style="width: 100%; padding: 10px; padding-right: 40px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
+        <i id="eyeRedefinir1" onclick="togglePassword('passwordRedefinir1', 'eyeRedefinir1')" 
+           class="fas fa-eye-slash" 
+           style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; color: #888;">
+        </i>
     </div>
+</div>
+
+<div style="margin-bottom: 15px;">
+    <label style="display: block; font-weight: bold;">Confirmar Password:</label>
+    <div style="position: relative;">
+        <input type="password" id="passwordRedefinir2" name="confirmar_password" placeholder="Confirme a nova password" required
+               style="width: 100%; padding: 10px; padding-right: 40px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
+        <i id="eyeRedefinir2" onclick="togglePassword('passwordRedefinir2', 'eyeRedefinir2')" 
+           class="fas fa-eye-slash" 
+           style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; color: #888;">
+        </i>
+    </div>
+</div>
     
     <div style="margin-bottom: 15px;">
         <label style="display: block; font-weight: bold;">Confirmar Password:</label>
