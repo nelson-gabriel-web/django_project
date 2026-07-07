@@ -1,0 +1,27 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>🔐 Login</h2>
+
+<form method="post" style="max-width: 400px;">
+    {% csrf_token %}
+    
+    <div style="margin-bottom: 15px;">
+        <label style="display: block; font-weight: bold;">Utilizador:</label>
+        {{ form.username }}
+    </div>
+    
+    <div style="margin-bottom: 15px;">
+        <label style="display: block; font-weight: bold;">Palavra-passe:</label>
+        {{ form.password }}
+    </div>
+    
+    <button type="submit" style="background: #008CBA; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+        🔓 Entrar
+    </button>
+</form>
+
+<p style="margin-top: 20px;">
+    Não tem conta? <a href="{% url 'registar' %}">Registe-se aqui</a>
+</p>
+{% endblock %}

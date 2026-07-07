@@ -41,12 +41,36 @@
             visibility: visible;
             opacity: 1;
         }
+        .mensagem {
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .mensagem-sucesso {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .mensagem-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
     </style>
 </head>
 <body>
     <div style="max-width: 900px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
         <h1 style="color: #333;">📒 Agenda de Contactos</h1>
         <hr>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mensagem mensagem-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
         {% block content %}{% endblock %}
     </div>
 </body>
