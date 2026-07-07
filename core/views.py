@@ -11,7 +11,7 @@ from django.core.mail import send_mail
 from django.contrib.sites.shortcuts import get_current_site
 from django.db import models
 from .forms import ContatoForm
-from .models import Contato
+from .models import Contato, TentativaLogin
 
 # ============ SPLASH ============
 def splash(request):
@@ -40,6 +40,7 @@ def login_view(request):
         username_or_email = request.POST.get('username')
         password = request.POST.get('password')
         
+        # Identificar o utilizador
         if '@' in username_or_email:
             try:
                 user_obj = User.objects.get(email=username_or_email)
@@ -49,14 +50,46 @@ def login_view(request):
         else:
             username = username_or_email
         
-        user = authenticate(request, username=username, password=password)
+        # Verificar se o utilizador existe
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            messages.error(request, 'Credenciais inválidas.')
+            return render(request, 'core/login.html', {'form': AuthenticationForm()})
         
-        if user is not None:
-            login(request, user)
+        # Verificar tentativas de login
+        tentativa, created = TentativaLogin.objects.get_or_create(usuario=user)
+        
+        # Se estiver bloqueado, redirecionar para splash
+        if tentativa.bloqueado:
+            messages.error(request, 'Conta bloqueada por excesso de tentativas. Volte a tentar mais tarde.')
+            return redirect('splash')
+        
+        # Autenticar
+        user_authenticated = authenticate(request, username=username, password=password)
+        
+        if user_authenticated is not None:
+            # Login bem-sucedido - resetar tentativas
+            tentativa.tentativas = 0
+            tentativa.bloqueado = False
+            tentativa.save()
+            login(request, user_authenticated)
             messages.success(request, f'Bem-vindo de volta, {username}!')
             return redirect('home')
         else:
-            messages.error(request, 'Credenciais inválidas. Tente novamente.')
+            # Tentativa falhada
+            tentativa.tentativas += 1
+            
+            # Se atingir 3 tentativas, bloquear
+            if tentativa.tentativas >= 3:
+                tentativa.bloqueado = True
+                tentativa.save()
+                messages.error(request, 'Demasiadas tentativas falhadas. A sua conta foi bloqueada temporariamente.')
+                return redirect('splash')
+            else:
+                tentativa.save()
+                tentativas_restantes = 3 - tentativa.tentativas
+                messages.error(request, f'Credenciais inválidas. Tentativas restantes: {tentativas_restantes}')
     
     form = AuthenticationForm()
     return render(request, 'core/login.html', {'form': form})
