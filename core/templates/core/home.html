@@ -8,9 +8,9 @@
     <p>Gerencie os seus contactos de forma simples e rápida.</p>
     
     <div style="margin-top: 20px;">
-        <p style="color: #888; font-size: 14px;">
-            <a href="{% url 'logout' %}" style="color: #dc3545;">🔓 Sair</a>
-        </p>
+        <a href="{% url 'logout' %}" style="background: #dc3545; color: white; padding: 8px 16px; text-decoration: none; border-radius: 5px; display: inline-block;">
+            🔓 Sair
+        </a>
     </div>
 {% else %}
     <p>Por favor, <a href="{% url 'login' %}">entre</a> ou <a href="{% url 'registar' %}">registe-se</a> para aceder à sua agenda.</p>

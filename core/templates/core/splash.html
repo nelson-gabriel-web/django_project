@@ -1,0 +1,335 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LabSec</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* Reset e fundo */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a1628 0%, #1a3a5c 50%, #0a1628 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        
+        /* Container principal */
+        .splash-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            width: 100%;
+            animation: fadeOut 1s ease-in-out 4s forwards;
+        }
+        
+        /* Animação do fade out */
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+        
+        /* Cadeado */
+        .lock-container {
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: slideUp 1s ease-out;
+            transition: transform 0.5s;
+        }
+        
+        .lock-container:hover {
+            transform: scale(1.05);
+        }
+        
+        @keyframes slideUp {
+            0% { transform: translateY(100px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        /* Cadeado SVG */
+        .lock-svg {
+            width: 150px;
+            height: 150px;
+            filter: drop-shadow(0 0 30px rgba(0, 150, 255, 0.3));
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .lock-svg:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        /* Parte azul do cadeado (clicável) */
+        .lock-body {
+            fill: #1a73e8;
+            transition: fill 0.3s;
+        }
+        
+        .lock-body:hover {
+            fill: #1557b0;
+        }
+        
+        /* LabSec (escondido atrás do cadeado) */
+        .labsec-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 48px;
+            font-weight: 900;
+            color: #4fc3f7;
+            text-shadow: 0 0 30px rgba(79, 195, 247, 0.5);
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            white-space: nowrap;
+            letter-spacing: 4px;
+        }
+        
+        .labsec-text.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        
+        /* Slogan */
+        .slogan {
+            margin-top: 30px;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 2px;
+            font-weight: 300;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 1s ease 0.5s;
+            text-align: center;
+        }
+        
+        .slogan.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .slogan-slide {
+            animation: slideDown 0.8s ease-out forwards;
+        }
+        
+        @keyframes slideDown {
+            0% { transform: translateY(-30px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        /* Versão PT do slogan */
+        .slogan-pt {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+        
+        /* Esconder elementos depois da animação */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Loading dots */
+        .loading-dots {
+            margin-top: 40px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .loading-dots.show {
+            opacity: 1;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4fc3f7;
+            animation: dotPulse 1.2s infinite;
+        }
+        
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes dotPulse {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Responsivo */
+        @media (max-width: 600px) {
+            .lock-svg {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .labsec-text {
+                font-size: 28px;
+            }
+            
+            .slogan {
+                font-size: 14px;
+            }
+            
+            .slogan-pt {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="splash-container" id="splashContainer">
+        <div class="lock-container" id="lockContainer">
+            <!-- SVG do Cadeado -->
+            <svg class="lock-svg" viewBox="0 0 100 100" id="lockSvg">
+                <!-- Arco do cadeado -->
+                <path d="M30 45 L30 30 C30 18 40 10 50 10 C60 10 70 18 70 30 L70 45"
+                      stroke="#4fc3f7"
+                      stroke-width="6"
+                      fill="none"
+                      stroke-linecap="round"/>
+                
+                <!-- Corpo do cadeado (parte azul clicável) -->
+                <rect class="lock-body"
+                      x="20"
+                      y="45"
+                      width="60"
+                      height="40"
+                      rx="8"
+                      ry="8"
+                      fill="#1a73e8"/>
+                
+                <!-- Fechadura -->
+                <circle cx="50"
+                        cy="65"
+                        r="10"
+                        fill="#fff"
+                        opacity="0.9"/>
+                <rect x="48"
+                      y="65"
+                      width="4"
+                      height="8"
+                      rx="2"
+                      fill="#1a73e8"/>
+            </svg>
+            
+            <!-- LabSec (escondido atrás) -->
+            <div class="labsec-text" id="labsecText">LabSec</div>
+            
+            <!-- Slogan -->
+            <div class="slogan" id="slogan">
+                Segurança digital começa com conhecimento local.
+                <div class="slogan-pt">Digital security starts with local knowledge.</div>
+            </div>
+            
+            <!-- Loading dots -->
+            <div class="loading-dots" id="loadingDots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Aguardar o DOM carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            const lockContainer = document.getElementById('lockContainer');
+            const lockSvg = document.getElementById('lockSvg');
+            const labsecText = document.getElementById('labsecText');
+            const slogan = document.getElementById('slogan');
+            const loadingDots = document.getElementById('loadingDots');
+            const splashContainer = document.getElementById('splashContainer');
+            
+            let animationComplete = false;
+            
+            // Função para iniciar a animação
+            function startAnimation() {
+                // 1. Mostrar LabSec atrás do cadeado
+                labsecText.classList.add('show');
+                
+                // 2. Após 1 segundo, mostrar slogan
+                setTimeout(() => {
+                    slogan.classList.add('show');
+                    slogan.classList.add('slogan-slide');
+                }, 800);
+                
+                // 3. Após mais 1 segundo, cadeado encolhe e desaparece
+                setTimeout(() => {
+                    lockSvg.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s';
+                    lockSvg.style.transform = 'scale(0.1)';
+                    lockSvg.style.opacity = '0';
+                    
+                    // LabSec aumenta e desaparece
+                    labsecText.style.transition = 'all 0.8s ease';
+                    labsecText.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                    labsecText.style.opacity = '0';
+                    
+                    // Slogan desliza para baixo e desaparece
+                    slogan.style.transition = 'all 0.8s ease';
+                    slogan.style.transform = 'translateY(50px)';
+                    slogan.style.opacity = '0';
+                    
+                    // Mostrar loading dots
+                    setTimeout(() => {
+                        loadingDots.classList.add('show');
+                    }, 400);
+                    
+                }, 1800);
+                
+                // 4. Após a animação, redirecionar para a página de login
+                setTimeout(() => {
+                    window.location.href = "{% url 'login' %}";
+                }, 4000);
+            }
+            
+            // Animação ao clicar no cadeado
+            lockContainer.addEventListener('click', function(e) {
+                if (!animationComplete) {
+                    animationComplete = true;
+                    startAnimation();
+                }
+            });
+            
+            // Animação automática (sem clicar) após 3 segundos
+            // Caso o utilizador não clique
+            setTimeout(() => {
+                if (!animationComplete) {
+                    animationComplete = true;
+                    startAnimation();
+                }
+            }, 3000);
+            
+            // Efeito hover no cadeado
+            lockSvg.addEventListener('mouseenter', function() {
+                if (!animationComplete) {
+                    this.style.transform = 'scale(1.1) rotate(5deg)';
+                }
+            });
+            
+            lockSvg.addEventListener('mouseleave', function() {
+                if (!animationComplete) {
+                    this.style.transform = 'scale(1) rotate(0deg)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

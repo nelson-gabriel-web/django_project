@@ -6,6 +6,10 @@ from django.contrib import messages
 from .forms import ContatoForm
 from .models import Contato
 
+# NOVA FUNÇÃO - SPLASH
+def splash(request):
+    return render(request, 'core/splash.html')
+
 def home(request):
     return render(request, 'core/home.html')
 
@@ -39,7 +43,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.info(request, 'Sessão terminada com sucesso.')
-    return redirect('home')
+    return redirect('splash')
 
 @login_required
 def adicionar_contato(request):
