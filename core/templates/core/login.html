@@ -3,20 +3,28 @@
 {% block content %}
 <h2>🔐 Login</h2>
 
+{% if messages %}
+    {% for message in messages %}
+        <div style="background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
 <form method="post" style="max-width: 400px;">
     {% csrf_token %}
     
     <div style="margin-bottom: 15px;">
-        <label style="display: block; font-weight: bold;">Utilizador:</label>
-        {{ form.username }}
+        <label style="display: block; font-weight: bold;">Utilizador ou Email:</label>
+        <input type="text" name="username" placeholder="Digite seu username ou email" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
     </div>
     
     <div style="margin-bottom: 15px;">
         <label style="display: block; font-weight: bold;">Palavra-passe:</label>
-        {{ form.password }}
+        <input type="password" name="password" placeholder="Digite sua palavra-passe" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
     </div>
     
-    <button type="submit" style="background: #008CBA; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+    <button type="submit" style="background: #008CBA; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; width: 100%;">
         🔓 Entrar
     </button>
 </form>

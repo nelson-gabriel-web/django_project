@@ -2,8 +2,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.splash, name='splash'),  # ← NOVO (página inicial)
-    path('home/', views.home, name='home'),  # ← NOVO (home após login)
+    path('', views.splash, name='splash'),
+    path('home/', views.home, name='home'),
     path('registar/', views.registar, name='registar'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
