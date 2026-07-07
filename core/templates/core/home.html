@@ -24,11 +24,18 @@
         <span class="tooltip-text">Clique para adicionar um novo contacto</span>
     </div>
     
-    <div class="tooltip-container" style="display: inline-block;">
+    <div class="tooltip-container" style="display: inline-block; margin-right: 10px;">
         <a href="{% url 'listar' %}" style="background: #008CBA; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
             📋 Ver Contactos
         </a>
         <span class="tooltip-text">Clique para ver todos os seus contactos</span>
+    </div>
+    
+    <div class="tooltip-container" style="display: inline-block;">
+        <a href="{% url 'buscar' %}" style="background: #FF9800; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+            🔍 Buscar
+        </a>
+        <span class="tooltip-text">Clique para pesquisar contactos</span>
     </div>
 </div>
 {% endblock %}

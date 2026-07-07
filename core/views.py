@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from .forms import ContatoForm
 from .models import Contato
+from django.db import models  # ← ADICIONE ESTA LINHA
 
 # Splash Screen
 def splash(request):
@@ -55,6 +56,51 @@ def login_view(request):
     
     form = AuthenticationForm()
     return render(request, 'core/login.html', {'form': form})
+
+def listar_contatos(request):
+    contatos = Contato.objects.filter(usuario=request.user).order_by('-criado_em')
+    return render(request, 'core/listar.html', {'contatos': contatos})
+
+# NOVA FUNÇÃO - BUSCAR CONTACTOS
+def buscar_contatos(request):
+    query = request.GET.get('q', '')
+    if query:
+        contatos = Contato.objects.filter(
+            usuario=request.user
+        ).filter(
+            models.Q(nome__icontains=query) | 
+            models.Q(telefone__icontains=query)
+        ).order_by('-criado_em')
+    else:
+        contatos = Contato.objects.filter(usuario=request.user).order_by('-criado_em')
+    
+    return render(request, 'core/buscar.html', {
+        'contatos': contatos,
+        'query': query
+    })
+
+def listar_contatos(request):
+    contatos = Contato.objects.filter(usuario=request.user).order_by('-criado_em')
+    return render(request, 'core/listar.html', {'contatos': contatos})
+
+# NOVA FUNÇÃO - BUSCAR CONTACTOS
+def buscar_contatos(request):
+    query = request.GET.get('q', '')
+    if query:
+        contatos = Contato.objects.filter(
+            usuario=request.user
+        ).filter(
+            models.Q(nome__icontains=query) | 
+            models.Q(telefone__icontains=query)
+        ).order_by('-criado_em')
+    else:
+        contatos = Contato.objects.filter(usuario=request.user).order_by('-criado_em')
+    
+    return render(request, 'core/buscar.html', {
+        'contatos': contatos,
+        'query': query
+    })
+
 
 # Logout
 def logout_view(request):

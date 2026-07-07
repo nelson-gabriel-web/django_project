@@ -1,18 +1,29 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h2>📋 Meus Contactos</h2>
+<h2>🔍 Buscar Contactos</h2>
 
-<!-- Botão de busca -->
-<div style="margin-bottom: 20px;">
-    <a href="{% url 'buscar' %}" style="background: #008CBA; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
-        🔍 Buscar Contactos
-    </a>
-</div>
+<!-- Formulário de busca -->
+<form method="get" action="{% url 'buscar' %}" style="margin-bottom: 20px;">
+    <div style="display: flex; gap: 10px; max-width: 500px;">
+        <input type="text" 
+               name="q" 
+               placeholder="Buscar por nome ou telefone..." 
+               value="{{ query }}"
+               style="flex: 1; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
+        <button type="submit" style="background: #008CBA; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+            🔍 Buscar
+        </button>
+    </div>
+</form>
+
+<!-- Resultados -->
+{% if query %}
+    <p><strong>Resultados para: "{{ query }}"</strong></p>
+    <p><strong>Total: {{ contatos|length }} contactos</strong></p>
+{% endif %}
 
 {% if contatos %}
-    <p><strong>Total: {{ contatos|length }} contactos</strong></p>
-    
     <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
         <thead>
             <tr style="background: #4CAF50; color: white;">
@@ -43,17 +54,19 @@
         </tbody>
     </table>
 {% else %}
-    <p style="color: #666; margin-top: 20px;">Nenhum contacto cadastrado.</p>
+    {% if query %}
+        <p style="color: #666; margin-top: 20px;">Nenhum contacto encontrado para "{{ query }}".</p>
+    {% else %}
+        <p style="color: #666; margin-top: 20px;">Digite um nome ou telefone para pesquisar.</p>
+    {% endif %}
 {% endif %}
 
 <div style="margin-top: 20px;">
-    <div class="tooltip-container" style="display: inline-block; margin-right: 10px;">
-        <a href="{% url 'adicionar' %}" style="background: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">➕ Adicionar</a>
-        <span class="tooltip-text">Adicionar um novo contacto</span>
-    </div>
-    <div class="tooltip-container" style="display: inline-block;">
-        <a href="{% url 'home' %}" style="background: #555; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">🏠 Início</a>
-        <span class="tooltip-text">Voltar à página inicial</span>
-    </div>
+    <a href="{% url 'adicionar' %}" style="background: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-right: 10px; display: inline-block;">
+        ➕ Adicionar
+    </a>
+    <a href="{% url 'listar' %}" style="background: #555; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+        📋 Ver Todos
+    </a>
 </div>
 {% endblock %}
