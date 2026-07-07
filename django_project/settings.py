@@ -16,9 +16,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
-# URL de login (para o @login_required)
-LOGIN_URL = 'login'
-
 ]
 
 MIDDLEWARE = [
@@ -80,3 +77,6 @@ CSRF_TRUSTED_ORIGINS = [
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
 SECURE_SSL_REDIRECT = False
+
+# URL de login (para o @login_required)
+LOGIN_URL = 'login'
