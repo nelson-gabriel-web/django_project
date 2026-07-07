@@ -1,49 +1,35 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h2>🔐 Login</h2>
+<h2 style="color: #fff; font-weight: 300; margin-bottom: 24px;">🔐 Login</h2>
 
-{% if messages %}
-    {% for message in messages %}
-        <div style="padding: 10px; border-radius: 5px; margin-bottom: 15px; 
-            {% if message.tags == 'success' %}background: #d4edda; color: #155724; border: 1px solid #c3e6cb;
-            {% else %}background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;{% endif %}">
-            {{ message }}
-        </div>
-    {% endfor %}
-{% endif %}
-
-<form method="post" style="max-width: 400px;">
+<form method="post">
     {% csrf_token %}
     
-    <div style="margin-bottom: 15px;">
-        <label style="display: block; font-weight: bold;">Utilizador ou Email:</label>
-        <input type="text" name="username" placeholder="Digite seu username ou email" 
-               style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
+    <div class="form-group">
+        <label>Utilizador ou Email</label>
+        <input type="text" name="username" class="form-control" placeholder="Digite seu username ou email" required>
     </div>
     
-    <div style="margin-bottom: 15px;">
-        <label style="display: block; font-weight: bold;">Palavra-passe:</label>
-        <div style="position: relative;">
-            <input type="password" id="passwordLogin" name="password" placeholder="Digite sua palavra-passe" 
-                   style="width: 100%; padding: 10px; padding-right: 40px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
+    <div class="form-group">
+        <label>Palavra-passe</label>
+        <div class="password-wrapper">
+            <input type="password" id="passwordLogin" name="password" class="form-control" placeholder="Digite sua palavra-passe" required>
             <i id="eyeLogin" onclick="togglePassword('passwordLogin', 'eyeLogin')" 
-               class="fas fa-eye-slash" 
-               style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; color: #888;">
+               class="fas fa-eye-slash password-toggle" 
+               style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; color: rgba(255,255,255,0.4);">
             </i>
         </div>
     </div>
     
-    <button type="submit" style="background: #008CBA; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px;">
-        🔓 Entrar
-    </button>
+    <button type="submit" class="btn btn-primary btn-block">🔓 Entrar</button>
 </form>
 
-<p style="margin-top: 15px; text-align: center;">
-    <a href="{% url 'recuperar' %}" style="color: #008CBA;">🔑 Esqueceu a password?</a>
+<p style="margin-top: 20px; text-align: center; color: rgba(255,255,255,0.6);">
+    <a href="{% url 'recuperar' %}" style="color: #4fc3f7;">🔑 Esqueceu a password?</a>
 </p>
 
-<p style="margin-top: 10px; text-align: center;">
+<p style="margin-top: 12px; text-align: center; color: rgba(255,255,255,0.5);">
     Não tem conta? <a href="{% url 'registar' %}">Registe-se aqui</a>
 </p>
 {% endblock %}

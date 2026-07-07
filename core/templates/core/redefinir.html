@@ -1,65 +1,383 @@
-{% extends 'core/base.html' %}
+/* ========================================
+   RESET E BASE
+======================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-{% block content %}
-<h2>🔐 Redefinir Password</h2>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0a1628 0%, #1a3a5c 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
 
-<p>Olá, <strong>{{ user.username }}</strong>! Digite a sua nova password.</p>
+/* Container principal */
+.container {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 1000px;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
 
-{% if messages %}
-    {% for message in messages %}
-        <div style="padding: 10px; border-radius: 5px; margin-bottom: 15px; 
-            {% if message.tags == 'success' %}background: #d4edda; color: #155724; border: 1px solid #c3e6cb;
-            {% else %}background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;{% endif %}">
-            {{ message }}
-        </div>
-    {% endfor %}
-{% endif %}
+/* ========================================
+   HEADER
+======================================== */
+.header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
 
-<form method="post" style="max-width: 400px;">
-    {% csrf_token %}
-    
-    <div style="margin-bottom: 15px;">
-    <label style="display: block; font-weight: bold;">Nova Password:</label>
-    <div style="position: relative;">
-        <input type="password" id="passwordRedefinir1" name="nova_password" placeholder="Digite a nova password (mínimo 8 caracteres)" required
-               style="width: 100%; padding: 10px; padding-right: 40px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
-        <i id="eyeRedefinir1" onclick="togglePassword('passwordRedefinir1', 'eyeRedefinir1')" 
-           class="fas fa-eye-slash" 
-           style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; color: #888;">
-        </i>
-    </div>
-</div>
+.header h1 {
+    color: #fff;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
 
-<div style="margin-bottom: 15px;">
-    <label style="display: block; font-weight: bold;">Confirmar Password:</label>
-    <div style="position: relative;">
-        <input type="password" id="passwordRedefinir2" name="confirmar_password" placeholder="Confirme a nova password" required
-               style="width: 100%; padding: 10px; padding-right: 40px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
-        <i id="eyeRedefinir2" onclick="togglePassword('passwordRedefinir2', 'eyeRedefinir2')" 
-           class="fas fa-eye-slash" 
-           style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; color: #888;">
-        </i>
-    </div>
-</div>
-    
-    <div style="margin-bottom: 15px;">
-        <label style="display: block; font-weight: bold;">Confirmar Password:</label>
-        <div style="position: relative;">
-            <input type="password" id="passwordRedefinir2" name="confirmar_password" placeholder="Confirme a nova password" required
-                   style="width: 100%; padding: 10px; padding-right: 40px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
-            <span id="eyeRedefinir2" onclick="togglePassword('passwordRedefinir2', 'eyeRedefinir2')" 
-                  style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; color: #888;">
-                <i class="fas fa-eye-slash"></i>
-            </span>
-        </div>
-    </div>
-    
-    <button type="submit" style="background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px;">
-        ✅ Redefinir Password
-    </button>
-</form>
+.header .logo {
+    font-size: 36px;
+}
 
-<p style="margin-top: 20px; text-align: center;">
-    <a href="{% url 'login' %}">↩️ Voltar ao Login</a>
-</p>
-{% endblock %}
+/* ========================================
+   CARDS E BOTÕES
+======================================== */
+.card {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* ========================================
+   FORMULÁRIOS
+======================================== */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 6px;
+    letter-spacing: 0.3px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.form-control:focus {
+    border-color: #4fc3f7;
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 0 4px rgba(79, 195, 247, 0.15);
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+}
+
+/* Campo com ícone de olho */
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper .form-control {
+    padding-right: 48px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.4);
+    transition: color 0.3s ease;
+    background: none;
+    border: none;
+}
+
+.password-toggle:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ========================================
+   BOTÕES
+======================================== */
+.btn {
+    display: inline-block;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #008CBA, #00b4d8);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(0, 140, 186, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 140, 186, 0.4);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #2e7d32, #43a047);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(46, 125, 50, 0.4);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #c62828, #e53935);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(198, 40, 40, 0.3);
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(198, 40, 40, 0.4);
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #e65100, #f57c00);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(230, 81, 0, 0.3);
+}
+
+.btn-warning:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(230, 81, 0, 0.4);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.btn-sm {
+    padding: 6px 14px;
+    font-size: 14px;
+    border-radius: 8px;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+/* ========================================
+   TABELAS
+======================================== */
+.table-wrapper {
+    overflow-x: auto;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #fff;
+}
+
+.table thead {
+    background: rgba(79, 195, 247, 0.15);
+}
+
+.table th {
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(255, 255, 255, 0.7);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.06);
+}
+
+.table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.table tbody tr {
+    transition: background 0.3s ease;
+}
+
+.table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.table .actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* ========================================
+   MENSAGENS
+======================================== */
+.messages {
+    margin-bottom: 24px;
+}
+
+.message {
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    border-left: 4px solid;
+}
+
+.message-success {
+    background: rgba(46, 125, 50, 0.15);
+    color: #a5d6a7;
+    border-left-color: #43a047;
+}
+
+.message-error {
+    background: rgba(198, 40, 40, 0.15);
+    color: #ef9a9a;
+    border-left-color: #e53935;
+}
+
+.message-info {
+    background: rgba(0, 140, 186, 0.15);
+    color: #80deea;
+    border-left-color: #00b4d8;
+}
+
+/* ========================================
+   LINKS E TEXTOS
+======================================== */
+a {
+    color: #4fc3f7;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #81d4fa;
+    text-decoration: underline;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-muted {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+@media (max-width: 768px) {
+    .container {
+        padding: 24px;
+    }
+
+    .header h1 {
+        font-size: 22px;
+    }
+
+    .table th,
+    .table td {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .btn-sm {
+        padding: 4px 10px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 16px;
+        border-radius: 16px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .header h1 {
+        font-size: 20px;
+    }
+
+    .table th,
+    .table td {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+    .table .actions {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .btn-sm {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+}

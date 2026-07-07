@@ -1,41 +1,34 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h2>Bem-vindo à sua Agenda!</h2>
+<div class="card" style="text-align: center;">
+    <h2 style="color: #fff; font-weight: 300; margin-bottom: 8px;">
+        👋 Olá, <strong>{{ user.username }}</strong>!
+    </h2>
+    <p style="color: rgba(255,255,255,0.6);">Gerencie os seus contactos de forma simples e rápida.</p>
+    
+    <div style="margin-top: 24px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
+        <a href="{% url 'logout' %}" class="btn btn-danger">🔓 Sair</a>
+    </div>
+</div>
 
-{% if user.is_authenticated %}
-    <p>Olá, <strong>{{ user.username }}</strong>! 👋</p>
-    <p>Gerencie os seus contactos de forma simples e rápida.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 24px;">
+    <a href="{% url 'adicionar' %}" class="card" style="text-decoration: none; color: #fff; text-align: center;">
+        <div style="font-size: 32px; margin-bottom: 8px;">➕</div>
+        <div style="font-weight: 600;">Adicionar Contacto</div>
+        <div style="font-size: 14px; color: rgba(255,255,255,0.4);">Inserir novo contacto</div>
+    </a>
     
-    <div style="margin-top: 20px;">
-        <a href="{% url 'logout' %}" style="background: #dc3545; color: white; padding: 8px 16px; text-decoration: none; border-radius: 5px; display: inline-block;">
-            🔓 Sair
-        </a>
-    </div>
-{% else %}
-    <p>Por favor, <a href="{% url 'login' %}">entre</a> ou <a href="{% url 'registar' %}">registe-se</a> para aceder à sua agenda.</p>
-{% endif %}
-
-<div style="margin-top: 30px;">
-    <div class="tooltip-container" style="display: inline-block; margin-right: 10px;">
-        <a href="{% url 'adicionar' %}" style="background: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
-            ➕ Adicionar Contacto
-        </a>
-        <span class="tooltip-text">Clique para adicionar um novo contacto</span>
-    </div>
+    <a href="{% url 'listar' %}" class="card" style="text-decoration: none; color: #fff; text-align: center;">
+        <div style="font-size: 32px; margin-bottom: 8px;">📋</div>
+        <div style="font-weight: 600;">Ver Contactos</div>
+        <div style="font-size: 14px; color: rgba(255,255,255,0.4);">Lista completa</div>
+    </a>
     
-    <div class="tooltip-container" style="display: inline-block; margin-right: 10px;">
-        <a href="{% url 'listar' %}" style="background: #008CBA; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
-            📋 Ver Contactos
-        </a>
-        <span class="tooltip-text">Clique para ver todos os seus contactos</span>
-    </div>
-    
-    <div class="tooltip-container" style="display: inline-block;">
-        <a href="{% url 'buscar' %}" style="background: #FF9800; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
-            🔍 Buscar
-        </a>
-        <span class="tooltip-text">Clique para pesquisar contactos</span>
-    </div>
+    <a href="{% url 'buscar' %}" class="card" style="text-decoration: none; color: #fff; text-align: center;">
+        <div style="font-size: 32px; margin-bottom: 8px;">🔍</div>
+        <div style="font-weight: 600;">Buscar</div>
+        <div style="font-size: 14px; color: rgba(255,255,255,0.4);">Pesquisar contactos</div>
+    </a>
 </div>
 {% endblock %}
