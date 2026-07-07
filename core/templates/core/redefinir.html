@@ -1,6 +1,8 @@
 /* ========================================
-   RESET E BASE
+   RESET E BASE - Estilo Moderno
 ======================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
+
 * {
     margin: 0;
     padding: 0;
@@ -8,107 +10,245 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #0a1628 0%, #1a3a5c 100%);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #ffffff;
+    color: #1a1a2e;
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding: 20px;
+    align-items: flex-start;
+    padding: 40px 20px;
 }
 
-/* Container principal */
 .container {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 24px;
-    padding: 40px;
-    max-width: 1000px;
+    max-width: 1200px;
     width: 100%;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    margin: 0 auto;
 }
 
 /* ========================================
-   HEADER
+   HEADER - Inspirado em Web Design
 ======================================== */
 .header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 16px;
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-}
-
-.header h1 {
-    color: #fff;
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
+    padding: 20px 0 40px 0;
+    border-bottom: 1px solid #f0f0f0;
 }
 
 .header .logo {
-    font-size: 36px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-/* ========================================
-   CARDS E BOTÕES
-======================================== */
-.card {
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-    padding: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+.header .logo span {
+    font-size: 28px;
+    font-weight: 900;
+    color: #1a1a2e;
+    letter-spacing: -1px;
+}
+
+.header .logo .highlight {
+    color: #6C63FF;
+}
+
+.header .nav {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+}
+
+.header .nav a {
+    color: #555;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.header .nav a:hover {
+    color: #6C63FF;
+}
+
+.header .nav .btn-outline {
+    border: 2px solid #6C63FF;
+    padding: 8px 24px;
+    border-radius: 30px;
+    color: #6C63FF;
+    font-weight: 600;
     transition: all 0.3s ease;
 }
 
-.card:hover {
-    background: rgba(255, 255, 255, 0.12);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+.header .nav .btn-outline:hover {
+    background: #6C63FF;
+    color: #fff;
+    text-decoration: none;
 }
 
 /* ========================================
-   FORMULÁRIOS
+   HERO / SPLASH MODERNO
+======================================== */
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 0 60px 0;
+    text-align: center;
+}
+
+.hero .badge {
+    background: #f0f0ff;
+    color: #6C63FF;
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 24px;
+    display: inline-block;
+}
+
+.hero h1 {
+    font-size: 64px;
+    font-weight: 900;
+    line-height: 1.1;
+    color: #1a1a2e;
+    margin-bottom: 16px;
+    letter-spacing: -2px;
+}
+
+.hero h1 .highlight {
+    background: linear-gradient(135deg, #6C63FF, #4CAF50);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero p {
+    font-size: 20px;
+    color: #666;
+    max-width: 560px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+.hero .actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.hero .actions .btn-primary {
+    background: #6C63FF;
+    color: #fff;
+    padding: 14px 36px;
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 24px rgba(108, 99, 255, 0.25);
+}
+
+.hero .actions .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(108, 99, 255, 0.35);
+}
+
+.hero .actions .btn-secondary {
+    background: #f0f0f0;
+    color: #1a1a2e;
+    padding: 14px 36px;
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.hero .actions .btn-secondary:hover {
+    background: #e0e0e0;
+    transform: translateY(-3px);
+}
+
+/* ========================================
+   CARDS MODERNOS
+======================================== */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 60px;
+}
+
+.card-modern {
+    background: #fff;
+    border-radius: 20px;
+    padding: 32px;
+    border: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.card-modern:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+    border-color: #6C63FF;
+}
+
+.card-modern .icon {
+    font-size: 40px;
+    margin-bottom: 16px;
+}
+
+.card-modern h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 8px;
+}
+
+.card-modern p {
+    font-size: 14px;
+    color: #888;
+    line-height: 1.5;
+}
+
+/* ========================================
+   FORMULÁRIOS MODERNOS
 ======================================== */
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .form-group label {
     display: block;
-    color: rgba(255, 255, 255, 0.8);
-    font-weight: 600;
     font-size: 14px;
+    font-weight: 600;
+    color: #1a1a2e;
     margin-bottom: 6px;
-    letter-spacing: 0.3px;
 }
 
 .form-control {
     width: 100%;
-    padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 2px solid rgba(255, 255, 255, 0.12);
+    padding: 14px 18px;
+    border: 2px solid #e8e8e8;
     border-radius: 12px;
-    color: #fff;
     font-size: 16px;
+    font-family: 'Inter', sans-serif;
     transition: all 0.3s ease;
+    background: #fafafa;
     outline: none;
 }
 
 .form-control:focus {
-    border-color: #4fc3f7;
-    background: rgba(255, 255, 255, 0.12);
-    box-shadow: 0 0 0 4px rgba(79, 195, 247, 0.15);
+    border-color: #6C63FF;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.08);
 }
 
-.form-control::placeholder {
-    color: rgba(255, 255, 255, 0.35);
-}
-
-/* Campo com ícone de olho */
 .password-wrapper {
     position: relative;
 }
@@ -123,146 +263,120 @@ body {
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
-    font-size: 20px;
-    color: rgba(255, 255, 255, 0.4);
+    font-size: 18px;
+    color: #aaa;
     transition: color 0.3s ease;
-    background: none;
-    border: none;
 }
 
 .password-toggle:hover {
-    color: rgba(255, 255, 255, 0.8);
+    color: #6C63FF;
 }
 
 /* ========================================
-   BOTÕES
+   BOTÕES MODERNOS
 ======================================== */
 .btn {
     display: inline-block;
-    padding: 12px 28px;
+    padding: 14px 32px;
     border: none;
-    border-radius: 12px;
-    font-size: 16px;
+    border-radius: 50px;
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
-    text-align: center;
+    font-family: 'Inter', sans-serif;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #008CBA, #00b4d8);
+    background: #6C63FF;
     color: #fff;
-    box-shadow: 0 4px 15px rgba(0, 140, 186, 0.3);
+    box-shadow: 0 4px 16px rgba(108, 99, 255, 0.2);
 }
 
 .btn-primary:hover {
+    background: #5a52e0;
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 140, 186, 0.4);
+    box-shadow: 0 8px 24px rgba(108, 99, 255, 0.3);
 }
 
 .btn-success {
-    background: linear-gradient(135deg, #2e7d32, #43a047);
+    background: #4CAF50;
     color: #fff;
-    box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
 }
 
 .btn-success:hover {
+    background: #43a047;
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(46, 125, 50, 0.4);
 }
 
 .btn-danger {
-    background: linear-gradient(135deg, #c62828, #e53935);
+    background: #ef5350;
     color: #fff;
-    box-shadow: 0 4px 15px rgba(198, 40, 40, 0.3);
 }
 
 .btn-danger:hover {
+    background: #e53935;
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(198, 40, 40, 0.4);
 }
 
-.btn-warning {
-    background: linear-gradient(135deg, #e65100, #f57c00);
+.btn-outline {
+    background: transparent;
+    color: #6C63FF;
+    border: 2px solid #6C63FF;
+}
+
+.btn-outline:hover {
+    background: #6C63FF;
     color: #fff;
-    box-shadow: 0 4px 15px rgba(230, 81, 0, 0.3);
-}
-
-.btn-warning:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(230, 81, 0, 0.4);
-}
-
-.btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
 }
 
 .btn-sm {
-    padding: 6px 14px;
-    font-size: 14px;
-    border-radius: 8px;
-}
-
-.btn-block {
-    width: 100%;
+    padding: 8px 18px;
+    font-size: 13px;
 }
 
 /* ========================================
-   TABELAS
+   TABELA MODERNA
 ======================================== */
 .table-wrapper {
-    overflow-x: auto;
+    background: #fff;
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid #f0f0f0;
+    overflow: hidden;
+    margin-top: 24px;
 }
 
 .table {
     width: 100%;
     border-collapse: collapse;
-    color: #fff;
-}
-
-.table thead {
-    background: rgba(79, 195, 247, 0.15);
 }
 
 .table th {
-    padding: 14px 16px;
+    padding: 16px 20px;
     text-align: left;
-    font-weight: 600;
-    font-size: 13px;
+    font-size: 12px;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: rgba(255, 255, 255, 0.7);
-    border-bottom: 2px solid rgba(255, 255, 255, 0.06);
+    color: #888;
+    background: #fafafa;
+    border-bottom: 1px solid #f0f0f0;
 }
 
 .table td {
-    padding: 14px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 16px 20px;
+    border-bottom: 1px solid #f5f5f5;
+    color: #1a1a2e;
 }
 
-.table tbody tr {
-    transition: background 0.3s ease;
-}
-
-.table tbody tr:hover {
-    background: rgba(255, 255, 255, 0.05);
+.table tr:last-child td {
+    border-bottom: none;
 }
 
 .table .actions {
     display: flex;
     gap: 8px;
-    justify-content: center;
-    flex-wrap: wrap;
 }
 
 /* ========================================
@@ -276,108 +390,86 @@ body {
     padding: 14px 20px;
     border-radius: 12px;
     font-weight: 500;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     border-left: 4px solid;
 }
 
 .message-success {
-    background: rgba(46, 125, 50, 0.15);
-    color: #a5d6a7;
-    border-left-color: #43a047;
+    background: #f0faf0;
+    color: #1e7e34;
+    border-left-color: #4CAF50;
 }
 
 .message-error {
-    background: rgba(198, 40, 40, 0.15);
-    color: #ef9a9a;
-    border-left-color: #e53935;
+    background: #fdf0f0;
+    color: #c62828;
+    border-left-color: #ef5350;
 }
 
 .message-info {
-    background: rgba(0, 140, 186, 0.15);
-    color: #80deea;
-    border-left-color: #00b4d8;
+    background: #f0f4ff;
+    color: #1a3a7e;
+    border-left-color: #6C63FF;
 }
 
 /* ========================================
-   LINKS E TEXTOS
-======================================== */
-a {
-    color: #4fc3f7;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-a:hover {
-    color: #81d4fa;
-    text-decoration: underline;
-}
-
-.text-center {
-    text-align: center;
-}
-
-.text-muted {
-    color: rgba(255, 255, 255, 0.5);
-}
-
-/* ========================================
-   RESPONSIVIDADE
+   RESPONSIVO
 ======================================== */
 @media (max-width: 768px) {
-    .container {
-        padding: 24px;
+    .header {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
     }
 
-    .header h1 {
-        font-size: 22px;
+    .header .nav {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .hero h1 {
+        font-size: 36px;
+    }
+
+    .hero p {
+        font-size: 16px;
+        padding: 0 16px;
+    }
+
+    .hero .actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hero .actions .btn-primary,
+    .hero .actions .btn-secondary {
+        width: 100%;
+        max-width: 300px;
+        text-align: center;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 16px;
+    }
+
+    .hero h1 {
+        font-size: 28px;
     }
 
     .table th,
     .table td {
         padding: 10px 12px;
-        font-size: 14px;
-    }
-
-    .btn {
-        padding: 10px 20px;
-        font-size: 14px;
-    }
-
-    .btn-sm {
-        padding: 4px 10px;
-        font-size: 12px;
-    }
-}
-
-@media (max-width: 480px) {
-    .container {
-        padding: 16px;
-        border-radius: 16px;
-    }
-
-    .header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-
-    .header h1 {
-        font-size: 20px;
-    }
-
-    .table th,
-    .table td {
-        padding: 8px 10px;
-        font-size: 12px;
+        font-size: 13px;
     }
 
     .table .actions {
         flex-direction: column;
         gap: 4px;
-    }
-
-    .btn-sm {
-        padding: 4px 8px;
-        font-size: 11px;
     }
 }

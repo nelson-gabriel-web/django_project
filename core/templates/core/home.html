@@ -1,41 +1,39 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h2>Bem-vindo à sua Agenda!</h2>
+<section class="hero">
+    {% if user.is_authenticated %}
+        <span class="badge">👋 Bem-vindo de volta</span>
+        <h1>Olá, <span class="highlight">{{ user.username }}</span></h1>
+        <p>Gerencie os seus contactos de forma simples, rápida e segura.</p>
+    {% else %}
+        <span class="badge">🚀 Segurança digital</span>
+        <h1>Organize os seus <span class="highlight">contactos</span></h1>
+        <p>Uma agenda simples, moderna e segura para o seu dia a dia.</p>
+    {% endif %}
 
-{% if user.is_authenticated %}
-    <p>Olá, <strong>{{ user.username }}</strong>! 👋</p>
-    <p>Gerencie os seus contactos de forma simples e rápida.</p>
-    
-    <div style="margin-top: 20px;">
-        <a href="{% url 'logout' %}" style="background: #dc3545; color: white; padding: 8px 16px; text-decoration: none; border-radius: 5px; display: inline-block;">
-            🔓 Sair
-        </a>
+    <div class="actions">
+        <a href="{% url 'adicionar' %}" class="btn-primary">➕ Adicionar Contacto</a>
+        <a href="{% url 'listar' %}" class="btn-secondary">📋 Ver Contactos</a>
+        <a href="{% url 'buscar' %}" class="btn-secondary">🔍 Buscar</a>
     </div>
-{% else %}
-    <p>Por favor, <a href="{% url 'login' %}">entre</a> ou <a href="{% url 'registar' %}">registe-se</a> para aceder à sua agenda.</p>
-{% endif %}
+</section>
 
-<div style="margin-top: 30px;">
-    <div class="tooltip-container" style="display: inline-block; margin-right: 10px;">
-        <a href="{% url 'adicionar' %}" style="background: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
-            ➕ Adicionar Contacto
-        </a>
-        <span class="tooltip-text">Clique para adicionar um novo contacto</span>
+<div class="card-grid">
+    <div class="card-modern">
+        <div class="icon">📝</div>
+        <h3>Adicionar</h3>
+        <p>Insira novos contactos com nome, telefone e endereço.</p>
     </div>
-    
-    <div class="tooltip-container" style="display: inline-block; margin-right: 10px;">
-        <a href="{% url 'listar' %}" style="background: #008CBA; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
-            📋 Ver Contactos
-        </a>
-        <span class="tooltip-text">Clique para ver todos os seus contactos</span>
+    <div class="card-modern">
+        <div class="icon">📋</div>
+        <h3>Listar</h3>
+        <p>Visualize todos os seus contactos organizados.</p>
     </div>
-    
-    <div class="tooltip-container" style="display: inline-block;">
-        <a href="{% url 'buscar' %}" style="background: #FF9800; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
-            🔍 Buscar
-        </a>
-        <span class="tooltip-text">Clique para pesquisar contactos</span>
+    <div class="card-modern">
+        <div class="icon">🔍</div>
+        <h3>Buscar</h3>
+        <p>Encontre rapidamente qualquer contacto.</p>
     </div>
 </div>
 {% endblock %}

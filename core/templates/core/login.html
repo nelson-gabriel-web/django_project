@@ -1,49 +1,35 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h2>🔐 Login</h2>
+<section style="max-width: 420px; margin: 40px auto;">
+    <h2 style="font-size: 28px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px;">🔐 Entrar</h2>
+    <p style="color: #888; margin-bottom: 32px;">Acesse a sua agenda de contactos.</p>
 
-{% if messages %}
-    {% for message in messages %}
-        <div style="padding: 10px; border-radius: 5px; margin-bottom: 15px; 
-            {% if message.tags == 'success' %}background: #d4edda; color: #155724; border: 1px solid #c3e6cb;
-            {% else %}background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;{% endif %}">
-            {{ message }}
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label>Utilizador ou Email</label>
+            <input type="text" name="username" class="form-control" placeholder="Digite seu username ou email" required>
         </div>
-    {% endfor %}
-{% endif %}
-
-<form method="post" style="max-width: 400px;">
-    {% csrf_token %}
-    
-    <div style="margin-bottom: 15px;">
-        <label style="display: block; font-weight: bold;">Utilizador ou Email:</label>
-        <input type="text" name="username" placeholder="Digite seu username ou email" 
-               style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
-    </div>
-    
-    <div style="margin-bottom: 15px;">
-        <label style="display: block; font-weight: bold;">Palavra-passe:</label>
-        <div style="position: relative;">
-            <input type="password" id="passwordLogin" name="password" placeholder="Digite sua palavra-passe" 
-                   style="width: 100%; padding: 10px; padding-right: 40px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
-            <i id="eyeLogin" onclick="togglePassword('passwordLogin', 'eyeLogin')" 
-               class="fas fa-eye-slash" 
-               style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; color: #888;">
-            </i>
+        
+        <div class="form-group">
+            <label>Palavra-passe</label>
+            <div class="password-wrapper">
+                <input type="password" id="passwordLogin" name="password" class="form-control" placeholder="Digite sua palavra-passe" required>
+                <i id="eyeLogin" onclick="togglePassword('passwordLogin', 'eyeLogin')" 
+                   class="fas fa-eye-slash password-toggle"></i>
+            </div>
         </div>
-    </div>
-    
-    <button type="submit" style="background: #008CBA; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px;">
-        🔓 Entrar
-    </button>
-</form>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%;">🔓 Entrar</button>
+    </form>
 
-<p style="margin-top: 15px; text-align: center;">
-    <a href="{% url 'recuperar' %}" style="color: #008CBA;">🔑 Esqueceu a password?</a>
-</p>
-
-<p style="margin-top: 10px; text-align: center;">
-    Não tem conta? <a href="{% url 'registar' %}">Registe-se aqui</a>
-</p>
+    <p style="text-align: center; margin-top: 20px; color: #888; font-size: 14px;">
+        <a href="{% url 'recuperar' %}" style="color: #6C63FF; text-decoration: none;">🔑 Esqueceu a password?</a>
+    </p>
+    <p style="text-align: center; margin-top: 8px; color: #888; font-size: 14px;">
+        Não tem conta? <a href="{% url 'registar' %}" style="color: #6C63FF; text-decoration: none;">Registe-se aqui</a>
+    </p>
+</section>
 {% endblock %}

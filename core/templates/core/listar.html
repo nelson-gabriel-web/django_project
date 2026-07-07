@@ -1,59 +1,55 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h2>📋 Meus Contactos</h2>
-
-<!-- Botão de busca -->
-<div style="margin-bottom: 20px;">
-    <a href="{% url 'buscar' %}" style="background: #008CBA; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
-        🔍 Buscar Contactos
-    </a>
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+    <h2 style="font-size: 24px; font-weight: 700; color: #1a1a2e;">📋 Meus Contactos</h2>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <a href="{% url 'buscar' %}" class="btn btn-outline btn-sm">🔍 Buscar</a>
+        <a href="{% url 'adicionar' %}" class="btn btn-success btn-sm">➕ Adicionar</a>
+    </div>
 </div>
 
 {% if contatos %}
-    <p><strong>Total: {{ contatos|length }} contactos</strong></p>
+    <p style="color: #888; font-size: 14px; margin-bottom: 8px;">
+        <strong>{{ contatos|length }}</strong> contacto(s) encontrado(s)
+    </p>
     
-    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-        <thead>
-            <tr style="background: #4CAF50; color: white;">
-                <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Nome</th>
-                <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Telefone</th>
-                <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Endereço</th>
-                <th style="border: 1px solid #ddd; padding: 10px; text-align: center;">Acções</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for contato in contatos %}
-            <tr>
-                <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.nome }}</td>
-                <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.telefone }}</td>
-                <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.endereco }}</td>
-                <td style="border: 1px solid #ddd; padding: 10px; text-align: center; white-space: nowrap;">
-                    <div class="tooltip-container" style="display: inline-block; margin-right: 5px;">
-                        <a href="{% url 'editar' contato.pk %}" style="background: #2196F3; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px; display: inline-block;">✏️</a>
-                        <span class="tooltip-text">Editar este contacto</span>
-                    </div>
-                    <div class="tooltip-container" style="display: inline-block;">
-                        <a href="{% url 'excluir' contato.pk %}" style="background: #dc3545; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px; display: inline-block;">🗑️</a>
-                        <span class="tooltip-text">Excluir este contacto</span>
-                    </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-wrapper">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Telefone</th>
+                    <th>Endereço</th>
+                    <th style="text-align: center;">Acções</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for contato in contatos %}
+                <tr>
+                    <td><strong>{{ contato.nome }}</strong></td>
+                    <td>{{ contato.telefone }}</td>
+                    <td>{{ contato.endereco }}</td>
+                    <td style="text-align: center;">
+                        <div class="actions" style="justify-content: center;">
+                            <a href="{% url 'editar' contato.pk %}" class="btn btn-primary btn-sm">✏️</a>
+                            <a href="{% url 'excluir' contato.pk %}" class="btn btn-danger btn-sm">🗑️</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% else %}
-    <p style="color: #666; margin-top: 20px;">Nenhum contacto cadastrado.</p>
+    <div style="text-align: center; padding: 60px 20px; background: #fafafa; border-radius: 16px;">
+        <div style="font-size: 48px; margin-bottom: 16px;">📭</div>
+        <p style="color: #888; font-size: 16px;">Nenhum contacto cadastrado.</p>
+        <a href="{% url 'adicionar' %}" class="btn btn-success" style="margin-top: 16px;">➕ Adicionar</a>
+    </div>
 {% endif %}
 
-<div style="margin-top: 20px;">
-    <div class="tooltip-container" style="display: inline-block; margin-right: 10px;">
-        <a href="{% url 'adicionar' %}" style="background: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">➕ Adicionar</a>
-        <span class="tooltip-text">Adicionar um novo contacto</span>
-    </div>
-    <div class="tooltip-container" style="display: inline-block;">
-        <a href="{% url 'home' %}" style="background: #555; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">🏠 Início</a>
-        <span class="tooltip-text">Voltar à página inicial</span>
-    </div>
+<div style="text-align: center; margin-top: 24px;">
+    <a href="{% url 'home' %}" class="btn btn-secondary">🏠 Início</a>
 </div>
 {% endblock %}
