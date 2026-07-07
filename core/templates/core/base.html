@@ -108,6 +108,17 @@
 <body>
     <div style="max-width: 900px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
         <h1 style="color: #333;">📒 Agenda de Contactos</h1>
+<div style="margin: 10px 0 20px 0; display: flex; gap: 20px; flex-wrap: wrap; border-bottom: 2px solid #eee; padding-bottom: 12px;">
+    <a href="{% url 'home' %}" style="text-decoration: none; color: #333; font-weight: 500;">🏠 Início</a>
+    <a href="{% url 'adicionar' %}" style="text-decoration: none; color: #333; font-weight: 500;">➕ Adicionar</a>
+    <a href="{% url 'listar' %}" style="text-decoration: none; color: #333; font-weight: 500;">📋 Contactos</a>
+    <a href="{% url 'buscar' %}" style="text-decoration: none; color: #333; font-weight: 500;">🔍 Buscar</a>
+    <a href="{% url 'dashboard_seguranca' %}" style="text-decoration: none; color: #1a73e8; font-weight: 600;">🔒 Segurança</a>
+    {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}" style="text-decoration: none; color: #dc3545; font-weight: 500;">🔓 Sair</a>
+    {% endif %}
+</div>
+<hr>
         <hr>
         
         {% if messages %}

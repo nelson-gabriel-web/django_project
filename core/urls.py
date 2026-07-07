@@ -16,4 +16,11 @@ urlpatterns = [
     # Recuperação de password
     path('recuperar/', views.recuperar_password, name='recuperar'),
     path('redefinir/<uidb64>/<token>/', views.redefinir_password, name='redefinir'),
+# Sistema de Segurança
+path('dashboard/', views.dashboard_seguranca, name='dashboard_seguranca'),
+path('cameras/', views.cameras_list, name='cameras_list'),
+path('cameras/adicionar/', views.adicionar_camera, name='adicionar_camera'),
+path('eventos/', views.eventos_seguranca, name='eventos_seguranca'),
+path('mapa-risco/', views.mapa_risco, name='mapa_risco'),
+path('api/evento/', views.api_evento, name='api_evento'),
 ]

@@ -1,0 +1,62 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>🔒 Dashboard de Segurança</h2>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 20px 0;">
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; text-align: center;">
+        <div style="font-size: 32px;">📹</div>
+        <div style="font-size: 24px; font-weight: bold;">{{ cameras|length }}</div>
+        <div style="color: #666;">Câmeras Ativas</div>
+    </div>
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; text-align: center;">
+        <div style="font-size: 32px;">📡</div>
+        <div style="font-size: 24px; font-weight: bold;">{{ sensores|length }}</div>
+        <div style="color: #666;">Sensores Ativos</div>
+    </div>
+    <div style="background: #fff3cd; padding: 20px; border-radius: 10px; text-align: center;">
+        <div style="font-size: 32px;">⚠️</div>
+        <div style="font-size: 24px; font-weight: bold; color: #856404;">{{ alertas_nao_lidos }}</div>
+        <div style="color: #856404;">Alertas Pendentes</div>
+    </div>
+    <div style="background: #d1ecf1; padding: 20px; border-radius: 10px; text-align: center;">
+        <div style="font-size: 32px;">📊</div>
+        <div style="font-size: 24px; font-weight: bold; color: #0c5460;">{{ total_eventos }}</div>
+        <div style="color: #0c5460;">Total de Eventos</div>
+    </div>
+</div>
+
+<div style="margin-top: 30px;">
+    <h3>📋 Últimos Eventos</h3>
+    <div style="background: white; border-radius: 10px; padding: 16px; border: 1px solid #ddd;">
+        {% if eventos %}
+            {% for evento in eventos %}
+                <div style="padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong>{{ evento.get_tipo_display }}</strong>
+                        <span style="color: #666; font-size: 14px; margin-left: 10px;">
+                            {{ evento.criado_em|date:"d/m/Y H:i" }}
+                        </span>
+                    </div>
+                    <div>
+                        {% if evento.processado %}
+                            <span style="background: #28a745; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px;">✅ Processado</span>
+                        {% else %}
+                            <span style="background: #ffc107; color: #856404; padding: 2px 8px; border-radius: 4px; font-size: 12px;">⏳ Pendente</span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p style="color: #666;">Nenhum evento registado.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+    <a href="{% url 'cameras_list' %}" style="background: #008CBA; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">📹 Gerir Câmeras</a>
+    <a href="{% url 'eventos_seguranca' %}" style="background: #6c757d; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">📋 Ver Eventos</a>
+    <a href="{% url 'mapa_risco' %}" style="background: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">🗺️ Mapa de Risco</a>
+    <a href="{% url 'adicionar_camera' %}" style="background: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">➕ Adicionar Câmera</a>
+</div>
+{% endblock %}

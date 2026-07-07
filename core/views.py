@@ -12,6 +12,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.db import models
 from .forms import ContatoForm
 from .models import Contato, TentativaLogin
+from .models import Contato, TentativaLogin, Camera, SensorMovimento, EventoSeguranca, ZonaRisco, Alerta
 
 # ============ SPLASH ============
 def splash(request):
@@ -232,3 +233,101 @@ def redefinir_password(request, uidb64, token):
     else:
         messages.error(request, 'Link inválido ou expirado. Solicite uma nova recuperação.')
         return redirect('recuperar')
+
+# ============================================
+# VIEWS PARA SISTEMA DE SEGURANÇA
+# ============================================
+
+@login_required
+def dashboard_seguranca(request):
+    """Dashboard principal de segurança"""
+    eventos = EventoSeguranca.objects.filter(
+        camera__usuario=request.user
+    ).order_by('-criado_em')[:20]
+    
+    cameras = Camera.objects.filter(usuario=request.user, ativa=True)
+    sensores = SensorMovimento.objects.filter(usuario=request.user, ativo=True)
+    alertas = Alerta.objects.filter(evento__camera__usuario=request.user, lido=False)
+    
+    context = {
+        'eventos': eventos,
+        'cameras': cameras,
+        'sensores': sensores,
+        'alertas': alertas,
+        'total_eventos': EventoSeguranca.objects.filter(camera__usuario=request.user).count(),
+        'alertas_nao_lidos': alertas.count(),
+    }
+    return render(request, 'core/dashboard_seguranca.html', context)
+
+@login_required
+def cameras_list(request):
+    """Lista de câmeras"""
+    cameras = Camera.objects.filter(usuario=request.user)
+    return render(request, 'core/cameras_list.html', {'cameras': cameras})
+
+@login_required
+def adicionar_camera(request):
+    """Adicionar uma nova câmera"""
+    if request.method == 'POST':
+        nome = request.POST.get('nome')
+        localizacao = request.POST.get('localizacao')
+        url_rtsp = request.POST.get('url_rtsp')
+        
+        camera = Camera.objects.create(
+            nome=nome,
+            localizacao=localizacao,
+            url_rtsp=url_rtsp,
+            usuario=request.user
+        )
+        messages.success(request, 'Câmera adicionada com sucesso!')
+        return redirect('cameras_list')
+    
+    return render(request, 'core/adicionar_camera.html')
+
+@login_required
+def eventos_seguranca(request):
+    """Lista de eventos de segurança"""
+    eventos = EventoSeguranca.objects.filter(
+        camera__usuario=request.user
+    ).order_by('-criado_em')
+    return render(request, 'core/eventos_seguranca.html', {'eventos': eventos})
+
+@login_required
+def mapa_risco(request):
+    """Mapa de zonas de risco"""
+    zonas = ZonaRisco.objects.all().order_by('-nivel_risco')
+    return render(request, 'core/mapa_risco.html', {'zonas': zonas})
+
+# ============================================
+# API PARA DISPOSITIVOS (ESP8266/Arduino)
+# ============================================
+
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import json
+
+@csrf_exempt
+def api_evento(request):
+    """API para receber eventos dos sensores"""
+    if request.method == 'POST':
+        try:
+            dados = json.loads(request.body)
+            tipo = dados.get('tipo')
+            sensor_id = dados.get('sensor_id')
+            descricao = dados.get('descricao', '')
+            
+            evento = EventoSeguranca.objects.create(
+                tipo=tipo,
+                sensor_id=sensor_id,
+                descricao=descricao,
+                processado=False
+            )
+            
+            # Processar com IA (simples)
+            processar_evento_ia(evento)
+            
+            return JsonResponse({'status': 'ok', 'evento_id': evento.id})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'mensagem': str(e)}, status=400)
+    
+    return JsonResponse({'status': 'error'}, status=405)
