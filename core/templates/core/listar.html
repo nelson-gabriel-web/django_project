@@ -22,19 +22,12 @@
                 <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.telefone }}</td>
                 <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.endereco }}</td>
                 <td style="border: 1px solid #ddd; padding: 10px; text-align: center; white-space: nowrap;">
-                    <!-- Botão Editar com tooltip -->
                     <div class="tooltip-container" style="display: inline-block; margin-right: 5px;">
-                        <a href="{% url 'editar' contato.pk %}" style="background: #2196F3; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px; display: inline-block;">
-                            ✏️
-                        </a>
+                        <a href="{% url 'editar' contato.pk %}" style="background: #2196F3; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px; display: inline-block;">✏️</a>
                         <span class="tooltip-text">Editar este contacto</span>
                     </div>
-                    
-                    <!-- Botão Excluir com tooltip -->
                     <div class="tooltip-container" style="display: inline-block;">
-                        <a href="{% url 'excluir' contato.pk %}" style="background: #dc3545; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px; display: inline-block;">
-                            🗑️
-                        </a>
+                        <a href="{% url 'excluir' contato.pk %}" style="background: #dc3545; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px; display: inline-block;">🗑️</a>
                         <span class="tooltip-text">Excluir este contacto</span>
                     </div>
                 </td>
@@ -48,16 +41,11 @@
 
 <div style="margin-top: 20px;">
     <div class="tooltip-container" style="display: inline-block; margin-right: 10px;">
-        <a href="{% url 'adicionar' %}" style="background: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
-            ➕ Adicionar
-        </a>
+        <a href="{% url 'adicionar' %}" style="background: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">➕ Adicionar</a>
         <span class="tooltip-text">Adicionar um novo contacto</span>
     </div>
-    
     <div class="tooltip-container" style="display: inline-block;">
-        <a href="{% url 'home' %}" style="background: #555; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
-            🏠 Início
-        </a>
+        <a href="{% url 'home' %}" style="background: #555; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">🏠 Início</a>
         <span class="tooltip-text">Voltar à página inicial</span>
     </div>
 </div>
