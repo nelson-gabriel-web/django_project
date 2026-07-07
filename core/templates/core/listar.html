@@ -48,11 +48,11 @@
 
 <div style="margin-top: 20px;">
     <div class="tooltip-container" style="display: inline-block; margin-right: 10px;">
-        <a href="{% url 'adicionar' %}" style="background: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">➕ Adicionar</a>
-        <span class="tooltip-text">Adicionar um novo contacto</span>
-    </div>
-    <div class="tooltip-container" style="display: inline-block;">
-        <a href="{% url 'home' %}" style="background: #555; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">🏠 Início</a>
+        <!-- Botão Adicionar -->
+<a href="{% url 'adicionar' %}" class="btn-add" style="background: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">➕ Adicionar</a>
+
+<!-- Botão Início -->
+<a href="{% url 'home' %}" class="btn-cancel" style="background: #555; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">🏠 Início</a>
         <span class="tooltip-text">Voltar à página inicial</span>
     </div>
 </div>
