@@ -1,44 +1,42 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h2>Bem-vindo à sua Agenda!</h2>
+<h2 style="font-size: 18px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px;">Bem-vindo!</h2>
 
 {% if user.is_authenticated %}
-    <p>Olá, <strong>{{ user.username }}</strong>! 👋</p>
-    <p>Gerencie os seus contactos de forma simples e rápida.</p>
-    
-    <div style="margin-top: 20px;">
-        <div class="tooltip-container" style="display: inline-block;">
-            <a href="{% url 'logout' %}" style="background: #dc3545; color: white; padding: 8px 16px; text-decoration: none; border-radius: 5px; display: inline-block;">
-                🔓 Sair
-            </a>
-            <span class="tooltip-text">Terminar sessão</span>
-        </div>
-    </div>
+    <p style="color: #555; font-size: 14px;">Olá, <strong>{{ user.username }}</strong>! 👋</p>
+    <p style="color: #888; font-size: 13px; margin-bottom: 16px;">Gerencie os seus contactos.</p>
 {% else %}
-    <p>Por favor, <a href="{% url 'login' %}">entre</a> ou <a href="{% url 'registar' %}">registe-se</a> para aceder à sua agenda.</p>
+    <p style="color: #555; font-size: 14px;">Por favor, <a href="{% url 'login' %}">entre</a> ou <a href="{% url 'registar' %}">registe-se</a>.</p>
 {% endif %}
 
-<div style="margin-top: 30px;">
-    <div class="tooltip-container" style="display: inline-block; margin-right: 10px;">
-        <a href="{% url 'adicionar' %}" style="background: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
-            ➕ Adicionar Contacto
-        </a>
-        <span class="tooltip-text">Adicionar um novo contacto</span>
-    </div>
-    
-    <div class="tooltip-container" style="display: inline-block; margin-right: 10px;">
-        <a href="{% url 'listar' %}" style="background: #008CBA; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
-            📋 Ver Contactos
-        </a>
-        <span class="tooltip-text">Lista de todos os contactos</span>
-    </div>
-    
-    <div class="tooltip-container" style="display: inline-block;">
-        <a href="{% url 'buscar' %}" style="background: #FF9800; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
-            🔍 Buscar
-        </a>
-        <span class="tooltip-text">Pesquisar contactos</span>
-    </div>
+<!-- Cards rápidos -->
+<div class="card-grid">
+    <a href="{% url 'adicionar' %}" class="card">
+        <div class="icon">➕</div>
+        <div class="label">Adicionar</div>
+        <div class="sub">Novo contacto</div>
+    </a>
+    <a href="{% url 'listar' %}" class="card">
+        <div class="icon">📋</div>
+        <div class="label">Contactos</div>
+        <div class="sub">Ver todos</div>
+    </a>
+    <a href="{% url 'buscar' %}" class="card">
+        <div class="icon">🔍</div>
+        <div class="label">Buscar</div>
+        <div class="sub">Pesquisar</div>
+    </a>
+    <a href="{% url 'dashboard_seguranca' %}" class="card" style="background: #e8f0fe;">
+        <div class="icon">🔒</div>
+        <div class="label">Segurança</div>
+        <div class="sub">Dashboard</div>
+    </a>
 </div>
+
+{% if user.is_authenticated %}
+    <div style="margin-top: 16px; text-align: center;">
+        <a href="{% url 'logout' %}" style="background: #dc3545; color: white; padding: 8px 20px; text-decoration: none; border-radius: 20px; font-size: 13px; display: inline-block;">🔓 Sair</a>
+    </div>
+{% endif %}
 {% endblock %}
