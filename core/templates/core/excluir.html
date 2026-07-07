@@ -1,31 +1,29 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h2>🗑️ Excluir Contacto</h2>
+<h2>✅ Contacto Salvo!</h2>
+<p>O contacto foi adicionado com sucesso.</p>
 
-<div style="background: #fff3cd; border: 1px solid #ffc107; padding: 20px; border-radius: 5px; margin: 20px 0; max-width: 500px;">
-    <p style="font-size: 18px; color: #856404;">
-        <strong>Tem certeza que deseja excluir este contato?</strong>
-    </p>
-    
-    <div style="background: white; padding: 15px; border-radius: 5px; margin: 15px 0;">
-        <p><strong>Nome:</strong> {{ contato.nome }}</p>
-        <p><strong>Telefone:</strong> {{ contato.telefone }}</p>
-        <p><strong>Endereço:</strong> {{ contato.endereco }}</p>
-        <p><strong>Cadastrado em:</strong> {{ contato.criado_em|date:"d/m/Y H:i" }}</p>
+<div style="margin-top: 20px;">
+    <div class="tooltip-container" style="display: inline-block; margin-right: 10px;">
+        <a href="{% url 'adicionar' %}" style="background: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+            ➕ Adicionar Outro
+        </a>
+        <span class="tooltip-text">Adicionar outro contacto</span>
     </div>
     
-    <p style="color: #dc3545; font-weight: bold;">⚠️ Esta ação não pode ser desfeita!</p>
+    <div class="tooltip-container" style="display: inline-block; margin-right: 10px;">
+        <a href="{% url 'listar' %}" style="background: #008CBA; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+            📋 Ver Lista
+        </a>
+        <span class="tooltip-text">Ver todos os contactos</span>
+    </div>
+    
+    <div class="tooltip-container" style="display: inline-block;">
+        <a href="{% url 'home' %}" style="background: #555; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+            🏠 Início
+        </a>
+        <span class="tooltip-text">Voltar à página inicial</span>
+    </div>
 </div>
-
-<form method="post" style="display: inline;">
-    {% csrf_token %}
-    <button type="submit" style="background: #dc3545; color: white; padding: 10px 25px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
-        🗑️ Sim, Excluir
-    </button>
-</form>
-
-<a href="{% url 'listar' %}" style="background: #6c757d; color: white; padding: 10px 25px; text-decoration: none; border-radius: 5px; margin-left: 10px; display: inline-block;">
-    ↩️ Cancelar
-</a>
 {% endblock %}

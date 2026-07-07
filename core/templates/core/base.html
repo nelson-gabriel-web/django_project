@@ -1,13 +1,73 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Agenda de Contatos</title>
+    <title>Agenda de Contactos</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* Estilo para tooltips */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip-container .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px 12px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        
+        .tooltip-container .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+        
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Estilo para tooltips à direita */
+        .tooltip-container .tooltip-text-right {
+            bottom: auto;
+            top: 50%;
+            left: 110%;
+            transform: translateY(-50%);
+        }
+        
+        .tooltip-container .tooltip-text-right::after {
+            top: 50%;
+            left: -10px;
+            transform: translateY(-50%);
+            border-color: transparent #333 transparent transparent;
+        }
+    </style>
 </head>
 <body>
     <div style="max-width: 900px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
-        <h1 style="color: #333;">📒 Agenda de Contactos</h1>
+        <h1 style="color: #333; display: flex; align-items: center; gap: 10px;">
+            📒 Agenda de Contactos
+        </h1>
         <hr>
         
         {% block content %}
