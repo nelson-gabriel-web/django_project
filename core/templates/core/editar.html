@@ -8,31 +8,27 @@
     
     <div style="margin-bottom: 15px;">
         <label style="display: block; font-weight: bold;">Nome:</label>
-        {{ form.nome }}
+        <input type="text" name="nome" value="{{ contato.nome }}" required
+               style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
     </div>
     
     <div style="margin-bottom: 15px;">
         <label style="display: block; font-weight: bold;">Telefone:</label>
-        {{ form.telefone }}
+        <input type="text" name="telefone" value="{{ contato.telefone }}" required
+               style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
     </div>
     
     <div style="margin-bottom: 15px;">
         <label style="display: block; font-weight: bold;">Endereço:</label>
-        {{ form.endereco }}
+        <textarea name="endereco" rows="3" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px; font-family: Arial;">{{ contato.endereco }}</textarea>
     </div>
     
-    <div class="tooltip-container" style="display: inline-block; margin-right: 10px;">
-        <button type="submit" style="background: #2196F3; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-            💾 Atualizar
-        </button>
-        <span class="tooltip-text">Actualizar os dados do contacto</span>
-    </div>
+    <button type="submit" style="background: #2196F3; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px;">
+        💾 Atualizar
+    </button>
     
-    <div class="tooltip-container" style="display: inline-block;">
-        <a href="{% url 'listar' %}" style="background: #555; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
-            ↩️ Voltar
-        </a>
-        <span class="tooltip-text">Cancelar e voltar à lista</span>
-    </div>
+    <a href="{% url 'listar' %}" style="background: #555; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+        ↩️ Voltar
+    </a>
 </form>
 {% endblock %}
