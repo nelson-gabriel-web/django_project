@@ -6,9 +6,12 @@
 <form method="get" action="{% url 'buscar' %}" style="margin-bottom: 20px; display: flex; gap: 10px; max-width: 500px;">
     <input type="text" name="q" placeholder="Buscar por nome ou telefone..." value="{{ query }}"
            style="flex: 1; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
-    <button type="submit" style="background: #008CBA; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-        🔍 Buscar
-    </button>
+    <div class="tooltip-container" style="display: inline-block;">
+        <button type="submit" style="background: #008CBA; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+            🔍 Buscar
+        </button>
+        <span class="tooltip-text">Pesquisar contactos</span>
+    </div>
 </form>
 
 {% if query %}
@@ -32,8 +35,14 @@
                 <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.telefone }}</td>
                 <td style="border: 1px solid #ddd; padding: 10px;">{{ contato.endereco }}</td>
                 <td style="border: 1px solid #ddd; padding: 10px; text-align: center; white-space: nowrap;">
-                    <a href="{% url 'editar' contato.pk %}" style="background: #2196F3; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px; display: inline-block; margin-right: 5px;">✏️</a>
-                    <a href="{% url 'excluir' contato.pk %}" style="background: #dc3545; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px; display: inline-block;">🗑️</a>
+                    <div class="tooltip-container" style="display: inline-block; margin-right: 5px;">
+                        <a href="{% url 'editar' contato.pk %}" style="background: #2196F3; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px; display: inline-block;">✏️</a>
+                        <span class="tooltip-text">Editar este contacto</span>
+                    </div>
+                    <div class="tooltip-container" style="display: inline-block;">
+                        <a href="{% url 'excluir' contato.pk %}" style="background: #dc3545; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; font-size: 12px; display: inline-block;">🗑️</a>
+                        <span class="tooltip-text">Excluir este contacto</span>
+                    </div>
                 </td>
             </tr>
             {% endfor %}
@@ -48,7 +57,13 @@
 {% endif %}
 
 <div style="margin-top: 20px;">
-    <a href="{% url 'adicionar' %}" style="background: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-right: 10px;">➕ Adicionar</a>
-    <a href="{% url 'listar' %}" style="background: #555; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">📋 Ver Todos</a>
+    <div class="tooltip-container" style="display: inline-block; margin-right: 10px;">
+        <a href="{% url 'adicionar' %}" style="background: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">➕ Adicionar</a>
+        <span class="tooltip-text">Adicionar um novo contacto</span>
+    </div>
+    <div class="tooltip-container" style="display: inline-block;">
+        <a href="{% url 'listar' %}" style="background: #555; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">📋 Ver Todos</a>
+        <span class="tooltip-text">Voltar à lista completa</span>
+    </div>
 </div>
 {% endblock %}
