@@ -16,6 +16,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
+# URL de login (para o @login_required)
+LOGIN_URL = 'login'
+
 ]
 
 MIDDLEWARE = [

@@ -12,5 +12,5 @@ urlpatterns = [
     path('excluir/<int:pk>/', views.excluir_contato, name='excluir'),
     path('sucesso/', views.sucesso, name='sucesso'),
     path('listar/', views.listar_contatos, name='listar'),
-    path('buscar/', views.buscar_contatos, name='buscar'),  # ← NOVO
+    path('buscar/', views.buscar_contatos, name='buscar'),
 ]
