@@ -12,6 +12,10 @@ from .models import Contato
 def login_view(request):
 def splash(request):
     return render(request, 'core/splash.html')
+def logout_view(request):
+    logout(request)
+    messages.info(request, 'Sessão terminada com sucesso.')
+    return redirect('splash')
 
 def home(request):
     return render(request, 'core/home.html')
