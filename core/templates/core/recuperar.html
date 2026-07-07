@@ -1,7 +1,9 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h2>🔐 Login</h2>
+<h2>🔑 Recuperar Password</h2>
+
+<p>Digite o seu email para receber instruções de recuperação.</p>
 
 {% if messages %}
     {% for message in messages %}
@@ -17,27 +19,17 @@
     {% csrf_token %}
     
     <div style="margin-bottom: 15px;">
-        <label style="display: block; font-weight: bold;">Utilizador ou Email:</label>
-        <input type="text" name="username" placeholder="Digite seu username ou email" 
-               style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
-    </div>
-    
-    <div style="margin-bottom: 15px;">
-        <label style="display: block; font-weight: bold;">Palavra-passe:</label>
-        <input type="password" name="password" placeholder="Digite sua palavra-passe" 
+        <label style="display: block; font-weight: bold;">Email:</label>
+        <input type="email" name="email" placeholder="Digite seu email" required
                style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
     </div>
     
     <button type="submit" style="background: #008CBA; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px;">
-        🔓 Entrar
+        📩 Enviar Instruções
     </button>
 </form>
 
-<p style="margin-top: 15px; text-align: center;">
-    <a href="{% url 'recuperar' %}" style="color: #008CBA;">🔑 Esqueceu a password?</a>
-</p>
-
-<p style="margin-top: 10px; text-align: center;">
-    Não tem conta? <a href="{% url 'registar' %}">Registe-se aqui</a>
+<p style="margin-top: 20px;">
+    <a href="{% url 'login' %}">↩️ Voltar ao Login</a>
 </p>
 {% endblock %}

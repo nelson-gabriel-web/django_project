@@ -80,3 +80,11 @@ SECURE_SSL_REDIRECT = False
 
 # URL de login (para o @login_required)
 LOGIN_URL = 'login'
+# Configuração para envio de email (para recuperar password)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Para teste (mostra no terminal)
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # Para produção
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'seu-email@gmail.com'
+# EMAIL_HOST_PASSWORD = 'sua-senha'

@@ -1,7 +1,9 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h2>🔐 Login</h2>
+<h2>🔐 Redefinir Password</h2>
+
+<p>Olá, <strong>{{ user.username }}</strong>! Digite a sua nova password.</p>
 
 {% if messages %}
     {% for message in messages %}
@@ -17,27 +19,23 @@
     {% csrf_token %}
     
     <div style="margin-bottom: 15px;">
-        <label style="display: block; font-weight: bold;">Utilizador ou Email:</label>
-        <input type="text" name="username" placeholder="Digite seu username ou email" 
+        <label style="display: block; font-weight: bold;">Nova Password:</label>
+        <input type="password" name="nova_password" placeholder="Digite a nova password (mínimo 8 caracteres)" required
                style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
     </div>
     
     <div style="margin-bottom: 15px;">
-        <label style="display: block; font-weight: bold;">Palavra-passe:</label>
-        <input type="password" name="password" placeholder="Digite sua palavra-passe" 
+        <label style="display: block; font-weight: bold;">Confirmar Password:</label>
+        <input type="password" name="confirmar_password" placeholder="Confirme a nova password" required
                style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px;">
     </div>
     
-    <button type="submit" style="background: #008CBA; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px;">
-        🔓 Entrar
+    <button type="submit" style="background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px;">
+        ✅ Redefinir Password
     </button>
 </form>
 
-<p style="margin-top: 15px; text-align: center;">
-    <a href="{% url 'recuperar' %}" style="color: #008CBA;">🔑 Esqueceu a password?</a>
-</p>
-
-<p style="margin-top: 10px; text-align: center;">
-    Não tem conta? <a href="{% url 'registar' %}">Registe-se aqui</a>
+<p style="margin-top: 20px;">
+    <a href="{% url 'login' %}">↩️ Voltar ao Login</a>
 </p>
 {% endblock %}

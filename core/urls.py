@@ -13,4 +13,7 @@ urlpatterns = [
     path('sucesso/', views.sucesso, name='sucesso'),
     path('listar/', views.listar_contatos, name='listar'),
     path('buscar/', views.buscar_contatos, name='buscar'),
+    # Recuperação de password
+    path('recuperar/', views.recuperar_password, name='recuperar'),
+    path('redefinir/<uidb64>/<token>/', views.redefinir_password, name='redefinir'),
 ]
