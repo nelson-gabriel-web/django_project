@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -46,42 +47,21 @@
             border-radius: 5px;
             margin-bottom: 15px;
         }
-        .mensagem-sucesso {
+        .mensagem-success {
             background-color: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
+        }
+        .mensagem-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
         .mensagem-info {
             background-color: #d1ecf1;
             color: #0c5460;
             border: 1px solid #bee5eb;
         }
-    </style>
-</head>
-<body>
-    <div style="max-width: 900px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
-        <h1 style="color: #333;">📒 Agenda de Contactos</h1>
-        <hr>
-        
-        {% if messages %}
-            {% for message in messages %}
-                <div class="mensagem mensagem-{{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-        
-        {% block content %}{% endblock %}
-    </div>
-{% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Agenda de Contactos</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        /* ... seus estilos existentes ... */
     </style>
 </head>
 <body>
@@ -105,12 +85,11 @@
             {% endfor %}
         {% endif %}
         
-        {% block content %}{% endblock %}
+        {% block content %}
+        {% endblock %}
     </div>
 
-    <!-- JavaScript para controlar os sons -->
     <script>
-        // Função para tocar som de sucesso
         function tocarSucesso() {
             try {
                 const som = document.getElementById('somSucesso');
@@ -125,7 +104,6 @@
             }
         }
 
-        // Função para tocar som de erro
         function tocarErro() {
             try {
                 const som = document.getElementById('somErro');
@@ -140,13 +118,10 @@
             }
         }
 
-        // Função para adicionar sons aos botões
         document.addEventListener('DOMContentLoaded', function() {
-            // Sons para botões de sucesso (Adicionar, Salvar, Atualizar)
-            document.querySelectorAll('button[type="submit"], .btn-success, .btn-add, a[href*="adicionar"], a[href*="editar"]').forEach(function(el) {
+            document.querySelectorAll('button[type="submit"], .btn-add, a[href*="adicionar"], a[href*="editar"]').forEach(function(el) {
                 if (el.tagName === 'A' || el.tagName === 'BUTTON') {
                     el.addEventListener('click', function(e) {
-                        // Verificar se o link não é de exclusão
                         if (!this.href || !this.href.includes('excluir')) {
                             setTimeout(tocarSucesso, 200);
                         }
@@ -154,39 +129,32 @@
                 }
             });
 
-            // Sons para botões de erro (Excluir, Cancelar, Voltar)
             document.querySelectorAll('a[href*="excluir"], .btn-danger, .btn-cancel, a[href*="logout"]').forEach(function(el) {
                 el.addEventListener('click', function(e) {
                     setTimeout(tocarErro, 200);
                 });
             });
 
-            // Sons para o cadeado (splash)
             const lockContainer = document.querySelector('.lock-container');
             if (lockContainer) {
                 lockContainer.addEventListener('click', function() {
-                    // Pequeno delay para sincronizar com a animação
                     setTimeout(tocarSucesso, 300);
                 });
             }
 
-            // Sons para mensagens de erro (automático)
             const mensagensErro = document.querySelectorAll('.mensagem-error, .mensagem-danger');
             if (mensagensErro.length > 0) {
                 setTimeout(tocarErro, 500);
             }
 
-            // Sons para mensagens de sucesso (automático)
             const mensagensSucesso = document.querySelectorAll('.mensagem-success, .mensagem-info');
             if (mensagensSucesso.length > 0) {
                 setTimeout(tocarSucesso, 500);
             }
         });
 
-        // Adicionar sons aos formulários
         document.querySelectorAll('form').forEach(function(form) {
             form.addEventListener('submit', function(e) {
-                // Verificar se o formulário é de exclusão
                 if (this.action && this.action.includes('excluir')) {
                     setTimeout(tocarErro, 300);
                 } else {
@@ -195,7 +163,5 @@
             });
         });
     </script>
-</body>
-</html>
 </body>
 </html>
