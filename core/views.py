@@ -13,12 +13,8 @@ from django.db import models
 from .forms import ContatoForm
 from .models import Contato, TentativaLogin
 from .models import Contato, TentativaLogin, Camera, SensorMovimento, EventoSeguranca, ZonaRisco, Alerta
-import qrcode
 from io import BytesIO
 import base64
-from django_otp import devices_for_user
-from django_otp.plugins.otp_totp.models import TOTPDevice
-from django_otp.oath import totp
 from core.models import PerfilUsuario
 
 # ============ SPLASH ============
@@ -672,3 +668,9 @@ def verificar_2fa(request):
             messages.error(request, 'Código 2FA inválido. Tente novamente.')
     
     return render(request, 'core/verificar_2fa.html')
+
+# def configurar_2fa(request):
+#     ...
+
+# def verificar_2fa(request):
+#     ...

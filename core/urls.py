@@ -24,9 +24,6 @@ urlpatterns = [
     path('redefinir/<uidb64>/<token>/', views.redefinir_password, name='redefinir'),
     
     # 2FA - Comentado temporariamente
-    # path('configurar-2fa/', views.configurar_2fa, name='configurar_2fa'),
-    # path('verificar-2fa/', views.verificar_2fa, name='verificar_2fa'),
-    
     # Segurança
     path('dashboard/', views.dashboard_seguranca, name='dashboard_seguranca'),
     path('cameras/', views.cameras_list, name='cameras_list'),
