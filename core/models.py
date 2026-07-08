@@ -100,7 +100,7 @@ class Alerta(models.Model):
         return f"Alerta {self.tipo} - {self.enviado_em}"
 class Pessoa(models.Model):
     nome = models.CharField(max_length=100)
-    foto = models.ImageField(upload_to='faces/')
+    foto = models.ImageField(upload_to='perfil/', null=True, blank=True)
     criado_em = models.DateTimeField(auto_now_add=True)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
 

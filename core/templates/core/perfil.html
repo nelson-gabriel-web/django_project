@@ -18,13 +18,13 @@
 
     <div style="text-align: center; margin-bottom: 24px;">
         {% if perfil.foto %}
-            <img src="{{ perfil.foto.url }}" alt="Foto de perfil" 
-                 style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid #1a73e8;">
-        {% else %}
-            <div style="width: 150px; height: 150px; border-radius: 50%; background: #e9ecef; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 60px; border: 4px solid #ddd;">
-                👤
-            </div>
-        {% endif %}
+    <img src="{{ perfil.foto.url }}" alt="Foto de perfil" 
+         style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid #1a73e8;">
+{% else %}
+    <div style="width: 150px; height: 150px; border-radius: 50%; background: #e9ecef; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 60px; border: 4px solid #ddd;">
+        👤
+    </div>
+{% endif %}
         <h3 style="margin-top: 12px; color: #1a1a2e;">{{ user.username }}</h3>
         <p style="color: #888; font-size: 14px;">{{ user.email }}</p>
     </div>
