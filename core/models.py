@@ -229,7 +229,7 @@ class PerfilUsuario(models.Model):
     codigo_2fa = models.CharField(max_length=100, blank=True, null=True)
     ativo_2fa = models.BooleanField(default=False)
     codigos_recuperacao = models.JSONField(default=list, blank=True)
-    foto = models.ImageField(upload_to='perfil/', null=True, blank=True)  # NOVO
+    foto = models.ImageField(upload_to='perfil/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.usuario.username} - 2FA: {'Ativo' if self.ativo_2fa else 'Inativo'}"
