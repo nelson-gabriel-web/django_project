@@ -291,6 +291,11 @@ def api_evento(request):
         return JsonResponse({'status': 'ok'})
     return JsonResponse({'status': 'error'}, status=405)
 
+# ============ LOGOUT ============
+def logout_view(request):
+    logout(request)
+    return redirect('splash')
+
 # ============ PERFIL DO UTILIZADOR ============
 @login_required
 def perfil(request):
