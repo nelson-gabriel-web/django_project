@@ -26,3 +26,14 @@ class ContatoForm(forms.ModelForm):
             'telefone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite seu telefone'}),
             'endereco': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Digite seu endereço', 'rows': 3}),
         }
+
+from django import forms
+from .models import PerfilUsuario
+
+class PerfilForm(forms.ModelForm):
+    class Meta:
+        model = PerfilUsuario
+        fields = ['foto', 'telefone']
+        widgets = {
+            'telefone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite seu telefone'}),
+        }

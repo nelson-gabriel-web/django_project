@@ -24,4 +24,5 @@ urlpatterns = [
     path('comunidade/<int:comunidade_pk>/avaliar/', views.avaliar_seguranca, name='avaliar_seguranca'),
     path('comunidade/relatorio/<int:pk>/', views.relatorio_comunidade, name='relatorio_comunidade'),
     path('api/evento/', views.api_evento, name='api_evento'),
+path('perfil/', views.perfil, name='perfil'),
 ]

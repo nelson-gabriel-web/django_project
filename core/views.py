@@ -296,3 +296,23 @@ def api_evento(request):
     if request.method == 'POST':
         return JsonResponse({'status': 'ok'})
     return JsonResponse({'status': 'error'}, status=405)
+
+# ============ PERFIL DO UTILIZADOR ============
+@login_required
+def perfil(request):
+    perfil, created = PerfilUsuario.objects.get_or_create(usuario=request.user)
+    
+    if request.method == 'POST':
+        form = PerfilForm(request.POST, request.FILES, instance=perfil)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Perfil atualizado com sucesso!')
+            return redirect('perfil')
+    else:
+        form = PerfilForm(instance=perfil)
+    
+    return render(request, 'core/perfil.html', {
+        'form': form,
+        'perfil': perfil,
+        'user': request.user
+    })

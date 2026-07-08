@@ -90,3 +90,18 @@ WEBPUSH_SETTINGS = {
     "VAPID_PUBLIC_KEY": "",
     "VAPID_ADMIN_EMAIL": "admin@labsec.com"
 }
+# ============================================
+# MEDIA FILES (FOTOS DE PERFIL)
+# ============================================
+import os
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# ============================================
+# MEDIA FILES (FOTOS DE PERFIL)
+# ============================================
+import os
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
