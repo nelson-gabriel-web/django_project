@@ -73,11 +73,16 @@
             font-size: 14px;
             animation: pulse 2s infinite;
             letter-spacing: 1px;
+            transition: opacity 0.3s ease;
         }
         
         @keyframes pulse {
             0%, 100% { opacity: 0.4; }
             50% { opacity: 0.9; }
+        }
+        
+        .instrucao.hidden {
+            opacity: 0 !important;
         }
         
         /* ========== LABSEC (que aparece atrás) ========== */
@@ -180,7 +185,7 @@
             <!-- LabSec (escondido atrás) -->
             <div class="labsec-text" id="labsecText">LabSec</div>
             
-            <!-- Slogan -->
+            <!-- Slogan (em português) -->
             <div class="slogan" id="slogan">Segurança digital começa com conhecimento local.</div>
             
             <!-- Loading dots -->
@@ -191,7 +196,7 @@
             </div>
             
             <!-- Instrução -->
-            <div class="instrucao">🔒 Clique no cadeado para continuar</div>
+            <div class="instrucao" id="instrucao">🔒 Clique no cadeado para continuar</div>
         </div>
     </div>
 
@@ -202,7 +207,7 @@
             const labsecText = document.getElementById('labsecText');
             const slogan = document.getElementById('slogan');
             const loadingDots = document.getElementById('loadingDots');
-            const instrucao = document.querySelector('.instrucao');
+            const instrucao = document.getElementById('instrucao');
             
             let animationStarted = false;
             
@@ -210,19 +215,18 @@
                 if (animationStarted) return;
                 animationStarted = true;
                 
-                // Esconder instrução
-                instrucao.style.opacity = '0';
-                instrucao.style.transition = 'opacity 0.5s';
+                // 1. Instrução desaparece IMEDIATAMENTE
+                instrucao.classList.add('hidden');
                 
-                // 1. Mostrar LabSec atrás do cadeado
+                // 2. Mostrar LabSec atrás do cadeado (imediatamente)
                 labsecText.classList.add('show');
                 
-                // 2. Após 0.8 segundos, mostrar slogan
+                // 3. Após 0.5 segundos, mostrar slogan
                 setTimeout(() => {
-    window.location.href = "{% url 'login' %}";
-}, 4000);
+                    slogan.classList.add('show');
+                }, 500);
                 
-                // 3. Após 1.5 segundos, cadeado encolhe e desaparece
+                // 4. Após 1.2 segundos, cadeado encolhe e desaparece
                 setTimeout(() => {
                     lockSvg.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s';
                     lockSvg.style.transform = 'scale(0.1)';
@@ -241,9 +245,9 @@
                         loadingDots.classList.add('show');
                     }, 400);
                     
-                }, 1500);
+                }, 1200);
                 
-                // 4. Redirecionar para o login após 4 segundos
+                // 5. Redirecionar para o login APÓS 4 SEGUNDOS (contados desde o clique)
                 setTimeout(() => {
                     window.location.href = "{% url 'login' %}";
                 }, 4000);
