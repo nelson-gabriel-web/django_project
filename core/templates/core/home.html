@@ -6,43 +6,43 @@
     <!-- Mensagem de Boas-Vindas -->
     <div style="text-align: center; margin-bottom: 30px;">
         <div style="font-size: 48px; margin-bottom: 12px;">🛡️</div>
-        <h2 style="font-size: 26px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px;">
-    {% if user.last_login %}
-        Bem-vindo de volta, <strong style="color: #1a73e8;">{{ user.username }}</strong>!
-    {% else %}
-        Bem-vindo, <strong style="color: #1a73e8;">{{ user.username }}</strong>!
-    {% endif %}
-</h2>
+        <h2 style="font-size: 26px; font-weight: 700; color: #fff; margin-bottom: 8px;">
+            {% if user.last_login %}
+                Bem-vindo de volta, <strong style="color: #4fc3f7;">{{ user.username }}</strong>!
+            {% else %}
+                Bem-vindo, <strong style="color: #4fc3f7;">{{ user.username }}</strong>!
+            {% endif %}
+        </h2>
     </div>
     
     <!-- Mensagem Principal -->
-    <div style="background: #f8f9fa; border-radius: 12px; padding: 24px 28px; border-left: 4px solid #1a73e8; margin-bottom: 24px;">
-        <p style="color: #333; font-size: 16px; line-height: 1.6; margin: 0;">
-            Todos os acessos estão <strong>criptografados</strong> e <strong>monitorados em tempo real</strong>. 
+    <div style="background: rgba(255,255,255,0.06); border-radius: 12px; padding: 24px 28px; border-left: 4px solid #4fc3f7; margin-bottom: 24px;">
+        <p style="color: rgba(255,255,255,0.85); font-size: 16px; line-height: 1.6; margin: 0;">
+            Todos os acessos estão <strong style="color: #4fc3f7;">criptografados</strong> e <strong style="color: #4fc3f7;">monitorados em tempo real</strong>. 
             Caso note qualquer comportamento estranho, nosso sistema já terá registado antes de você. 
             Aproveite a tranquilidade de operar sob a melhor proteção do mercado.
         </p>
     </div>
     
     <!-- Frase de Rodapé -->
-    <div style="text-align: center; padding: 20px 0; border-top: 1px solid #eee; margin-bottom: 24px;">
-        <p style="color: #555; font-size: 15px; font-style: italic; margin: 0; letter-spacing: 0.5px;">
+    <div style="text-align: center; padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.08); margin-bottom: 24px;">
+        <p style="color: rgba(255,255,255,0.6); font-size: 15px; font-style: italic; margin: 0; letter-spacing: 0.5px;">
             "Uma pessoa informada protege a si. Uma pessoa que compartilha protege uma comunidade."
         </p>
     </div>
     
     <!-- Botões de Ação -->
     <div style="display: flex; flex-direction: column; gap: 10px; max-width: 320px; margin: 0 auto;">
-        <a href="{% url 'adicionar' %}" style="background: #28a745; color: #fff; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; text-align: center; transition: background 0.3s;">
+        <a href="{% url 'adicionar' %}" style="background: #28a745; color: #fff; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; text-align: center; transition: opacity 0.3s;">
             ➕ Adicionar Contacto
         </a>
-        <a href="{% url 'listar' %}" style="background: #1a73e8; color: #fff; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; text-align: center; transition: background 0.3s;">
+        <a href="{% url 'listar' %}" style="background: #1a73e8; color: #fff; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; text-align: center; transition: opacity 0.3s;">
             📋 Ver Contactos
         </a>
-        <a href="{% url 'dashboard_seguranca' %}" style="background: #6c757d; color: #fff; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; text-align: center; transition: background 0.3s;">
+        <a href="{% url 'dashboard_seguranca' %}" style="background: #6c757d; color: #fff; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; text-align: center; transition: opacity 0.3s;">
             🔒 Dashboard Segurança
         </a>
-        <a href="{% url 'logout' %}" style="background: #dc3545; color: #fff; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; text-align: center; transition: background 0.3s; margin-top: 4px;">
+        <a href="{% url 'logout' %}" style="background: #dc3545; color: #fff; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; text-align: center; transition: opacity 0.3s; margin-top: 4px;">
             🔓 Sair
         </a>
     </div>
