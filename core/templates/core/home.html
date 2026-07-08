@@ -1,42 +1,28 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h2 style="font-size: 18px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px;">Bem-vindo!</h2>
-
-{% if user.is_authenticated %}
-    <p style="color: #555; font-size: 14px;">Olá, <strong>{{ user.username }}</strong>! 👋</p>
-    <p style="color: #888; font-size: 13px; margin-bottom: 16px;">Gerencie os seus contactos.</p>
-{% else %}
-    <p style="color: #555; font-size: 14px;">Por favor, <a href="{% url 'login' %}">entre</a> ou <a href="{% url 'registar' %}">registe-se</a>.</p>
-{% endif %}
-
-<!-- Cards rápidos -->
-<div class="card-grid">
-    <a href="{% url 'adicionar' %}" class="card">
-        <div class="icon">➕</div>
-        <div class="label">Adicionar</div>
-        <div class="sub">Novo contacto</div>
-    </a>
-    <a href="{% url 'listar' %}" class="card">
-        <div class="icon">📋</div>
-        <div class="label">Contactos</div>
-        <div class="sub">Ver todos</div>
-    </a>
-    <a href="{% url 'buscar' %}" class="card">
-        <div class="icon">🔍</div>
-        <div class="label">Buscar</div>
-        <div class="sub">Pesquisar</div>
-    </a>
-    <a href="{% url 'dashboard_seguranca' %}" class="card" style="background: #e8f0fe;">
-        <div class="icon">🔒</div>
-        <div class="label">Segurança</div>
-        <div class="sub">Dashboard</div>
-    </a>
-</div>
-
-{% if user.is_authenticated %}
-    <div style="margin-top: 16px; text-align: center;">
-        <a href="{% url 'logout' %}" style="background: #dc3545; color: white; padding: 8px 20px; text-decoration: none; border-radius: 20px; font-size: 13px; display: inline-block;">🔓 Sair</a>
+<div style="max-width: 600px; margin: 0 auto; text-align: center; padding: 40px 20px;">
+    <div style="font-size: 60px; margin-bottom: 16px;">👋</div>
+    <h2 style="font-size: 28px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px;">
+        Olá, <strong>{{ user.username }}</strong>!
+    </h2>
+    <p style="color: #888; font-size: 16px; margin-bottom: 32px;">
+        Bem-vindo ao LabSec. Gerencie os seus contactos e segurança num só lugar.
+    </p>
+    
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 300px; margin: 0 auto;">
+        <a href="{% url 'adicionar' %}" style="background: #28a745; color: #fff; padding: 14px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.3s;">
+            ➕ Adicionar Contacto
+        </a>
+        <a href="{% url 'listar' %}" style="background: #1a73e8; color: #fff; padding: 14px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.3s;">
+            📋 Ver Contactos
+        </a>
+        <a href="{% url 'dashboard_seguranca' %}" style="background: #6c757d; color: #fff; padding: 14px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.3s;">
+            🔒 Dashboard Segurança
+        </a>
+        <a href="{% url 'logout' %}" style="background: #dc3545; color: #fff; padding: 14px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.3s; margin-top: 8px;">
+            🔓 Sair
+        </a>
     </div>
-{% endif %}
+</div>
 {% endblock %}
