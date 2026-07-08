@@ -23,9 +23,9 @@ urlpatterns = [
     path('recuperar/', views.recuperar_password, name='recuperar'),
     path('redefinir/<uidb64>/<token>/', views.redefinir_password, name='redefinir'),
     
-    # 2FA (Dois Fatores)
-    path('configurar-2fa/', views.configurar_2fa, name='configurar_2fa'),  # ← VERIFIQUE ESTA LINHA
-    path('verificar-2fa/', views.verificar_2fa, name='verificar_2fa'),     # ← E ESTA
+    # 2FA - Comentado temporariamente
+    # path('configurar-2fa/', views.configurar_2fa, name='configurar_2fa'),
+    # path('verificar-2fa/', views.verificar_2fa, name='verificar_2fa'),
     
     # Segurança
     path('dashboard/', views.dashboard_seguranca, name='dashboard_seguranca'),
