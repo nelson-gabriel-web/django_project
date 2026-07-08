@@ -75,7 +75,6 @@ def login_view(request):
             tentativa.bloqueado = False
             tentativa.save()
             login(request, user_authenticated)
-            messages.success(request, f'Bem-vindo de volta, {username}!')
             return redirect('home')
         else:
             tentativa.tentativas += 1
@@ -91,12 +90,6 @@ def login_view(request):
     
     form = AuthenticationForm()
     return render(request, 'core/login.html', {'form': form})
-
-# ============ LOGOUT ============
-def logout_view(request):
-    logout(request)
-    messages.info(request, 'Sessão terminada com sucesso.')
-    return redirect('splash')
 
 # ============ ADICIONAR CONTACTO ============
 @login_required
