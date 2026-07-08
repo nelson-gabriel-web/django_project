@@ -66,7 +66,7 @@
             fill: #1557b0;
         }
         
-        /* ========== INSTRUÇÃO ========== */
+        /* ========== INSTRUÇÃO (em baixo do cadeado) ========== */
         .instrucao {
             margin-top: 24px;
             color: rgba(255, 255, 255, 0.5);
@@ -85,33 +85,29 @@
             opacity: 0 !important;
         }
         
-        /* ========== LABSEC (que aparece atrás) ========== */
+        /* ========== LABSEC (em baixo do cadeado) ========== */
         .labsec-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
+            margin-top: 20px;
             font-size: 48px;
             font-weight: 900;
             color: #4fc3f7;
             text-shadow: 0 0 30px rgba(79, 195, 247, 0.5);
             opacity: 0;
+            transform: scale(0.5);
             transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-            pointer-events: none;
-            white-space: nowrap;
             letter-spacing: 4px;
         }
         
         .labsec-text.show {
-            transform: translate(-50%, -50%) scale(1);
             opacity: 1;
+            transform: scale(1);
         }
         
-        /* ========== SLOGAN ========== */
+        /* ========== SLOGAN (em baixo do LabSec) ========== */
         .slogan {
-            margin-top: 30px;
-            font-size: 16px;
-            color: rgba(255, 255, 255, 0.6);
+            margin-top: 12px;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.7);
             letter-spacing: 2px;
             font-weight: 300;
             opacity: 0;
@@ -162,7 +158,8 @@
                 font-size: 28px;
             }
             .slogan {
-                font-size: 13px;
+                font-size: 14px;
+                margin-top: 8px;
             }
             .instrucao {
                 font-size: 12px;
@@ -182,10 +179,13 @@
                 <rect x="48" y="65" width="4" height="8" rx="2" fill="#1a73e8"/>
             </svg>
             
-            <!-- LabSec (escondido atrás) -->
+            <!-- Instrução -->
+            <div class="instrucao" id="instrucao">🔒 Clique no cadeado para continuar</div>
+            
+            <!-- LabSec (em baixo do cadeado) -->
             <div class="labsec-text" id="labsecText">LabSec</div>
             
-            <!-- Slogan (em português) -->
+            <!-- Slogan (em baixo do LabSec) -->
             <div class="slogan" id="slogan">Segurança digital começa com conhecimento local.</div>
             
             <!-- Loading dots -->
@@ -194,9 +194,6 @@
                 <div class="dot"></div>
                 <div class="dot"></div>
             </div>
-            
-            <!-- Instrução -->
-            <div class="instrucao" id="instrucao">🔒 Clique no cadeado para continuar</div>
         </div>
     </div>
 
@@ -218,39 +215,30 @@
                 // 1. Instrução desaparece IMEDIATAMENTE
                 instrucao.classList.add('hidden');
                 
-                // 2. Mostrar LabSec atrás do cadeado (imediatamente)
-                labsecText.classList.add('show');
+                // 2. Cadeado encolhe e desaparece (0.8s)
+                lockSvg.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s';
+                lockSvg.style.transform = 'scale(0.1)';
+                lockSvg.style.opacity = '0';
                 
-                // 3. Após 0.5 segundos, mostrar slogan
+                // 3. LabSec aparece (após 0.3s)
+                setTimeout(() => {
+                    labsecText.classList.add('show');
+                }, 300);
+                
+                // 4. Slogan aparece (após 0.8s)
                 setTimeout(() => {
                     slogan.classList.add('show');
-                }, 500);
+                }, 800);
                 
-                // 4. Após 1.2 segundos, cadeado encolhe e desaparece
+                // 5. Mostrar loading dots (após 1.5s)
                 setTimeout(() => {
-                    lockSvg.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s';
-                    lockSvg.style.transform = 'scale(0.1)';
-                    lockSvg.style.opacity = '0';
-                    
-                    labsecText.style.transition = 'all 0.8s ease';
-                    labsecText.style.transform = 'translate(-50%, -50%) scale(1.5)';
-                    labsecText.style.opacity = '0';
-                    
-                    slogan.style.transition = 'all 0.8s ease';
-                    slogan.style.transform = 'translateY(50px)';
-                    slogan.style.opacity = '0';
-                    
-                    // Mostrar loading dots
-                    setTimeout(() => {
-                        loadingDots.classList.add('show');
-                    }, 400);
-                    
-                }, 1200);
+                    loadingDots.classList.add('show');
+                }, 1500);
                 
-                // 5. Redirecionar para o login APÓS 8 SEGUNDOS (contados desde o clique)
+                // 6. Redirecionar para o login APÓS 10 SEGUNDOS
                 setTimeout(() => {
                     window.location.href = "{% url 'login' %}";
-                }, 8000);
+                }, 10000);
             }
             
             // Clique no cadeado
