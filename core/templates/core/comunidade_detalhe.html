@@ -1,0 +1,131 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+    <h2 style="font-size: 20px; font-weight: 700; color: #1a1a2e;">🏘️ {{ comunidade.nome }}</h2>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <a href="{% url 'adicionar_crime' comunidade.pk %}" class="btn btn-danger btn-sm">➕ Crime</a>
+        <a href="{% url 'adicionar_estrategia' comunidade.pk %}" class="btn btn-primary btn-sm">🛡️ Estratégia</a>
+        <a href="{% url 'avaliar_seguranca' comunidade.pk %}" class="btn btn-warning btn-sm">📝 Avaliar</a>
+        <a href="{% url 'relatorio_comunidade' comunidade.pk %}" class="btn btn-secondary btn-sm">📊 Relatório</a>
+    </div>
+</div>
+
+<!-- Estatísticas -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px;">
+    <div style="background: #f8f9fa; padding: 16px; border-radius: 10px; text-align: center;">
+        <div style="font-size: 24px; font-weight: 700; color: #dc3545;">{{ total_crimes }}</div>
+        <div style="font-size: 13px; color: #888;">Crimes Totais</div>
+    </div>
+    <div style="background: #f8f9fa; padding: 16px; border-radius: 10px; text-align: center;">
+        <div style="font-size: 24px; font-weight: 700; color: #ffc107;">{{ estrategias|length }}</div>
+        <div style="font-size: 13px; color: #888;">Estratégias</div>
+    </div>
+    <div style="background: #f8f9fa; padding: 16px; border-radius: 10px; text-align: center;">
+        <div style="font-size: 24px; font-weight: 700; color: {% if media_seguranca >= 4 %}#28a745{% elif media_seguranca >= 3 %}#ffc107{% else %}#dc3545{% endif %};">
+            {{ media_seguranca|floatformat:1 }}
+        </div>
+        <div style="font-size: 13px; color: #888;">Nível de Segurança</div>
+    </div>
+    <div style="background: #f8f9fa; padding: 16px; border-radius: 10px; text-align: center;">
+        <div style="font-size: 24px; font-weight: 700; color: #17a2b8;">{{ percepcoes|length }}</div>
+        <div style="font-size: 13px; color: #888;">Avaliações</div>
+    </div>
+</div>
+
+<!-- Análise de Crimes -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+    <div style="background: #fff; border-radius: 10px; padding: 16px; border: 1px solid #eee;">
+        <h4 style="margin-bottom: 12px;">📊 Crimes por Tipo</h4>
+        <div style="max-height: 200px; overflow-y: auto;">
+            {% for crime in crimes_por_tipo %}
+                <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f0f0f0;">
+                    <span>{{ crime.get_tipo_display }}</span>
+                    <span style="font-weight: 600; color: #dc3545;">{{ crime.total }}</span>
+                </div>
+            {% empty %}
+                <p style="color: #888;">Nenhum crime registado.</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div style="background: #fff; border-radius: 10px; padding: 16px; border: 1px solid #eee;">
+        <h4 style="margin-bottom: 12px;">🛡️ Estratégias de Segurança</h4>
+        <div style="max-height: 200px; overflow-y: auto;">
+            {% for estrategia in estrategias %}
+                <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f0f0f0;">
+                    <span>{{ estrategia.get_tipo_display }}</span>
+                    <span style="font-size: 12px; color: {% if estrategia.ativa %}#28a745{% else %}#dc3545{% endif %};">
+                        {% if estrategia.ativa %}✅ Ativa{% else %}❌ Inativa{% endif %}
+                    </span>
+                </div>
+            {% empty %}
+                <p style="color: #888;">Nenhuma estratégia registada.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Últimos Crimes -->
+<h4 style="margin-bottom: 12px;">📋 Últimos Crimes</h4>
+<div style="background: #fff; border-radius: 10px; border: 1px solid #eee; overflow: hidden;">
+    {% if ultimos_crimes %}
+        <div style="max-height: 200px; overflow-y: auto;">
+            {% for crime in ultimos_crimes %}
+                <div style="padding: 10px 16px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong style="color: #dc3545;">{{ crime.get_tipo_display }}</strong>
+                        <span style="color: #666; font-size: 13px;">{{ crime.localizacao }}</span>
+                    </div>
+                    <span style="font-size: 12px; color: #888;">{{ crime.data_ocorrencia|date:"d/m/Y H:i" }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="padding: 20px; text-align: center; color: #888;">
+            Nenhum crime registado.
+        </div>
+    {% endif %}
+</div>
+
+<!-- Análise de Padrões -->
+{% if analise.padroes %}
+    <div style="margin-top: 20px; padding: 16px; background: #f8f9fa; border-radius: 10px;">
+        <h4 style="margin-bottom: 12px;">📈 Análise de Padrões</h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+            <div>
+                <span style="color: #888;">Total de Crimes</span>
+                <div style="font-size: 20px; font-weight: 700; color: #1a1a2e;">{{ analise.total_crimes }}</div>
+            </div>
+            {% if analise.hora_mais_critica %}
+            <div>
+                <span style="color: #888;">Hora Mais Crítica</span>
+                <div style="font-size: 20px; font-weight: 700; color: #dc3545;">{{ analise.hora_mais_critica.hora }}h</div>
+                <span style="font-size: 12px; color: #888;">{{ analise.hora_mais_critica.total }} crimes</span>
+            </div>
+            {% endif %}
+            {% if analise.dia_mais_critico %}
+            <div>
+                <span style="color: #888;">Dia Mais Crítico</span>
+                <div style="font-size: 20px; font-weight: 700; color: #dc3545;">{{ analise.dia_mais_critico }}</div>
+            </div>
+            {% endif %}
+            {% if analise.nivel_risco %}
+            <div>
+                <span style="color: #888;">Nível de Risco</span>
+                <div style="font-size: 20px; font-weight: 700; 
+                    {% if analise.nivel_risco == 'Baixo' %}color: #28a745;
+                    {% elif analise.nivel_risco == 'Médio' %}color: #ffc107;
+                    {% elif analise.nivel_risco == 'Alto' %}color: #fd7e14;
+                    {% else %}color: #dc3545;{% endif %}">
+                    {{ analise.nivel_risco }}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{% endif %}
+
+<div style="margin-top: 20px;">
+    <a href="{% url 'comunidades_list' %}" class="btn btn-secondary">↩️ Voltar</a>
+</div>
+{% endblock %}

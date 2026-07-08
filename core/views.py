@@ -331,3 +331,227 @@ def api_evento(request):
             return JsonResponse({'status': 'error', 'mensagem': str(e)}, status=400)
     
     return JsonResponse({'status': 'error'}, status=405)
+
+# ============================================
+# VIEWS PARA ANÁLISE COMUNITÁRIA DE SEGURANÇA
+# ============================================
+
+@login_required
+def comunidades_list(request):
+    """Lista de comunidades"""
+    comunidades = Comunidade.objects.filter(usuario=request.user)
+    return render(request, 'core/comunidades_list.html', {'comunidades': comunidades})
+
+@login_required
+def adicionar_comunidade(request):
+    """Adicionar uma nova comunidade"""
+    if request.method == 'POST':
+        nome = request.POST.get('nome')
+        localizacao = request.POST.get('localizacao')
+        populacao = request.POST.get('populacao')
+        residencias = request.POST.get('residencias')
+        
+        comunidade = Comunidade.objects.create(
+            nome=nome,
+            localizacao=localizacao,
+            populacao_estimada=populacao or 0,
+            numero_residencias=residencias or 0,
+            usuario=request.user
+        )
+        messages.success(request, f'Comunidade "{nome}" adicionada com sucesso!')
+        return redirect('comunidades_list')
+    
+    return render(request, 'core/adicionar_comunidade.html')
+
+@login_required
+def comunidade_detalhe(request, pk):
+    """Detalhes de uma comunidade com análises"""
+    comunidade = get_object_or_404(Comunidade, pk=pk, usuario=request.user)
+    
+    # Estatísticas de crimes
+    crimes = Crime.objects.filter(comunidade=comunidade)
+    total_crimes = crimes.count()
+    crimes_por_tipo = crimes.values('tipo').annotate(total=Count('tipo'))
+    
+    # Estratégias de segurança
+    estrategias = EstrategiaSeguranca.objects.filter(comunidade=comunidade)
+    
+    # Percepção de segurança
+    percepcoes = PercepcaoSeguranca.objects.filter(comunidade=comunidade)
+    media_seguranca = percepcoes.aggregate(avg=models.Avg('nivel_seguranca'))['avg'] or 0
+    
+    # Últimos crimes
+    ultimos_crimes = crimes.order_by('-data_ocorrencia')[:10]
+    
+    # Análise de padrões
+    analise = analisar_padroes_crime(comunidade)
+    
+    context = {
+        'comunidade': comunidade,
+        'total_crimes': total_crimes,
+        'crimes_por_tipo': crimes_por_tipo,
+        'estrategias': estrategias,
+        'percepcoes': percepcoes,
+        'media_seguranca': media_seguranca,
+        'ultimos_crimes': ultimos_crimes,
+        'analise': analise,
+    }
+    return render(request, 'core/comunidade_detalhe.html', context)
+
+@login_required
+def adicionar_crime(request, comunidade_pk):
+    """Registar um crime na comunidade"""
+    comunidade = get_object_or_404(Comunidade, pk=comunidade_pk, usuario=request.user)
+    
+    if request.method == 'POST':
+        crime = Crime.objects.create(
+            comunidade=comunidade,
+            tipo=request.POST.get('tipo'),
+            descricao=request.POST.get('descricao'),
+            data_ocorrencia=request.POST.get('data_ocorrencia'),
+            localizacao=request.POST.get('localizacao'),
+            vitima=request.POST.get('vitima'),
+            suspeito=request.POST.get('suspeito'),
+            registado_por=request.user
+        )
+        messages.success(request, 'Crime registado com sucesso!')
+        return redirect('comunidade_detalhe', pk=comunidade.pk)
+    
+    return render(request, 'core/adicionar_crime.html', {'comunidade': comunidade})
+
+@login_required
+def adicionar_estrategia(request, comunidade_pk):
+    """Adicionar estratégia de segurança"""
+    comunidade = get_object_or_404(Comunidade, pk=comunidade_pk, usuario=request.user)
+    
+    if request.method == 'POST':
+        EstrategiaSeguranca.objects.create(
+            comunidade=comunidade,
+            tipo=request.POST.get('tipo'),
+            descricao=request.POST.get('descricao'),
+            data_implementacao=request.POST.get('data_implementacao'),
+            usuario=request.user
+        )
+        messages.success(request, 'Estratégia adicionada com sucesso!')
+        return redirect('comunidade_detalhe', pk=comunidade.pk)
+    
+    return render(request, 'core/adicionar_estrategia.html', {'comunidade': comunidade})
+
+@login_required
+def avaliar_seguranca(request, comunidade_pk):
+    """Avaliar percepção de segurança"""
+    comunidade = get_object_or_404(Comunidade, pk=comunidade_pk, usuario=request.user)
+    
+    if request.method == 'POST':
+        PercepcaoSeguranca.objects.create(
+            comunidade=comunidade,
+            nivel_seguranca=request.POST.get('nivel_seguranca'),
+            principais_medos=request.POST.get('principais_medos'),
+            sugestoes=request.POST.get('sugestoes'),
+            usuario=request.user
+        )
+        messages.success(request, 'Avaliação registada com sucesso!')
+        return redirect('comunidade_detalhe', pk=comunidade.pk)
+    
+    return render(request, 'core/avaliar_seguranca.html', {'comunidade': comunidade})
+
+@login_required
+def relatorio_comunidade(request, pk):
+    """Gerar relatório completo da comunidade"""
+    comunidade = get_object_or_404(Comunidade, pk=pk, usuario=request.user)
+    
+    # Dados para o relatório
+    crimes = Crime.objects.filter(comunidade=comunidade)
+    estrategias = EstrategiaSeguranca.objects.filter(comunidade=comunidade)
+    percepcoes = PercepcaoSeguranca.objects.filter(comunidade=comunidade)
+    
+    dados = {
+        'comunidade': {
+            'nome': comunidade.nome,
+            'localizacao': comunidade.localizacao,
+            'populacao': comunidade.populacao_estimada,
+            'residencias': comunidade.numero_residencias,
+        },
+        'crimes': {
+            'total': crimes.count(),
+            'por_tipo': crimes.values('tipo').annotate(total=Count('tipo')),
+            'ultimos_30_dias': crimes.filter(data_ocorrencia__gte=datetime.now() - timedelta(days=30)).count(),
+        },
+        'estrategias': {
+            'ativas': estrategias.filter(ativa=True).count(),
+            'lista': list(estrategias.values('tipo', 'descricao', 'data_implementacao')),
+        },
+        'percepcao': {
+            'media': percepcoes.aggregate(avg=models.Avg('nivel_seguranca'))['avg'] or 0,
+            'total_avaliacoes': percepcoes.count(),
+        }
+    }
+    
+    # Criar relatório
+    relatorio = RelatorioComunidade.objects.create(
+        comunidade=comunidade,
+        titulo=f"Relatório de Segurança - {comunidade.nome}",
+        descricao=f"Relatório gerado automaticamente para a comunidade {comunidade.nome}",
+        dados=dados,
+        usuario=request.user
+    )
+    
+    return render(request, 'core/relatorio_comunidade.html', {'relatorio': relatorio, 'dados': dados})
+
+# ============================================
+# FUNÇÕES DE ANÁLISE
+# ============================================
+
+def analisar_padroes_crime(comunidade):
+    """Analisa padrões de crimes na comunidade"""
+    crimes = Crime.objects.filter(comunidade=comunidade)
+    total = crimes.count()
+    
+    if total == 0:
+        return {
+            'mensagem': 'Sem dados suficientes para análise.',
+            'padroes': []
+        }
+    
+    # Padrão por hora
+    padrao_hora = crimes.extra(
+        select={'hora': "strftime('%H', data_ocorrencia)"}
+    ).values('hora').annotate(total=Count('id')).order_by('-total')
+    
+    # Padrão por dia da semana
+    padrao_semana = crimes.extra(
+        select={'dia': "strftime('%w', data_ocorrencia)"}
+    ).values('dia').annotate(total=Count('id')).order_by('-total')
+    
+    # Padrão por tipo
+    padrao_tipo = crimes.values('tipo').annotate(total=Count('id')).order_by('-total')
+    
+    # Análise de tendência
+    dias_semana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
+    
+    return {
+        'total_crimes': total,
+        'hora_mais_critica': padrao_hora[0] if padrao_hora else None,
+        'dia_mais_critico': dias_semana[int(padrao_semana[0]['dia'])] if padrao_semana else None,
+        'tipo_mais_comum': padrao_tipo[0] if padrao_tipo else None,
+        'padrao_hora': list(padrao_hora),
+        'padrao_semana': list(padrao_semana),
+        'padrao_tipo': list(padrao_tipo),
+        'nivel_risco': calcular_nivel_risco(total, comunidade.populacao_estimada)
+    }
+
+def calcular_nivel_risco(total_crimes, populacao):
+    """Calcula o nível de risco baseado no número de crimes por habitante"""
+    if populacao == 0:
+        return 'Indeterminado'
+    
+    taxa = total_crimes / populacao * 1000  # Crimes por 1000 habitantes
+    
+    if taxa < 5:
+        return 'Baixo'
+    elif taxa < 15:
+        return 'Médio'
+    elif taxa < 30:
+        return 'Alto'
+    else:
+        return 'Crítico'

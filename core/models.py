@@ -106,3 +106,104 @@ class Pessoa(models.Model):
 
     def __str__(self):
         return self.nome
+
+# ============================================
+# MODELOS PARA ANÁLISE COMUNITÁRIA DE SEGURANÇA
+# ============================================
+
+class Comunidade(models.Model):
+    """Representa uma comunidade/bairro"""
+    nome = models.CharField(max_length=200)
+    localizacao = models.CharField(max_length=255)
+    coordenadas = models.JSONField(default=dict)  # {lat: , lng: }
+    populacao_estimada = models.IntegerField(default=0)
+    numero_residencias = models.IntegerField(default=0)
+    criado_em = models.DateTimeField(auto_now_add=True)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.nome
+
+class Crime(models.Model):
+    """Registo de crimes ocorridos na comunidade"""
+    TIPOS_CRIME = [
+        ('roubo_residencia', 'Roubo a Residência'),
+        ('roubo_veiculo', 'Roubo de Veículo'),
+        ('assalto_pessoa', 'Assalto a Pessoa'),
+        ('furto', 'Furto'),
+        ('vandalismo', 'Vandalismo'),
+        ('violencia_domestica', 'Violência Doméstica'),
+        ('trafico_drogas', 'Tráfico de Drogas'),
+        ('homicidio', 'Homicídio'),
+        ('outro', 'Outro'),
+    ]
+    
+    comunidade = models.ForeignKey(Comunidade, on_delete=models.CASCADE)
+    tipo = models.CharField(max_length=30, choices=TIPOS_CRIME)
+    descricao = models.TextField()
+    data_ocorrencia = models.DateTimeField()
+    localizacao = models.CharField(max_length=255)
+    coordenadas = models.JSONField(default=dict)
+    vitima = models.CharField(max_length=100, blank=True, null=True)
+    suspeito = models.CharField(max_length=100, blank=True, null=True)
+    registado_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+    resolvido = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.get_tipo_display()} - {self.data_ocorrencia.strftime('%d/%m/%Y')}"
+
+class EstrategiaSeguranca(models.Model):
+    """Estratégias de proteção adotadas pelos moradores"""
+    TIPOS_ESTRATEGIA = [
+        ('policia_comunitaria', 'Polícia Comunitária'),
+        ('vigilancia_vizinhos', 'Vigilância Rotativa entre Vizinhos'),
+        ('camera_seguranca', 'Câmaras de Segurança'),
+        ('iluminacao', 'Iluminação Pública'),
+        ('alarme', 'Sistemas de Alarme'),
+        ('guarda_patrimonial', 'Guarda Patrimonial'),
+        ('grupo_whatsapp', 'Grupo de WhatsApp'),
+        ('patrulha_voluntaria', 'Patrulha Voluntária'),
+        ('outro', 'Outro'),
+    ]
+    
+    comunidade = models.ForeignKey(Comunidade, on_delete=models.CASCADE)
+    tipo = models.CharField(max_length=30, choices=TIPOS_ESTRATEGIA)
+    descricao = models.TextField()
+    ativa = models.BooleanField(default=True)
+    data_implementacao = models.DateTimeField()
+    criado_em = models.DateTimeField(auto_now_add=True)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.get_tipo_display()} - {self.comunidade.nome}"
+
+class PercepcaoSeguranca(models.Model):
+    """Percepção de segurança dos moradores"""
+    comunidade = models.ForeignKey(Comunidade, on_delete=models.CASCADE)
+    nivel_seguranca = models.IntegerField(choices=[
+        (1, 'Muito Inseguro'),
+        (2, 'Inseguro'),
+        (3, 'Neutro'),
+        (4, 'Seguro'),
+        (5, 'Muito Seguro')
+    ])
+    principais_medos = models.TextField()
+    sugestoes = models.TextField(blank=True, null=True)
+    data_avaliacao = models.DateTimeField(auto_now_add=True)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.comunidade.nome} - Nível: {self.nivel_seguranca}"
+
+class RelatorioComunidade(models.Model):
+    """Relatórios gerados sobre a comunidade"""
+    comunidade = models.ForeignKey(Comunidade, on_delete=models.CASCADE)
+    titulo = models.CharField(max_length=200)
+    descricao = models.TextField()
+    dados = models.JSONField(default=dict)  # Dados estruturados do relatório
+    criado_em = models.DateTimeField(auto_now_add=True)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.titulo} - {self.criado_em.strftime('%d/%m/%Y')}"

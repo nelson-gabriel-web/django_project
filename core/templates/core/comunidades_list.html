@@ -1,0 +1,37 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+    <h2 style="font-size: 20px; font-weight: 700; color: #1a1a2e;">🏘️ Comunidades</h2>
+    <a href="{% url 'adicionar_comunidade' %}" class="btn btn-success btn-sm">➕ Adicionar Comunidade</a>
+</div>
+
+{% if comunidades %}
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+        {% for comunidade in comunidades %}
+            <a href="{% url 'comunidade_detalhe' comunidade.pk %}" style="text-decoration: none; color: inherit;">
+                <div style="background: #f8f9fa; border-radius: 12px; padding: 20px; border: 1px solid #eee; transition: all 0.3s; cursor: pointer;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="font-size: 18px; font-weight: 700; color: #1a1a2e;">{{ comunidade.nome }}</h3>
+                        <span style="font-size: 24px;">🏠</span>
+                    </div>
+                    <p style="color: #666; font-size: 14px; margin: 8px 0;">📍 {{ comunidade.localizacao }}</p>
+                    <div style="display: flex; gap: 16px; color: #888; font-size: 13px;">
+                        <span>👥 {{ comunidade.populacao_estimada }} hab.</span>
+                        <span>🏘️ {{ comunidade.numero_residencias }} resid.</span>
+                    </div>
+                    <div style="margin-top: 12px; font-size: 12px; color: #aaa;">
+                        {{ comunidade.criado_em|date:"d/m/Y" }}
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <div style="text-align: center; padding: 60px 20px; background: #f8f9fa; border-radius: 12px;">
+        <div style="font-size: 48px;">🏘️</div>
+        <p style="color: #888;">Nenhuma comunidade registada.</p>
+        <a href="{% url 'adicionar_comunidade' %}" class="btn btn-success" style="margin-top: 12px;">➕ Adicionar Comunidade</a>
+    </div>
+{% endif %}
+{% endblock %}

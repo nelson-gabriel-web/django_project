@@ -16,6 +16,7 @@ urlpatterns = [
     # Recuperação de password
     path('recuperar/', views.recuperar_password, name='recuperar'),
     path('redefinir/<uidb64>/<token>/', views.redefinir_password, name='redefinir'),
+
 # Sistema de Segurança
 path('dashboard/', views.dashboard_seguranca, name='dashboard_seguranca'),
 path('cameras/', views.cameras_list, name='cameras_list'),
@@ -23,4 +24,13 @@ path('cameras/adicionar/', views.adicionar_camera, name='adicionar_camera'),
 path('eventos/', views.eventos_seguranca, name='eventos_seguranca'),
 path('mapa-risco/', views.mapa_risco, name='mapa_risco'),
 path('api/evento/', views.api_evento, name='api_evento'),
+
+# Análise Comunitária de Segurança
+path('comunidades/', views.comunidades_list, name='comunidades_list'),
+path('comunidade/adicionar/', views.adicionar_comunidade, name='adicionar_comunidade'),
+path('comunidade/<int:pk>/', views.comunidade_detalhe, name='comunidade_detalhe'),
+path('comunidade/<int:comunidade_pk>/crime/adicionar/', views.adicionar_crime, name='adicionar_crime'),
+path('comunidade/<int:comunidade_pk>/estrategia/adicionar/', views.adicionar_estrategia, name='adicionar_estrategia'),
+path('comunidade/<int:comunidade_pk>/avaliar/', views.avaliar_seguranca, name='avaliar_seguranca'),
+path('comunidade/relatorio/<int:pk>/', views.relatorio_comunidade, name='relatorio_comunidade'),
 ]
