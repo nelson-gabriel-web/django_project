@@ -34,11 +34,10 @@
         
         /* ========== CADEADO ========== */
         .lock-container {
-            position: relative;
-            cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
+            cursor: pointer;
             transition: transform 0.3s;
         }
         
@@ -85,17 +84,28 @@
             opacity: 0 !important;
         }
         
-        /* ========== LABSEC (em baixo do cadeado) ========== */
+        /* ========== LABSEC + SLOGAN (centro absoluto) ========== */
+        .center-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        
         .labsec-text {
-            margin-top: 20px;
-            font-size: 48px;
+            font-size: 52px;
             font-weight: 900;
             color: #4fc3f7;
             text-shadow: 0 0 30px rgba(79, 195, 247, 0.5);
             opacity: 0;
             transform: scale(0.5);
             transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-            letter-spacing: 4px;
+            letter-spacing: 6px;
         }
         
         .labsec-text.show {
@@ -103,7 +113,6 @@
             transform: scale(1);
         }
         
-        /* ========== SLOGAN (em baixo do LabSec) ========== */
         .slogan {
             margin-top: 12px;
             font-size: 18px;
@@ -121,11 +130,11 @@
             transform: translateY(0);
         }
         
-        /* ========== LOADING ========== */
+        /* ========== LOADING DOTS (4 dots) ========== */
         .loading-dots {
-            margin-top: 30px;
+            margin-top: 24px;
             display: none;
-            gap: 8px;
+            gap: 10px;
         }
         
         .loading-dots.show {
@@ -133,15 +142,17 @@
         }
         
         .dot {
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             background: #4fc3f7;
             animation: dotPulse 1.2s infinite;
         }
         
+        .dot:nth-child(1) { animation-delay: 0s; }
         .dot:nth-child(2) { animation-delay: 0.2s; }
         .dot:nth-child(3) { animation-delay: 0.4s; }
+        .dot:nth-child(4) { animation-delay: 0.6s; }
         
         @keyframes dotPulse {
             0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
@@ -155,7 +166,8 @@
                 height: 80px;
             }
             .labsec-text {
-                font-size: 28px;
+                font-size: 32px;
+                letter-spacing: 4px;
             }
             .slogan {
                 font-size: 14px;
@@ -164,11 +176,16 @@
             .instrucao {
                 font-size: 12px;
             }
+            .dot {
+                width: 10px;
+                height: 10px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="splash-container" id="splashContainer">
+        <!-- FASE 1: Cadeado + Instrução (visíveis inicialmente) -->
         <div class="lock-container" id="lockContainer">
             <!-- SVG do Cadeado -->
             <svg class="lock-svg" viewBox="0 0 100 100" id="lockSvg">
@@ -181,15 +198,14 @@
             
             <!-- Instrução -->
             <div class="instrucao" id="instrucao">🔒 Clique no cadeado para continuar</div>
-            
-            <!-- LabSec (em baixo do cadeado) -->
+        </div>
+        
+        <!-- FASE 2: LabSec + Slogan + 4 Dots (centralizados) -->
+        <div class="center-wrapper">
             <div class="labsec-text" id="labsecText">LabSec</div>
-            
-            <!-- Slogan (em baixo do LabSec) -->
             <div class="slogan" id="slogan">Segurança digital começa com conhecimento local.</div>
-            
-            <!-- Loading dots -->
             <div class="loading-dots" id="loadingDots">
+                <div class="dot"></div>
                 <div class="dot"></div>
                 <div class="dot"></div>
                 <div class="dot"></div>
