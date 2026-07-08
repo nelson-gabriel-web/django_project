@@ -1,0 +1,33 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div style="max-width: 400px; margin: 40px auto; text-align: center;">
+    <div style="font-size: 48px; margin-bottom: 16px;">🔐</div>
+    <h2 style="font-size: 22px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px;">Verificação 2FA</h2>
+    <p style="color: #888; margin-bottom: 24px;">Digite o código de 6 dígitos do seu autenticador.</p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div style="padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; 
+                {% if message.tags == 'success' %}background: #d4edda; color: #155724; border: 1px solid #c3e6cb;
+                {% else %}background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="codigo" placeholder="Código 6 dígitos" required autofocus
+               style="width: 100%; padding: 14px; border: 2px solid #ddd; border-radius: 8px; font-size: 20px; text-align: center; letter-spacing: 4px; margin-bottom: 16px;">
+        <button type="submit" style="background: #1a73e8; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer; width: 100%;">
+            🔓 Verificar
+        </button>
+    </form>
+
+    <div style="margin-top: 16px; font-size: 14px; color: #888;">
+        <p>Perdeu o acesso ao seu autenticador?</p>
+        <p>Use um dos <strong>códigos de recuperação</strong> gerados quando ativou o 2FA.</p>
+    </div>
+</div>
+{% endblock %}

@@ -207,3 +207,18 @@ class RelatorioComunidade(models.Model):
 
     def __str__(self):
         return f"{self.titulo} - {self.criado_em.strftime('%d/%m/%Y')}"
+
+# ============================================
+# MODELOS PARA 2FA (DOIS FATORES)
+# ============================================
+
+class PerfilUsuario(models.Model):
+    """Extensão do modelo User para 2FA"""
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
+    telefone = models.CharField(max_length=20, blank=True, null=True)
+    codigo_2fa = models.CharField(max_length=100, blank=True, null=True)
+    ativo_2fa = models.BooleanField(default=False)
+    codigos_recuperacao = models.JSONField(default=list, blank=True)
+
+    def __str__(self):
+        return f"{self.usuario.username} - 2FA: {'Ativo' if self.ativo_2fa else 'Inativo'}"

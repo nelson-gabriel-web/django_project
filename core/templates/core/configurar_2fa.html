@@ -1,0 +1,84 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <h2 style="font-size: 22px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px;">🔐 Autenticação de Dois Fatores</h2>
+    <p style="color: #888; margin-bottom: 24px;">Adicione uma camada extra de segurança à sua conta.</p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div style="padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; 
+                {% if message.tags == 'success' %}background: #d4edda; color: #155724; border: 1px solid #c3e6cb;
+                {% else %}background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if perfil.ativo_2fa %}
+        <!-- 2FA Ativo -->
+        <div style="background: #d4edda; padding: 20px; border-radius: 12px; border: 1px solid #c3e6cb; text-align: center; margin-bottom: 20px;">
+            <div style="font-size: 48px;">🔒</div>
+            <h3 style="color: #155724; margin: 12px 0;">2FA Ativo</h3>
+            <p style="color: #155724;">A sua conta está protegida com autenticação de dois fatores.</p>
+            <p style="color: #155724; font-size: 13px; margin-top: 8px;">
+                <strong>Códigos de Recuperação:</strong><br>
+                {% if codigos_recuperacao %}
+                    {% for codigo in codigos_recuperacao %}
+                        <span style="display: inline-block; background: #fff; padding: 4px 12px; border-radius: 4px; margin: 2px; font-family: monospace; font-size: 14px;">{{ codigo }}</span>
+                    {% endfor %}
+                    <br><span style="font-size: 12px; color: #666;">Guarde estes códigos num local seguro.</span>
+                {% endif %}
+            </p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="acao" value="desativar">
+            <button type="submit" style="background: #dc3545; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer; width: 100%;">
+                🔓 Desativar 2FA
+            </button>
+        </form>
+    {% else %}
+        <!-- 2FA Inativo -->
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; border: 1px solid #eee; text-align: center; margin-bottom: 20px;">
+            <div style="font-size: 48px;">🔓</div>
+            <h3 style="color: #1a1a2e; margin: 12px 0;">2FA Inativo</h3>
+            <p style="color: #666;">A sua conta não tem autenticação de dois fatores ativa.</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="acao" value="ativar">
+            <button type="submit" style="background: #28a745; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer; width: 100%;">
+                🔒 Ativar 2FA
+            </button>
+        </form>
+    {% endif %}
+
+    {% if device and not device.confirmed and qr_code %}
+        <!-- QR Code para configurar -->
+        <div style="margin-top: 20px; padding: 20px; background: #fff; border-radius: 12px; border: 1px solid #eee; text-align: center;">
+            <h4>📱 Escaneie este QR Code</h4>
+            <p style="color: #888; font-size: 14px;">Use o Google Authenticator ou Microsoft Authenticator para escanear.</p>
+            <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code" style="max-width: 200px; margin: 12px auto;">
+            
+            <form method="post" style="margin-top: 16px;">
+                {% csrf_token %}
+                <input type="hidden" name="acao" value="confirmar">
+                <div style="display: flex; gap: 10px; max-width: 300px; margin: 0 auto;">
+                    <input type="text" name="codigo" placeholder="Código 6 dígitos" required
+                           style="flex: 1; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; text-align: center;">
+                    <button type="submit" style="background: #1a73e8; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
+                        ✅ Confirmar
+                    </button>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+
+    <div style="margin-top: 20px;">
+        <a href="{% url 'home' %}" style="color: #888; text-decoration: none;">↩️ Voltar</a>
+    </div>
+</div>
+{% endblock %}

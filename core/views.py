@@ -13,6 +13,13 @@ from django.db import models
 from .forms import ContatoForm
 from .models import Contato, TentativaLogin
 from .models import Contato, TentativaLogin, Camera, SensorMovimento, EventoSeguranca, ZonaRisco, Alerta
+import qrcode
+from io import BytesIO
+import base64
+from django_otp import devices_for_user
+from django_otp.plugins.otp_totp.models import TOTPDevice
+from django_otp.oath import totp
+from core.models import PerfilUsuario
 
 # ============ SPLASH ============
 def splash(request):
@@ -41,7 +48,7 @@ def login_view(request):
         username_or_email = request.POST.get('username')
         password = request.POST.get('password')
         
-        # Identificar o utilizador
+        # Verificar se é email ou username
         if '@' in username_or_email:
             try:
                 user_obj = User.objects.get(email=username_or_email)
@@ -51,7 +58,6 @@ def login_view(request):
         else:
             username = username_or_email
         
-        # Verificar se o utilizador existe
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
@@ -61,31 +67,33 @@ def login_view(request):
         # Verificar tentativas de login
         tentativa, created = TentativaLogin.objects.get_or_create(usuario=user)
         
-        # Se estiver bloqueado, redirecionar para splash
         if tentativa.bloqueado:
-            messages.error(request, 'Conta bloqueada por excesso de tentativas. Volte a tentar mais tarde.')
+            messages.error(request, 'Conta bloqueada por excesso de tentativas.')
             return redirect('splash')
         
-        # Autenticar
         user_authenticated = authenticate(request, username=username, password=password)
         
         if user_authenticated is not None:
-            # Login bem-sucedido - resetar tentativas
             tentativa.tentativas = 0
             tentativa.bloqueado = False
             tentativa.save()
-            login(request, user_authenticated)
-            messages.success(request, f'Bem-vindo de volta, {username}!')
-            return redirect('home')
-        else:
-            # Tentativa falhada
-            tentativa.tentativas += 1
             
-            # Se atingir 3 tentativas, bloquear
+            # Verificar se 2FA está ativo
+            perfil, created = PerfilUsuario.objects.get_or_create(usuario=user)
+            if perfil.ativo_2fa:
+                # Login com 2FA - verificar depois
+                request.session['pre_login_user'] = user.id
+                return redirect('verificar_2fa')
+            else:
+                login(request, user_authenticated)
+                messages.success(request, f'Bem-vindo de volta, {username}!')
+                return redirect('home')
+        else:
+            tentativa.tentativas += 1
             if tentativa.tentativas >= 3:
                 tentativa.bloqueado = True
                 tentativa.save()
-                messages.error(request, 'Demasiadas tentativas falhadas. A sua conta foi bloqueada temporariamente.')
+                messages.error(request, 'Demasiadas tentativas falhadas. Conta bloqueada.')
                 return redirect('splash')
             else:
                 tentativa.save()
@@ -555,3 +563,112 @@ def calcular_nivel_risco(total_crimes, populacao):
         return 'Alto'
     else:
         return 'Crítico'
+
+# ============================================
+# VIEWS PARA 2FA (DOIS FATORES)
+# ============================================
+
+@login_required
+def configurar_2fa(request):
+    """Configurar 2FA para o utilizador"""
+    perfil, created = PerfilUsuario.objects.get_or_create(usuario=request.user)
+    
+    # Verificar se já tem dispositivo TOTP
+    device = TOTPDevice.objects.filter(user=request.user).first()
+    
+    if request.method == 'POST':
+        acao = request.POST.get('acao')
+        
+        if acao == 'ativar':
+            # Criar novo dispositivo TOTP
+            device = TOTPDevice.objects.create(
+                user=request.user,
+                name=f"2FA - {request.user.username}",
+                confirmed=False
+            )
+            perfil.ativo_2fa = True
+            perfil.save()
+            
+            # Gerar códigos de recuperação
+            codigos = []
+            for i in range(10):
+                import random
+                import string
+                codigo = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+                codigos.append(codigo)
+            perfil.codigos_recuperacao = codigos
+            perfil.save()
+            
+            messages.success(request, '2FA ativado com sucesso! Escaneie o QR Code com o Google Authenticator.')
+            return redirect('configurar_2fa')
+        
+        elif acao == 'desativar':
+            if device:
+                device.delete()
+            perfil.ativo_2fa = False
+            perfil.codigos_recuperacao = []
+            perfil.save()
+            messages.success(request, '2FA desativado com sucesso!')
+            return redirect('configurar_2fa')
+        
+        elif acao == 'confirmar':
+            codigo = request.POST.get('codigo')
+            if device and device.verify_token(codigo):
+                device.confirmed = True
+                device.save()
+                messages.success(request, '2FA confirmado com sucesso! O seu login está mais seguro.')
+                return redirect('home')
+            else:
+                messages.error(request, 'Código inválido. Tente novamente.')
+    
+    # Gerar QR Code
+    qr_code_base64 = None
+    if device and not device.confirmed:
+        # Gerar chave secreta
+        secret = device.bin_key
+        totp_obj = TOTPDevice(key=secret)
+        totp_obj.user = request.user
+        
+        # URL para Google Authenticator
+        otp_url = totp_obj.config_url
+        if otp_url:
+            qr = qrcode.QRCode(version=1, box_size=10, border=4)
+            qr.add_data(otp_url)
+            qr.make(fit=True)
+            img = qr.make_image(fill_color="black", back_color="white")
+            
+            buffer = BytesIO()
+            img.save(buffer, format="PNG")
+            qr_code_base64 = base64.b64encode(buffer.getvalue()).decode()
+    
+    context = {
+        'perfil': perfil,
+        'device': device,
+        'qr_code': qr_code_base64,
+        'codigos_recuperacao': perfil.codigos_recuperacao if perfil.ativo_2fa else None,
+    }
+    return render(request, 'core/configurar_2fa.html', context)
+
+@login_required
+def verificar_2fa(request):
+    user_id = request.session.get('pre_login_user')
+    if not user_id:
+        messages.error(request, 'Sessão expirada. Faça login novamente.')
+        return redirect('login')
+    
+    user = get_object_or_404(User, pk=user_id)
+    
+    if request.method == 'POST':
+        codigo = request.POST.get('codigo')
+        device = TOTPDevice.objects.filter(user=user, confirmed=True).first()
+        
+        if device and device.verify_token(codigo):
+            login(request, user)
+            request.session.pop('pre_login_user', None)
+            request.session['2fa_verified'] = True
+            messages.success(request, f'Bem-vindo de volta, {user.username}!')
+            return redirect('home')
+        else:
+            messages.error(request, 'Código 2FA inválido. Tente novamente.')
+    
+    return render(request, 'core/verificar_2fa.html')

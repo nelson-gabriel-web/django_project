@@ -34,3 +34,6 @@ path('comunidade/<int:comunidade_pk>/estrategia/adicionar/', views.adicionar_est
 path('comunidade/<int:comunidade_pk>/avaliar/', views.avaliar_seguranca, name='avaliar_seguranca'),
 path('comunidade/relatorio/<int:pk>/', views.relatorio_comunidade, name='relatorio_comunidade'),
 ]
+# 2FA (Dois Fatores)
+path('configurar-2fa/', views.configurar_2fa, name='configurar_2fa'),
+path('verificar-2fa/', views.verificar_2fa, name='verificar_2fa'),
