@@ -4,9 +4,8 @@
 <head>
     <title>LabSec</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <style>
-        /* Reset e fundo */
         * {
             margin: 0;
             padding: 0;
@@ -23,7 +22,6 @@
             overflow: hidden;
         }
         
-        /* Container principal */
         .splash-container {
             display: flex;
             flex-direction: column;
@@ -31,26 +29,26 @@
             justify-content: center;
             min-height: 100vh;
             width: 100%;
+            padding: 20px;
         }
         
-        /* Cadeado */
+        /* ========== CADEADO ========== */
         .lock-container {
             position: relative;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: transform 0.5s;
+            transition: transform 0.3s;
         }
         
         .lock-container:hover {
             transform: scale(1.05);
         }
         
-        /* Cadeado SVG */
         .lock-svg {
-            width: 150px;
-            height: 150px;
+            width: 120px;
+            height: 120px;
             filter: drop-shadow(0 0 30px rgba(0, 150, 255, 0.3));
             transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
@@ -59,7 +57,6 @@
             transform: scale(1.1) rotate(5deg);
         }
         
-        /* Parte azul do cadeado */
         .lock-body {
             fill: #1a73e8;
             transition: fill 0.3s;
@@ -69,7 +66,21 @@
             fill: #1557b0;
         }
         
-        /* LabSec (escondido atrás do cadeado) */
+        /* ========== INSTRUÇÃO ========== */
+        .instrucao {
+            margin-top: 24px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+            animation: pulse 2s infinite;
+            letter-spacing: 1px;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.9; }
+        }
+        
+        /* ========== LABSEC (que aparece atrás) ========== */
         .labsec-text {
             position: absolute;
             top: 50%;
@@ -91,11 +102,11 @@
             opacity: 1;
         }
         
-        /* Slogan */
+        /* ========== SLOGAN ========== */
         .slogan {
             margin-top: 30px;
-            font-size: 18px;
-            color: rgba(255, 255, 255, 0.7);
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.6);
             letter-spacing: 2px;
             font-weight: 300;
             opacity: 0;
@@ -109,16 +120,9 @@
             transform: translateY(0);
         }
         
-        .slogan-pt {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.4);
-            margin-top: 8px;
-            letter-spacing: 1px;
-        }
-        
-        /* Loading dots */
+        /* ========== LOADING ========== */
         .loading-dots {
-            margin-top: 40px;
+            margin-top: 30px;
             display: none;
             gap: 8px;
         }
@@ -143,89 +147,41 @@
             40% { transform: scale(1); opacity: 1; }
         }
         
-        /* Texto de instrução */
-        .instrucao {
-            margin-top: 20px;
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 14px;
-            animation: pulseTexto 2s infinite;
-        }
-        
-        @keyframes pulseTexto {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.8; }
-        }
-        
-        /* Estado inicial: tudo visível e estático */
-        .splash-container.initial .lock-svg {
-            transform: scale(1);
-        }
-        
-        /* Responsivo */
+        /* ========== RESPONSIVO ========== */
         @media (max-width: 600px) {
             .lock-svg {
-                width: 100px;
-                height: 100px;
+                width: 80px;
+                height: 80px;
             }
-            
             .labsec-text {
                 font-size: 28px;
             }
-            
             .slogan {
-                font-size: 14px;
+                font-size: 13px;
             }
-            
-            .slogan-pt {
+            .instrucao {
                 font-size: 12px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="splash-container initial" id="splashContainer">
+    <div class="splash-container" id="splashContainer">
         <div class="lock-container" id="lockContainer">
             <!-- SVG do Cadeado -->
             <svg class="lock-svg" viewBox="0 0 100 100" id="lockSvg">
-                <!-- Arco do cadeado -->
                 <path d="M30 45 L30 30 C30 18 40 10 50 10 C60 10 70 18 70 30 L70 45"
-                      stroke="#4fc3f7"
-                      stroke-width="6"
-                      fill="none"
-                      stroke-linecap="round"/>
-                
-                <!-- Corpo do cadeado (parte azul clicável) -->
-                <rect class="lock-body"
-                      x="20"
-                      y="45"
-                      width="60"
-                      height="40"
-                      rx="8"
-                      ry="8"
-                      fill="#1a73e8"/>
-                
-                <!-- Fechadura -->
-                <circle cx="50"
-                        cy="65"
-                        r="10"
-                        fill="#fff"
-                        opacity="0.9"/>
-                <rect x="48"
-                      y="65"
-                      width="4"
-                      height="8"
-                      rx="2"
-                      fill="#1a73e8"/>
+                      stroke="#4fc3f7" stroke-width="6" fill="none" stroke-linecap="round"/>
+                <rect class="lock-body" x="20" y="45" width="60" height="40" rx="8" ry="8" fill="#1a73e8"/>
+                <circle cx="50" cy="65" r="10" fill="#fff" opacity="0.9"/>
+                <rect x="48" y="65" width="4" height="8" rx="2" fill="#1a73e8"/>
             </svg>
             
             <!-- LabSec (escondido atrás) -->
             <div class="labsec-text" id="labsecText">LabSec</div>
             
             <!-- Slogan -->
-            <div class="slogan" id="slogan">
-                Segurança digital começa com conhecimento local.
-                <div class="slogan-pt">Digital security starts with local knowledge.</div>
-            </div>
+            <div class="slogan" id="slogan">Segurança digital começa com conhecimento local.</div>
             
             <!-- Loading dots -->
             <div class="loading-dots" id="loadingDots">
@@ -287,13 +243,13 @@
                     
                 }, 1500);
                 
-                // 4. Redirecionar para o login
+                // 4. Redirecionar para o login após 4 segundos
                 setTimeout(() => {
                     window.location.href = "{% url 'login' %}";
-                }, 3500);
+                }, 4000);
             }
             
-            // Animação ao clicar no cadeado
+            // Clique no cadeado
             lockContainer.addEventListener('click', function(e) {
                 startAnimation();
             });
