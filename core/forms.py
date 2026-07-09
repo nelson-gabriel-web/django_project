@@ -1,23 +1,5 @@
 from django import forms
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
-from .models import Contato
-from django import forms
-from .models import PerfilUsuario
-
-class RegistroForm(UserCreationForm):
-    email = forms.EmailField(required=True)
-    
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'password1', 'password2']
-    
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.email = self.cleaned_data['email']
-        if commit:
-            user.save()
-        return user
+from .models import Contato, PerfilUsuario
 
 class ContatoForm(forms.ModelForm):
     class Meta:
@@ -29,15 +11,13 @@ class ContatoForm(forms.ModelForm):
             'endereco': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Digite seu endereço', 'rows': 3}),
         }
 
-
 class PerfilForm(forms.ModelForm):
-    class PerfilForm(forms.ModelForm):
     class Meta:
         model = PerfilUsuario
         fields = [
-            'nome_completo', 'idade', 'data_nascimento', 'genero', 
-            'nacionalidade', 'estado_civil', 'endereco', 'nuit', 
-            'cidade', 'pais', 'email_comunicacao', 'whatsapp', 
+            'nome_completo', 'idade', 'data_nascimento', 'genero',
+            'nacionalidade', 'estado_civil', 'endereco', 'nuit',
+            'cidade', 'pais', 'email_comunicacao', 'whatsapp',
             'sms', 'push_notification', 'foto'
         ]
         widgets = {
@@ -56,13 +36,4 @@ class PerfilForm(forms.ModelForm):
             'sms': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'push_notification': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'foto': forms.FileInput(attrs={'class': 'form-control'}),
-        }
-        labels = {
-            'nome_completo': 'Nome Completo',
-            'data_nascimento': 'Data de Nascimento',
-            'estado_civil': 'Estado Civil',
-            'email_comunicacao': 'E-mail',
-            'whatsapp': 'WhatsApp',
-            'sms': 'SMS',
-            'push_notification': 'Push Notification',
         }
