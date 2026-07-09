@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>LabSec</title>
+    <title>Nhonga</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <style>
@@ -121,10 +121,11 @@
         
         .dot {
             width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #4fc3f7;
-            animation: dotPulse 1.2s infinite;
+    height: 12px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c0c0c0, #e8e8e8, #a0a0a0);
+    animation: dotPulse 1.2s infinite;
+    box-shadow: 0 0 10px rgba(192, 192, 192, 0.3);
         }
         
         .dot:nth-child(1) { animation-delay: 0s; }
@@ -165,13 +166,13 @@
         <div class="lock-container" id="lockContainer">
             <!-- Logotipo -->
             <img src="{% static 'core/images/logo.png' %}" 
-                 alt="LabSec" 
+                 alt="Nhonga" 
                  class="logo-img"
                  id="logoImg">
             
             <div class="instrucao" id="instrucao">🔒 Clique no logotipo para continuar</div>
             
-            <div class="labsec-text" id="labsecText">LabSec</div>
+            <div class="labsec-text" id="labsecText">Nhonga</div>
             <div class="slogan" id="slogan">Segurança digital começa com conhecimento local.</div>
             
             <div class="loading-dots" id="loadingDots">

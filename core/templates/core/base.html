@@ -1,8 +1,14 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
+
+<a href="{% url 'adicionar' %}" class="btn-metal">➕ Adicionar Contacto</a>
+<a href="{% url 'listar' %}" class="btn-metal">📋 Ver Contactos</a>
+<a href="{% url 'dashboard_seguranca' %}" class="btn-metal">🔒 Dashboard Segurança</a>
+<a href="{% url 'logout' %}" class="btn-metal" style="background: linear-gradient(135deg, #888, #aaa, #666);">🔓 Sair</a>
+
 <head>
-    <title>LabSec — Segurança Digital</title>
+    <title>Nhonga — Digital</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -10,6 +16,26 @@
         /* ============================================
            RESET E BASE
            ============================================ */
+	.btn-metal {
+    background: linear-gradient(135deg, #c0c0c0, #e8e8e8, #a0a0a0);
+    color: #1a1a2e;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(192, 192, 192, 0.3);
+}
+
+.btn-metal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(192, 192, 192, 0.5);
+}
+	
         * {
             margin: 0;
             padding: 0;
@@ -17,21 +43,21 @@
         }
 
         body {
-                font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #0a1628 0%, #1a3a5c 50%, #0a1628 100%);
+                    font-family: Arial, sans-serif;
+    background: #000000;
     min-height: 100vh;
     padding: 12px;
         }
 
         .container {
-                max-width: 100%;
+                    max-width: 100%;
     margin: 0 auto;
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     border-radius: 16px;
     padding: 16px;
     border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
         /* ============================================
@@ -99,8 +125,8 @@
         }
 
         .menu a:hover {
-                background: rgba(79, 195, 247, 0.15);
-    color: #4fc3f7;
+                    background: rgba(192, 192, 192, 0.15);
+    color: #c0c0c0;
     transform: translateX(4px);
         }
 
