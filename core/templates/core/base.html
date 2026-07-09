@@ -87,19 +87,21 @@
         }
 
         .menu a {
-                display: block;
+                    display: block;
     padding: 10px 14px;
     text-decoration: none;
     color: rgba(255, 255, 255, 0.8);
     font-weight: 500;
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.06);
+    background: transparent;
     font-size: 14px;
-    transition: background 0.2s;
+    transition: all 0.3s ease;
         }
 
         .menu a:hover {
-            background: #e9ecef;
+                background: rgba(79, 195, 247, 0.15);
+    color: #4fc3f7;
+    transform: translateX(4px);
         }
 
         .menu a.destaque {
@@ -111,8 +113,9 @@
             background: #1557b0;
         }
 
-        .menu a.sair {
-            color: #ff6b6b;
+        .menu a.sair:hover {
+    background: rgba(220, 53, 69, 0.15);
+    color: #ff6b6b;
         }
 
         /* ============================================
@@ -422,17 +425,17 @@
         <button class="menu-toggle" onclick="toggleMenu()">☰ Menu</button>
 
         <div class="menu" id="mainMenu">
-            <a href="{% url 'home' %}">🏠 Início</a>
-            <a href="{% url 'adicionar' %}">➕ Adicionar</a>
-            <a href="{% url 'listar' %}">📋 Contactos</a>
-            <a href="{% url 'buscar' %}">🔍 Buscar</a>
-<a href="{% url 'perfil' %}">👤 Perfil</a>
-            <a href="{% url 'dashboard_seguranca' %}" class="destaque">🔒 Segurança</a>
-            <a href="{% url 'comunidades_list' %}">🏘️ Comunidades</a>
-            {% if user.is_authenticated %}
-                <a href="{% url 'logout' %}" class="sair">🔓 Sair</a>
-            {% endif %}
-        </div>
+    <a href="{% url 'home' %}">🏠 Início</a>
+    <a href="{% url 'adicionar' %}">➕ Adicionar</a>
+    <a href="{% url 'listar' %}">📋 Contactos</a>
+    <a href="{% url 'buscar' %}">🔍 Buscar</a>
+    <a href="{% url 'perfil' %}">👤 Perfil</a>
+    <a href="{% url 'dashboard_seguranca' %}">🔒 Segurança</a>
+    <a href="{% url 'comunidades_list' %}">🏘️ Comunidades</a>
+    {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}" class="sair">🔓 Sair</a>
+    {% endif %}
+</div>
 
         <!-- MENSAGENS -->
         {% if messages %}
