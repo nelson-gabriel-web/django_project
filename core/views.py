@@ -299,6 +299,7 @@ def logout_view(request):
 # ============ PERFIL DO UTILIZADOR ============
 @login_required
 def perfil(request):
+    # Garantir que o perfil existe
     perfil, created = PerfilUsuario.objects.get_or_create(usuario=request.user)
     
     if request.method == 'POST':
@@ -307,6 +308,8 @@ def perfil(request):
             form.save()
             messages.success(request, 'Perfil atualizado com sucesso!')
             return redirect('perfil')
+        else:
+            messages.error(request, 'Erro ao atualizar perfil. Verifique os dados.')
     else:
         form = PerfilForm(instance=perfil)
     
