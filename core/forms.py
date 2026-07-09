@@ -31,6 +31,7 @@ class ContatoForm(forms.ModelForm):
 
 
 class PerfilForm(forms.ModelForm):
+    class PerfilForm(forms.ModelForm):
     class Meta:
         model = PerfilUsuario
         fields = [

@@ -16,6 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
 from .models import Contato, TentativaLogin, PerfilUsuario
+from .forms import ContatoForm, PerfilForm
 
 from .forms import ContatoForm
 from .models import Contato, TentativaLogin
