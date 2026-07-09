@@ -32,85 +32,53 @@
             padding: 20px;
         }
         
-        .lock-container {
+        .logo-wrapper {
+            position: relative;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            cursor: pointer;
-            transition: transform 0.3s;
         }
         
-        .lock-container:hover {
-            transform: scale(1.05);
+        /* Luz a oscilar atrás do logotipo */
+        .glow {
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(192, 192, 192, 0.3) 0%, rgba(192, 192, 192, 0.1) 40%, transparent 70%);
+            animation: pulseGlow 2s ease-in-out infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% {
+                transform: scale(0.8);
+                opacity: 0.3;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
         }
         
         .logo-img {
-            width: 300px;
-            height: 300px;
+            width: 200px;
+            height: 200px;
             object-fit: contain;
+            position: relative;
+            z-index: 1;
             cursor: pointer;
             transition: transform 0.3s;
-            filter: drop-shadow(0 0 30px rgba(192, 192, 192, 0.3));
+            filter: drop-shadow(0 0 20px rgba(192, 192, 192, 0.2));
         }
         
         .logo-img:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
         
-        .instrucao {
-            margin-top: 24px;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 14px;
-            animation: pulse 2s infinite;
-            letter-spacing: 1px;
-            transition: opacity 0.3s ease;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 0.9; }
-        }
-        
-        .instrucao.hidden {
-            opacity: 0 !important;
-        }
-        
-        .labsec-text {
-            margin-top: 20px;
-            font-size: 48px;
-            font-weight: 900;
-            color: #c0c0c0;
-            text-shadow: 0 0 30px rgba(192, 192, 192, 0.3);
-            opacity: 0;
-            transform: scale(0.5);
-            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-            letter-spacing: 4px;
-        }
-        
-        .labsec-text.show {
-            opacity: 1;
-            transform: scale(1);
-        }
-        
-        .slogan {
-            margin-top: 12px;
-            font-size: 18px;
-            color: rgba(255, 255, 255, 0.7);
-            letter-spacing: 2px;
-            font-weight: 300;
-            opacity: 0;
-            transform: translateY(-20px);
-            transition: all 1s ease 0.5s;
-            text-align: center;
-        }
-        
-        .slogan.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
+        /* Loading dots */
         .loading-dots {
-            margin-top: 24px;
+            margin-top: 30px;
             display: none;
             gap: 10px;
         }
@@ -140,19 +108,12 @@
         
         @media (max-width: 600px) {
             .logo-img {
-                width: 180px;
-                height: 180px;
+                width: 140px;
+                height: 140px;
             }
-            .labsec-text {
-                font-size: 28px;
-                letter-spacing: 4px;
-            }
-            .slogan {
-                font-size: 14px;
-                margin-top: 8px;
-            }
-            .instrucao {
-                font-size: 12px;
+            .glow {
+                width: 220px;
+                height: 220px;
             }
             .dot {
                 width: 10px;
@@ -162,35 +123,33 @@
     </style>
 </head>
 <body>
-    <div class="splash-container" id="splashContainer">
-        <div class="lock-container" id="lockContainer">
+    <div class="splash-container">
+        <div class="logo-wrapper" id="logoWrapper">
+            <!-- Luz a oscilar -->
+            <div class="glow" id="glow"></div>
+            
+            <!-- Logotipo -->
             <img src="{% static 'core/images/logo.png' %}" 
                  alt="Nhonga" 
                  class="logo-img"
                  id="logoImg">
-            
-            <div class="instrucao" id="instrucao">🔒 Clique no logotipo para continuar</div>
-            
-            <div class="labsec-text" id="labsecText">Nhonga</div>
-            <div class="slogan" id="slogan">Segurança digital começa com conhecimento local.</div>
-            
-            <div class="loading-dots" id="loadingDots">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-            </div>
+        </div>
+        
+        <!-- Loading dots -->
+        <div class="loading-dots" id="loadingDots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const lockContainer = document.getElementById('lockContainer');
             const logoImg = document.getElementById('logoImg');
-            const labsecText = document.getElementById('labsecText');
-            const slogan = document.getElementById('slogan');
+            const logoWrapper = document.getElementById('logoWrapper');
             const loadingDots = document.getElementById('loadingDots');
-            const instrucao = document.getElementById('instrucao');
+            const glow = document.getElementById('glow');
             
             let animationStarted = false;
             
@@ -198,36 +157,35 @@
                 if (animationStarted) return;
                 animationStarted = true;
                 
-                instrucao.classList.add('hidden');
-                
-                logoImg.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s';
+                // O logotipo encolhe e desaparece
+                logoImg.style.transition = 'transform 1s ease, opacity 1s ease';
                 logoImg.style.transform = 'scale(0.1)';
                 logoImg.style.opacity = '0';
                 
-                setTimeout(() => {
-                    labsecText.classList.add('show');
-                }, 300);
+                // A luz desaparece
+                glow.style.transition = 'opacity 0.8s ease';
+                glow.style.opacity = '0';
                 
-                setTimeout(() => {
-                    slogan.classList.add('show');
-                }, 800);
-                
+                // Mostrar loading dots
                 setTimeout(() => {
                     loadingDots.classList.add('show');
-                }, 1500);
+                }, 600);
                 
+                // Redirecionar para o login após 3 segundos
                 setTimeout(() => {
                     window.location.href = "{% url 'login' %}";
-                }, 8000);
+                }, 3000);
             }
             
-            lockContainer.addEventListener('click', function(e) {
+            // Clique no logotipo
+            logoWrapper.addEventListener('click', function(e) {
                 startAnimation();
             });
             
+            // Efeito hover
             logoImg.addEventListener('mouseenter', function() {
                 if (!animationStarted) {
-                    this.style.transform = 'scale(1.1)';
+                    this.style.transform = 'scale(1.05)';
                 }
             });
             
