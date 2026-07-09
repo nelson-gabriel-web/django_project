@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils import timezone
 
 class Contato(models.Model):
     nome = models.CharField(max_length=100)
@@ -265,7 +264,7 @@ class PerfilUsuario(models.Model):
         ('em_analise', 'Em Análise'),
     ]
     status = models.CharField(max_length=20, default='ativo', choices=STATUS_CHOICES)
-    data_cadastro = models.DateTimeField(auto_now_add=True, default=timezone.now)
+    data_cadastro = models.DateTimeField(auto_now_add=True)
     
     # ========== INDICAÇÕES ==========
     indicacoes = models.IntegerField(default=0)
