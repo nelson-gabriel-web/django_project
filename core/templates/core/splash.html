@@ -37,6 +37,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            cursor: pointer;
         }
         
         /* Luz a oscilar atrás do logotipo */
@@ -48,6 +49,13 @@
             background: radial-gradient(circle, rgba(192, 192, 192, 0.3) 0%, rgba(192, 192, 192, 0.1) 40%, transparent 70%);
             animation: pulseGlow 2s ease-in-out infinite;
             pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        
+        .glow.static {
+            animation: none;
+            opacity: 0.6;
+            transform: scale(1);
         }
         
         @keyframes pulseGlow {
@@ -67,7 +75,6 @@
             object-fit: contain;
             position: relative;
             z-index: 1;
-            cursor: pointer;
             transition: transform 0.3s;
             filter: drop-shadow(0 0 20px rgba(192, 192, 192, 0.2));
         }
@@ -146,8 +153,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const logoImg = document.getElementById('logoImg');
             const logoWrapper = document.getElementById('logoWrapper');
+            const logoImg = document.getElementById('logoImg');
             const loadingDots = document.getElementById('loadingDots');
             const glow = document.getElementById('glow');
             
@@ -157,24 +164,22 @@
                 if (animationStarted) return;
                 animationStarted = true;
                 
-                // O logotipo encolhe e desaparece
-                logoImg.style.transition = 'transform 1s ease, opacity 1s ease';
-                logoImg.style.transform = 'scale(0.1)';
-                logoImg.style.opacity = '0';
+                // 1. Luz para de oscilar e fica estática
+                glow.classList.add('static');
                 
-                // A luz desaparece
-                glow.style.transition = 'opacity 0.8s ease';
-                glow.style.opacity = '0';
+                // 2. Logotipo mantém-se estático (não encolhe)
+                // Apenas muda o cursor
+                logoWrapper.style.cursor = 'default';
                 
-                // Mostrar loading dots
+                // 3. Mostrar dots após 0.3s
                 setTimeout(() => {
                     loadingDots.classList.add('show');
-                }, 600);
+                }, 300);
                 
-                // Redirecionar para o login após 3 segundos
+                // 4. Redirecionar para o login após 4 segundos
                 setTimeout(() => {
                     window.location.href = "{% url 'login' %}";
-                }, 3000);
+                }, 4000);
             }
             
             // Clique no logotipo
