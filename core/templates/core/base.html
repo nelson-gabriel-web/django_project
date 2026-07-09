@@ -7,19 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: Arial, sans-serif;
             background: #000000;
             min-height: 100vh;
             padding: 12px;
         }
-
         .container {
             max-width: 100%;
             margin: 0 auto;
@@ -30,7 +24,6 @@
             border: 1px solid rgba(255, 255, 255, 0.06);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
-
         .header {
             display: flex;
             flex-direction: column;
@@ -40,15 +33,11 @@
             border-bottom: 2px solid rgba(255, 255, 255, 0.06);
             margin-bottom: 16px;
         }
-
         .header h1 {
             font-size: 20px;
             color: #fff;
             margin-bottom: 8px;
         }
-	<a href="{% url 'dashboard_cliente' %}">🛒 Cliente</a>
-<a href="{% url 'dashboard_fornecedor' %}">🏢 Fornecedor</a>
-
         .menu-toggle {
             display: block;
             background: linear-gradient(135deg, #c0c0c0, #e8e8e8, #a0a0a0);
@@ -63,12 +52,10 @@
             margin-bottom: 8px;
             box-shadow: 0 4px 15px rgba(192, 192, 192, 0.3);
         }
-
         .menu-toggle:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(192, 192, 192, 0.5);
         }
-
         .menu {
             display: none;
             flex-direction: column;
@@ -76,11 +63,9 @@
             width: 100%;
             padding: 10px 0;
         }
-
         .menu.open {
             display: flex;
         }
-
         .menu a {
             display: block;
             padding: 10px 14px;
@@ -92,48 +77,23 @@
             font-size: 14px;
             transition: all 0.3s ease;
         }
-
         .menu a:hover {
             background: rgba(192, 192, 192, 0.15);
             color: #c0c0c0;
             transform: translateX(4px);
         }
-
-        .menu a.sair {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .menu a.sair:hover {
-            background: rgba(220, 53, 69, 0.15);
-            color: #ff6b6b;
-        }
-
+        .menu a.sair { color: rgba(255, 255, 255, 0.7); }
+        .menu a.sair:hover { background: rgba(220, 53, 69, 0.15); color: #ff6b6b; }
         .mensagem {
             padding: 10px 14px;
             border-radius: 8px;
             margin-bottom: 12px;
             font-size: 13px;
         }
-        .mensagem-success {
-            background: rgba(46, 125, 50, 0.2);
-            color: #a5d6a7;
-            border: 1px solid rgba(46, 125, 50, 0.3);
-        }
-        .mensagem-error {
-            background: rgba(198, 40, 40, 0.2);
-            color: #ef9a9a;
-            border: 1px solid rgba(198, 40, 40, 0.3);
-        }
-        .mensagem-info {
-            background: rgba(0, 140, 186, 0.2);
-            color: #80deea;
-            border: 1px solid rgba(0, 140, 186, 0.3);
-        }
-
-        .tooltip-container {
-            position: relative;
-            display: inline-block;
-        }
+        .mensagem-success { background: rgba(46, 125, 50, 0.2); color: #a5d6a7; border: 1px solid rgba(46, 125, 50, 0.3); }
+        .mensagem-error { background: rgba(198, 40, 40, 0.2); color: #ef9a9a; border: 1px solid rgba(198, 40, 40, 0.3); }
+        .mensagem-info { background: rgba(0, 140, 186, 0.2); color: #80deea; border: 1px solid rgba(0, 140, 186, 0.3); }
+        .tooltip-container { position: relative; display: inline-block; }
         .tooltip-container .tooltip-text {
             visibility: hidden;
             max-width: 160px;
@@ -163,21 +123,9 @@
             border-style: solid;
             border-color: #333 transparent transparent transparent;
         }
-        .tooltip-container:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        .form-group {
-            margin-bottom: 14px;
-        }
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 4px;
-        }
+        .tooltip-container:hover .tooltip-text { visibility: visible; opacity: 1; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-weight: 600; font-size: 14px; color: rgba(255, 255, 255, 0.8); margin-bottom: 4px; }
         .form-control {
             width: 100%;
             padding: 10px 14px;
@@ -189,19 +137,10 @@
             outline: none;
             transition: border-color 0.3s;
         }
-        .form-control:focus {
-            border-color: #c0c0c0;
-        }
-        .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.3);
-        }
-
-        .password-wrapper {
-            position: relative;
-        }
-        .password-wrapper .form-control {
-            padding-right: 44px;
-        }
+        .form-control:focus { border-color: #c0c0c0; }
+        .form-control::placeholder { color: rgba(255, 255, 255, 0.3); }
+        .password-wrapper { position: relative; }
+        .password-wrapper .form-control { padding-right: 44px; }
         .password-toggle {
             position: absolute;
             right: 12px;
@@ -211,10 +150,7 @@
             font-size: 18px;
             color: rgba(255, 255, 255, 0.4);
         }
-        .password-toggle:hover {
-            color: #c0c0c0;
-        }
-
+        .password-toggle:hover { color: #c0c0c0; }
         .btn-metal {
             background: linear-gradient(135deg, #c0c0c0, #e8e8e8, #a0a0a0);
             color: #1a1a2e;
@@ -230,17 +166,8 @@
             box-shadow: 0 4px 15px rgba(192, 192, 192, 0.3);
             width: 100%;
         }
-
-        .btn-metal:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(192, 192, 192, 0.5);
-        }
-
-        .btn-metal-sair {
-            background: linear-gradient(135deg, #888, #aaa, #666);
-            color: #fff;
-        }
-
+        .btn-metal:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(192, 192, 192, 0.5); }
+        .btn-metal-sair { background: linear-gradient(135deg, #888, #aaa, #666); color: #fff; }
         .table-wrapper {
             overflow-x: auto;
             border-radius: 10px;
@@ -262,17 +189,8 @@
             color: rgba(255, 255, 255, 0.8);
             border-bottom: 2px solid rgba(255, 255, 255, 0.06);
         }
-        .table td {
-            padding: 10px 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .table .actions {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
+        .table td { padding: 10px 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); }
+        .table .actions { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
         .card-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -289,23 +207,10 @@
             transition: all 0.3s;
             border: 1px solid rgba(255, 255, 255, 0.04);
         }
-        .card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(192, 192, 192, 0.2);
-        }
-        .card .icon {
-            font-size: 28px;
-        }
-        .card .label {
-            font-size: 12px;
-            font-weight: 600;
-            margin-top: 4px;
-        }
-        .card .sub {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.4);
-        }
-
+        .card:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(192, 192, 192, 0.2); }
+        .card .icon { font-size: 28px; }
+        .card .label { font-size: 12px; font-weight: 600; margin-top: 4px; }
+        .card .sub { font-size: 11px; color: rgba(255, 255, 255, 0.4); }
         .stats {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -318,16 +223,8 @@
             border-radius: 12px;
             text-align: center;
         }
-        .stat .num {
-            font-size: 24px;
-            font-weight: 700;
-            color: #fff;
-        }
-        .stat .label {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
-        }
-
+        .stat .num { font-size: 24px; font-weight: 700; color: #fff; }
+        .stat .label { font-size: 12px; color: rgba(255, 255, 255, 0.5); }
         @media (max-width: 480px) {
             body { padding: 8px; }
             .container { padding: 12px; border-radius: 12px; }
@@ -342,7 +239,6 @@
             .table th, .table td { padding: 6px 8px; }
             .menu a { font-size: 13px; padding: 8px 12px; }
         }
-
         @media (min-width: 768px) {
             .container { max-width: 900px; padding: 24px; }
             .header { flex-direction: row; justify-content: space-between; text-align: left; }
@@ -378,6 +274,8 @@
             <a href="{% url 'perfil' %}">👤 Perfil</a>
             <a href="{% url 'dashboard_seguranca' %}">🔒 Segurança</a>
             <a href="{% url 'comunidades_list' %}">🏘️ Comunidades</a>
+            <a href="{% url 'dashboard_cliente' %}">🛒 Cliente</a>
+            <a href="{% url 'dashboard_fornecedor' %}">🏢 Fornecedor</a>
             {% if user.is_authenticated %}
                 <a href="{% url 'logout' %}" class="sair">🔓 Sair</a>
             {% endif %}
@@ -400,7 +298,6 @@
             const menu = document.getElementById('mainMenu');
             menu.classList.toggle('open');
         }
-
         document.querySelectorAll('#mainMenu a').forEach(function(link) {
             link.addEventListener('click', function() {
                 const menu = document.getElementById('mainMenu');
@@ -409,7 +306,6 @@
                 }
             });
         });
-
         function togglePassword(inputId, iconId) {
             const input = document.getElementById(inputId);
             const icon = document.getElementById(iconId);
