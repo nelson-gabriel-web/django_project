@@ -224,12 +224,67 @@ class PerfilUsuario(models.Model):
         return f"{self.usuario.username} - 2FA: {'Ativo' if self.ativo_2fa else 'Inativo'}"
 
 class PerfilUsuario(models.Model):
+    # ========== DADOS PESSOAIS ==========
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
-    telefone = models.CharField(max_length=20, blank=True, null=True)
+    nome_completo = models.CharField(max_length=200, blank=True, null=True)
+    idade = models.IntegerField(blank=True, null=True)
+    data_nascimento = models.DateField(blank=True, null=True)
+    genero = models.CharField(max_length=20, blank=True, null=True, choices=[
+        ('masculino', 'Masculino'),
+        ('feminino', 'Feminino'),
+        ('outro', 'Outro'),
+        ('prefiro_nao_dizer', 'Prefiro não dizer'),
+    ])
+    nacionalidade = models.CharField(max_length=100, blank=True, null=True)
+    estado_civil = models.CharField(max_length=30, blank=True, null=True, choices=[
+        ('solteiro', 'Solteiro(a)'),
+        ('casado', 'Casado(a)'),
+        ('divorciado', 'Divorciado(a)'),
+        ('viuvo', 'Viúvo(a)'),
+        ('uniao_estavel', 'União Estável'),
+    ])
+    
+    # ========== LOCALIZAÇÃO ==========
+    endereco = models.TextField(blank=True, null=True)
+    nuit = models.CharField(max_length=20, blank=True, null=True)
+    cidade = models.CharField(max_length=100, blank=True, null=True)
+    pais = models.CharField(max_length=100, blank=True, null=True)
+    
+    # ========== CANAIS DE COMUNICAÇÃO ==========
+    email_comunicacao = models.BooleanField(default=True)
+    whatsapp = models.BooleanField(default=True)
+    sms = models.BooleanField(default=False)
+    push_notification = models.BooleanField(default=True)
+    
+    # ========== STATUS E ANTIGUIDADE ==========
+    STATUS_CHOICES = [
+        ('ativo', 'Ativo'),
+        ('inativo', 'Inativo'),
+        ('cancelado', 'Cancelado'),
+        ('em_analise', 'Em Análise'),
+    ]
+    status = models.CharField(max_length=20, default='ativo', choices=STATUS_CHOICES)
+    data_cadastro = models.DateTimeField(auto_now_add=True)
+    
+    # ========== INDICAÇÕES ==========
+    indicacoes = models.IntegerField(default=0)
+    
+    # ========== 2FA ==========
     codigo_2fa = models.CharField(max_length=100, blank=True, null=True)
     ativo_2fa = models.BooleanField(default=False)
     codigos_recuperacao = models.JSONField(default=list, blank=True)
+    
+    # ========== FOTO ==========
     foto = models.ImageField(upload_to='perfil/', null=True, blank=True)
 
     def __str__(self):
-        return f"{self.usuario.username} - 2FA: {'Ativo' if self.ativo_2fa else 'Inativo'}"
+        return f"{self.usuario.username} - {self.status}"
+
+    @property
+    def antiguidade(self):
+        """Calcula o tempo de casa em dias"""
+        from django.utils.timezone import now
+        if self.data_cadastro:
+            delta = now().date() - self.data_cadastro.date()
+            return delta.days
+        return 0
