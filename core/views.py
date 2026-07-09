@@ -47,12 +47,18 @@ def login_view(request):
         username_or_email = request.POST.get('username')
         password = request.POST.get('password')
         
+        # Verificar se é email ou username
         if '@' in username_or_email:
             try:
                 user_obj = User.objects.get(email=username_or_email)
                 username = user_obj.username
             except User.DoesNotExist:
-                username = username_or_email
+                messages.error(request, 'Credenciais inválidas.')
+                return render(request, 'core/login.html', {'form': AuthenticationForm()})
+            except User.MultipleObjectsReturned:
+                # Se houver múltiplos utilizadores com o mesmo email, pedir username
+                messages.error(request, 'Existem múltiplos utilizadores com este email. Por favor, use o seu username.')
+                return render(request, 'core/login.html', {'form': AuthenticationForm()})
         else:
             username = username_or_email
         
@@ -62,6 +68,7 @@ def login_view(request):
             messages.error(request, 'Credenciais inválidas.')
             return render(request, 'core/login.html', {'form': AuthenticationForm()})
         
+        # Verificar tentativas de login
         tentativa, created = TentativaLogin.objects.get_or_create(usuario=user)
         
         if tentativa.bloqueado:
@@ -75,6 +82,7 @@ def login_view(request):
             tentativa.bloqueado = False
             tentativa.save()
             login(request, user_authenticated)
+            messages.success(request, f'Bem-vindo de volta, {username}!')
             return redirect('home')
         else:
             tentativa.tentativas += 1
