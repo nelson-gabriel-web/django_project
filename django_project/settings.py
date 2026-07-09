@@ -1,9 +1,5 @@
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
 from pathlib import Path
 import os
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -14,15 +10,13 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
-        'django.contrib.admin',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
-    'cloudinary_storage',
-    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -74,56 +68,20 @@ TIME_ZONE = 'Europe/Lisbon'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'core/static'),
+]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://djangoproject-production-3ec3.up.railway.app',
+    'https://web-production-a9ad2f.up.railway.app',
     'https://*.railway.app',
 ]
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-USE_X_FORWARDED_HOST = True
-SECURE_SSL_REDIRECT = False
-
-# URL de login (para o @login_required)
 LOGIN_URL = 'login'
-
-# ============================================
-# WEB PUSH - NOTIFICAÇÕES NO TELEMÓVEL
-# ============================================
-WEBPUSH_SETTINGS = {
-    "VAPID_PRIVATE_KEY": "",
-    "VAPID_PUBLIC_KEY": "",
-    "VAPID_ADMIN_EMAIL": "admin@labsec.com"
-}
-# ============================================
-# MEDIA FILES (FOTOS DE PERFIL)
-# ============================================
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-# ============================================
-# CLOUDINARY - ARMAZENAMENTO DE IMAGENS
-# ============================================
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
-
-cloudinary.config(
-    cloud_name = "SEU_CLOUD_NAME",
-    api_key = "SUA_API_KEY",
-    api_secret = "SUA_API_SECRET",
-    secure = True
-)
-
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
-# Português de Portugal
-LANGUAGE_CODE = 'pt-pt'
-
-# Formatação de datas e números
-USE_L10N = True
-USE_THOUSAND_SEPARATOR = True
-
-# Fuso horário de Portugal
-TIME_ZONE = 'Europe/Lisbon'
