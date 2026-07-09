@@ -117,3 +117,13 @@ cloudinary.config(
 )
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# Português de Portugal
+LANGUAGE_CODE = 'pt-pt'
+
+# Formatação de datas e números
+USE_L10N = True
+USE_THOUSAND_SEPARATOR = True
+
+# Fuso horário de Portugal
+TIME_ZONE = 'Europe/Lisbon'
