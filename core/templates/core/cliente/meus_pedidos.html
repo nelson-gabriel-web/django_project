@@ -1,0 +1,44 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <h2 style="color: #fff; font-weight: 300; margin-bottom: 4px;">📋 Meus Pedidos</h2>
+    <p style="color: rgba(255,255,255,0.5); margin-bottom: 24px;">Todos os pedidos que criou.</p>
+
+    <div style="margin-bottom: 16px;">
+        <a href="{% url 'criar_pedido' %}" class="btn-metal" style="padding: 8px 20px; font-size: 14px;">➕ Novo Pedido</a>
+        <a href="{% url 'dashboard_cliente' %}" class="btn-metal" style="padding: 8px 20px; font-size: 14px; background: linear-gradient(135deg, #888, #aaa, #666);">↩️ Voltar</a>
+    </div>
+
+    {% if pedidos %}
+        {% for pedido in pedidos %}
+            <div style="background: rgba(255,255,255,0.04); border-radius: 12px; padding: 16px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.04);">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                    <div>
+                        <strong style="color: #fff; font-size: 16px;">{{ pedido.titulo }}</strong>
+                        <span style="color: rgba(255,255,255,0.4); font-size: 13px; margin-left: 12px;">{{ pedido.get_status_display }}</span>
+                    </div>
+                    <span style="color: rgba(255,255,255,0.3); font-size: 13px;">{{ pedido.criado_em|date:"d/m/Y H:i" }}</span>
+                </div>
+                <div style="color: rgba(255,255,255,0.5); font-size: 14px; margin-top: 8px;">
+                    📍 {{ pedido.localizacao }}
+                    {% if pedido.orcamento %} | 💰 {{ pedido.orcamento }}€{% endif %}
+                </div>
+                <div style="margin-top: 12px;">
+                    {% if pedido.status == 'aberto' %}
+                        <a href="{% url 'fornecedores_proximos' pedido.id %}" class="btn-metal" style="padding: 6px 16px; font-size: 12px;">🔍 Ver Fornecedores</a>
+                    {% elif pedido.status == 'pago' and pedido.transacao %}
+                        <a href="{% url 'confirmar_rececao' pedido.transacao.id %}" class="btn-metal" style="padding: 6px 16px; font-size: 12px;">📦 Confirmar Receção</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div style="background: rgba(255,255,255,0.04); border-radius: 12px; padding: 40px; text-align: center;">
+            <div style="font-size: 48px;">📭</div>
+            <p style="color: rgba(255,255,255,0.5);">Nenhum pedido criado ainda.</p>
+            <a href="{% url 'criar_pedido' %}" class="btn-metal" style="margin-top: 16px; display: inline-block;">📝 Criar Pedido</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -25,4 +25,17 @@ urlpatterns = [
     path('comunidade/relatorio/<int:pk>/', views.relatorio_comunidade, name='relatorio_comunidade'),
     path('api/evento/', views.api_evento, name='api_evento'),
 path('perfil/', views.perfil, name='perfil'),
+# Plataforma de Intermediação Nhonga
+path('cliente/dashboard/', views.dashboard_cliente, name='dashboard_cliente'),
+path('cliente/pedido/criar/', views.criar_pedido, name='criar_pedido'),
+path('cliente/pedidos/', views.meus_pedidos, name='meus_pedidos'),
+path('cliente/pedido/<int:pedido_id>/fornecedores/', views.fornecedores_proximos, name='fornecedores_proximos'),
+path('cliente/pedido/<int:pedido_id>/confirmar/', views.confirmar_compra, name='confirmar_compra'),
+path('cliente/transacao/<int:transacao_id>/confirmar-rececao/', views.confirmar_rececao, name='confirmar_rececao'),
+
+path('fornecedor/dashboard/', views.dashboard_fornecedor, name='dashboard_fornecedor'),
+path('fornecedor/registar/', views.registar_fornecedor, name='registar_fornecedor'),
+path('fornecedor/pedidos/', views.pedidos_proximos, name='pedidos_proximos'),
+path('fornecedor/produto/registar/', views.registar_produto, name='registar_produto'),
+path('fornecedor/transacoes/', views.transacoes_fornecedor, name='transacoes_fornecedor'),
 ]

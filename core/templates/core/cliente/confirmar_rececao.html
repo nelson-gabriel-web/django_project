@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 0 auto;">
+    <h2 style="color: #fff; font-weight: 300; margin-bottom: 4px;">📦 Confirmar Receção</h2>
+    <p style="color: rgba(255,255,255,0.5); margin-bottom: 24px;">Confirme que recebeu o produto/serviço para libertar o pagamento.</p>
+
+    <div style="background: rgba(255,255,255,0.04); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+        <p><strong style="color: #fff;">Pedido:</strong> <span style="color: rgba(255,255,255,0.8);">{{ pedido.titulo }}</span></p>
+        <p><strong style="color: #fff;">Fornecedor:</strong> <span style="color: rgba(255,255,255,0.8);">{{ transacao.fornecedor.nome_empresa }}</span></p>
+        <p><strong style="color: #fff;">Valor:</strong> <span style="color: #c0c0c0;">{{ transacao.valor }}€</span></p>
+        <p><strong style="color: #fff;">Código:</strong> <span style="color: #c0c0c0;">{{ transacao.codigo_confirmacao }}</span></p>
+    </div>
+
+    <div style="background: rgba(255,255,255,0.04); border-radius: 12px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #28a745;">
+        <p style="color: rgba(255,255,255,0.6); font-size: 14px;">✅ Ao confirmar, o pagamento será libertado ao fornecedor.</p>
+        <p style="color: rgba(255,255,255,0.4); font-size: 13px;">Tem a certeza que já recebeu o produto/serviço?</p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn-metal" style="background: linear-gradient(135deg, #28a745, #34ce57, #1e7e34);">✅ Confirmar Receção</button>
+        <a href="{% url 'meus_pedidos' %}" style="color: rgba(255,255,255,0.4); display: block; text-align: center; margin-top: 12px; text-decoration: none;">↩️ Voltar</a>
+    </form>
+</div>
+{% endblock %}

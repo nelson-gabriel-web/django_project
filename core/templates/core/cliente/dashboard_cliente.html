@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <h2 style="color: #fff; font-weight: 300; margin-bottom: 8px;">👤 Olá, {{ user.username }}!</h2>
+    <p style="color: rgba(255,255,255,0.5); margin-bottom: 24px;">Bem-vindo ao Nhonga — a sua plataforma de intermediação segura.</p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 24px;">
+        <div style="background: rgba(255,255,255,0.04); padding: 16px; border-radius: 12px; text-align: center;">
+            <div style="font-size: 28px; font-weight: 700; color: #c0c0c0;">{{ total_pedidos }}</div>
+            <div style="font-size: 13px; color: rgba(255,255,255,0.5);">Pedidos</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.04); padding: 16px; border-radius: 12px; text-align: center;">
+            <div style="font-size: 28px; font-weight: 700; color: #c0c0c0;">{{ total_transacoes }}</div>
+            <div style="font-size: 13px; color: rgba(255,255,255,0.5);">Transações</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.04); padding: 16px; border-radius: 12px; text-align: center;">
+            <div style="font-size: 28px; font-weight: 700; color: #c0c0c0;">{{ notificacoes|length }}</div>
+            <div style="font-size: 13px; color: rgba(255,255,255,0.5);">Notificações</div>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px;">
+        <a href="{% url 'criar_pedido' %}" class="btn-metal">📝 Criar Pedido</a>
+        <a href="{% url 'meus_pedidos' %}" class="btn-metal" style="background: linear-gradient(135deg, #888, #aaa, #666);">📋 Meus Pedidos</a>
+    </div>
+
+    <h3 style="color: rgba(255,255,255,0.8); margin-bottom: 12px;">📋 Pedidos Recentes</h3>
+    <div style="background: rgba(255,255,255,0.04); border-radius: 12px; padding: 16px;">
+        {% if pedidos %}
+            {% for pedido in pedidos %}
+                <div style="padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong style="color: #fff;">{{ pedido.titulo }}</strong>
+                        <span style="color: rgba(255,255,255,0.4); font-size: 13px; margin-left: 12px;">{{ pedido.get_status_display }}</span>
+                    </div>
+                    <span style="color: rgba(255,255,255,0.3); font-size: 13px;">{{ pedido.criado_em|date:"d/m/Y H:i" }}</span>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p style="color: rgba(255,255,255,0.3); text-align: center; padding: 20px 0;">Nenhum pedido criado ainda.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

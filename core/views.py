@@ -327,3 +327,296 @@ def perfil(request):
         'perfil': perfil,
         'user': request.user
     })
+# ============================================
+# VIEWS PARA PLATAFORMA DE INTERMEDIAÇÃO NHONGA
+# ============================================
+
+from django.db.models import Q
+from decimal import Decimal
+import random
+import string
+from django.utils import timezone
+from .models import Pedido, Fornecedor, Produto, Transacao, Avaliacao, Categoria, Notificacao
+from .forms import PedidoForm, ProdutoForm, FornecedorForm
+
+# ========== CLIENTE ==========
+
+@login_required
+def dashboard_cliente(request):
+    """Dashboard do cliente"""
+    pedidos = Pedido.objects.filter(cliente=request.user).order_by('-criado_em')[:10]
+    transacoes = Transacao.objects.filter(cliente=request.user).order_by('-data_criacao')[:5]
+    notificacoes = Notificacao.objects.filter(usuario=request.user, lida=False).order_by('-criado_em')
+    
+    context = {
+        'pedidos': pedidos,
+        'transacoes': transacoes,
+        'notificacoes': notificacoes,
+        'total_pedidos': Pedido.objects.filter(cliente=request.user).count(),
+        'total_transacoes': Transacao.objects.filter(cliente=request.user).count(),
+    }
+    return render(request, 'core/cliente/dashboard_cliente.html', context)
+
+@login_required
+def criar_pedido(request):
+    """Criar um novo pedido"""
+    if request.method == 'POST':
+        form = PedidoForm(request.POST)
+        if form.is_valid():
+            pedido = form.save(commit=False)
+            pedido.cliente = request.user
+            pedido.coordenadas = {'lat': -25.969, 'lng': 32.573}
+            pedido.save()
+            messages.success(request, 'Pedido criado com sucesso! A procurar fornecedores...')
+            return redirect('meus_pedidos')
+    else:
+        form = PedidoForm()
+    
+    return render(request, 'core/cliente/criar_pedido.html', {'form': form})
+
+@login_required
+def meus_pedidos(request):
+    """Lista de pedidos do cliente"""
+    pedidos = Pedido.objects.filter(cliente=request.user).order_by('-criado_em')
+    return render(request, 'core/cliente/meus_pedidos.html', {'pedidos': pedidos})
+
+@login_required
+def fornecedores_proximos(request, pedido_id):
+    """Encontra fornecedores próximos para um pedido"""
+    pedido = get_object_or_404(Pedido, id=pedido_id, cliente=request.user)
+    
+    fornecedores = Fornecedor.objects.filter(
+        categorias=pedido.categoria,
+        disponivel=True,
+        cidade__icontains=pedido.localizacao.split(',')[0] if pedido.localizacao else ''
+    )[:10]
+    
+    if request.method == 'POST':
+        fornecedor_id = request.POST.get('fornecedor_id')
+        fornecedor = get_object_or_404(Fornecedor, id=fornecedor_id)
+        
+        pedido.fornecedor_escolhido = fornecedor
+        pedido.status = 'em_negociacao'
+        pedido.save()
+        
+        messages.success(request, f'Fornecedor {fornecedor.nome_empresa} selecionado!')
+        return redirect('confirmar_compra', pedido_id=pedido.id)
+    
+    context = {
+        'pedido': pedido,
+        'fornecedores': fornecedores,
+    }
+    return render(request, 'core/cliente/fornecedores_proximos.html', context)
+
+@login_required
+def confirmar_compra(request, pedido_id):
+    """Confirmar compra e realizar pagamento"""
+    pedido = get_object_or_404(Pedido, id=pedido_id, cliente=request.user)
+    fornecedor = pedido.fornecedor_escolhido
+    
+    if not fornecedor:
+        messages.error(request, 'Nenhum fornecedor selecionado.')
+        return redirect('meus_pedidos')
+    
+    valor = pedido.orcamento or Decimal('100.00')
+    comissao = valor * Decimal('0.02')
+    valor_fornecedor = valor - comissao
+    
+    if request.method == 'POST':
+        codigo = ''.join(random.choices(string.digits, k=6))
+        
+        transacao = Transacao.objects.create(
+            pedido=pedido,
+            fornecedor=fornecedor,
+            cliente=request.user,
+            valor=valor,
+            comissao=comissao,
+            valor_fornecedor=valor_fornecedor,
+            status='pago',
+            codigo_confirmacao=codigo
+        )
+        
+        pedido.status = 'pago'
+        pedido.save()
+        
+        Notificacao.objects.create(
+            usuario=fornecedor.usuario,
+            mensagem=f'Novo pedido pago: {pedido.titulo}. Código: {codigo}',
+            link='/fornecedor/transacoes/'
+        )
+        
+        messages.success(request, f'Pagamento realizado com sucesso! Código: {codigo}')
+        return redirect('meus_pedidos')
+    
+    context = {
+        'pedido': pedido,
+        'fornecedor': fornecedor,
+        'valor': valor,
+        'comissao': comissao,
+        'valor_fornecedor': valor_fornecedor,
+    }
+    return render(request, 'core/cliente/confirmar_compra.html', context)
+
+@login_required
+def confirmar_rececao(request, transacao_id):
+    """Confirmar receção do produto/serviço"""
+    transacao = get_object_or_404(Transacao, id=transacao_id, cliente=request.user)
+    
+    if request.method == 'POST':
+        transacao.status = 'confirmado'
+        transacao.data_confirmacao = timezone.now()
+        transacao.save()
+        
+        pedido = transacao.pedido
+        pedido.status = 'concluido'
+        pedido.save()
+        
+        Notificacao.objects.create(
+            usuario=transacao.fornecedor.usuario,
+            mensagem=f'Receção confirmada para o pedido {pedido.titulo}! Pagamento libertado.',
+            link='/fornecedor/transacoes/'
+        )
+        
+        messages.success(request, 'Receção confirmada! Pagamento libertado ao fornecedor.')
+        return redirect('meus_pedidos')
+    
+    context = {
+        'transacao': transacao,
+        'pedido': transacao.pedido,
+    }
+    return render(request, 'core/cliente/confirmar_rececao.html', context)
+
+# ========== FORNECEDOR ==========
+
+@login_required
+def dashboard_fornecedor(request):
+    """Dashboard do fornecedor"""
+    if not hasattr(request.user, 'fornecedor'):
+        messages.warning(request, 'Registe-se como fornecedor primeiro.')
+        return redirect('registar_fornecedor')
+    
+    fornecedor = request.user.fornecedor
+    pedidos = Pedido.objects.filter(fornecedor_escolhido=fornecedor).order_by('-criado_em')[:10]
+    transacoes = Transacao.objects.filter(fornecedor=fornecedor).order_by('-data_criacao')[:5]
+    produtos = Produto.objects.filter(fornecedor=fornecedor)
+    
+    context = {
+        'fornecedor': fornecedor,
+        'pedidos': pedidos,
+        'transacoes': transacoes,
+        'produtos': produtos,
+        'total_produtos': produtos.count(),
+        'total_transacoes': Transacao.objects.filter(fornecedor=fornecedor).count(),
+    }
+    return render(request, 'core/fornecedor/dashboard_fornecedor.html', context)
+
+@login_required
+def registar_fornecedor(request):
+    """Registar como fornecedor"""
+    if hasattr(request.user, 'fornecedor'):
+        messages.info(request, 'Já está registado como fornecedor.')
+        return redirect('dashboard_fornecedor')
+    
+    if request.method == 'POST':
+        form = FornecedorForm(request.POST)
+        if form.is_valid():
+            fornecedor = form.save(commit=False)
+            fornecedor.usuario = request.user
+            fornecedor.coordenadas = {'lat': -25.969, 'lng': 32.573}
+            fornecedor.save()
+            form.save_m2m()
+            
+            messages.success(request, 'Registo como fornecedor concluído!')
+            return redirect('dashboard_fornecedor')
+    else:
+        form = FornecedorForm()
+    
+    return render(request, 'core/fornecedor/registar_fornecedor.html', {'form': form})
+
+@login_required
+def pedidos_proximos(request):
+    """Ver pedidos próximos na região"""
+    if not hasattr(request.user, 'fornecedor'):
+        messages.warning(request, 'Registe-se como fornecedor primeiro.')
+        return redirect('registar_fornecedor')
+    
+    fornecedor = request.user.fornecedor
+    categorias = fornecedor.categorias.all()
+    
+    pedidos = Pedido.objects.filter(
+        categoria__in=categorias,
+        status='aberto'
+    ).exclude(cliente=request.user).order_by('-criado_em')[:20]
+    
+    if request.method == 'POST':
+        pedido_id = request.POST.get('pedido_id')
+        pedido = get_object_or_404(Pedido, id=pedido_id)
+        
+        pedido.fornecedor_escolhido = fornecedor
+        pedido.status = 'em_negociacao'
+        pedido.save()
+        
+        Notificacao.objects.create(
+            usuario=pedido.cliente,
+            mensagem=f'O fornecedor {fornecedor.nome_empresa} aceitou o seu pedido!',
+            link='/cliente/pedidos/'
+        )
+        
+        messages.success(request, 'Pedido aceite! Aguarde a confirmação do cliente.')
+        return redirect('dashboard_fornecedor')
+    
+    context = {
+        'pedidos': pedidos,
+        'fornecedor': fornecedor,
+    }
+    return render(request, 'core/fornecedor/pedidos_proximos.html', context)
+
+@login_required
+def registar_produto(request):
+    """Registar um produto ou serviço"""
+    if not hasattr(request.user, 'fornecedor'):
+        messages.warning(request, 'Registe-se como fornecedor primeiro.')
+        return redirect('registar_fornecedor')
+    
+    if request.method == 'POST':
+        form = ProdutoForm(request.POST, request.FILES)
+        if form.is_valid():
+            produto = form.save(commit=False)
+            produto.fornecedor = request.user.fornecedor
+            produto.save()
+            messages.success(request, 'Produto registado com sucesso!')
+            return redirect('dashboard_fornecedor')
+    else:
+        form = ProdutoForm()
+    
+    return render(request, 'core/fornecedor/registar_produto.html', {'form': form})
+
+@login_required
+def transacoes_fornecedor(request):
+    """Lista de transações do fornecedor"""
+    if not hasattr(request.user, 'fornecedor'):
+        return redirect('registar_fornecedor')
+    
+    transacoes = Transacao.objects.filter(fornecedor=request.user.fornecedor).order_by('-data_criacao')
+    return render(request, 'core/fornecedor/transacoes_fornecedor.html', {'transacoes': transacoes})
+
+# ========== FUNÇÃO PARA CRIAR CATEGORIAS ==========
+
+def criar_categorias_iniciais():
+    """Cria categorias iniciais se não existirem"""
+    categorias = [
+        ('eletricista', '⚡'),
+        ('canalizador', '🔧'),
+        ('mecanico', '🔩'),
+        ('construcao', '🏗️'),
+        ('informatica', '💻'),
+        ('limpeza', '🧹'),
+        ('jardinagem', '🌿'),
+        ('entrega', '📦'),
+        ('pintura', '🎨'),
+        ('vidraceiro', '🪟'),
+        ('serralheiro', '🔒'),
+        ('outro', '📌'),
+    ]
+    for nome, icone in categorias:
+        Categoria.objects.get_or_create(nome=nome, defaults={'icone': icone})

@@ -1,0 +1,34 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <h2 style="color: #fff; font-weight: 300; margin-bottom: 4px;">💰 Transações</h2>
+    <p style="color: rgba(255,255,255,0.5); margin-bottom: 24px;">Histórico de todas as suas transações.</p>
+
+    <a href="{% url 'dashboard_fornecedor' %}" style="color: rgba(255,255,255,0.4); text-decoration: none; display: inline-block; margin-bottom: 16px;">↩️ Voltar</a>
+
+    {% if transacoes %}
+        <div style="background: rgba(255,255,255,0.04); border-radius: 12px; padding: 16px;">
+            {% for transacao in transacoes %}
+                <div style="padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.04);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                        <div>
+                            <strong style="color: #fff;">{{ transacao.pedido.titulo }}</strong>
+                            <span style="color: rgba(255,255,255,0.4); font-size: 13px; margin-left: 12px;">{{ transacao.get_status_display }}</span>
+                        </div>
+                        <span style="color: #c0c0c0; font-weight: 600;">{{ transacao.valor }}€</span>
+                    </div>
+                    <div style="color: rgba(255,255,255,0.3); font-size: 13px; margin-top: 4px;">
+                        Cliente: {{ transacao.cliente.username }} | {{ transacao.data_criacao|date:"d/m/Y H:i" }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="background: rgba(255,255,255,0.04); border-radius: 12px; padding: 40px; text-align: center;">
+            <div style="font-size: 48px;">💰</div>
+            <p style="color: rgba(255,255,255,0.5);">Nenhuma transação ainda.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

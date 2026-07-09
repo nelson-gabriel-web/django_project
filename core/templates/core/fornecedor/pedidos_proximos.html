@@ -1,0 +1,40 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <h2 style="color: #fff; font-weight: 300; margin-bottom: 4px;">🔍 Pedidos Próximos</h2>
+    <p style="color: rgba(255,255,255,0.5); margin-bottom: 24px;">Pedidos na sua região que podem ser do seu interesse.</p>
+
+    <a href="{% url 'dashboard_fornecedor' %}" style="color: rgba(255,255,255,0.4); text-decoration: none; display: inline-block; margin-bottom: 16px;">↩️ Voltar</a>
+
+    {% if pedidos %}
+        {% for pedido in pedidos %}
+            <div style="background: rgba(255,255,255,0.04); border-radius: 12px; padding: 16px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.04);">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                    <div>
+                        <strong style="color: #fff; font-size: 16px;">{{ pedido.titulo }}</strong>
+                        <span style="color: rgba(255,255,255,0.4); font-size: 13px; margin-left: 12px;">{{ pedido.get_status_display }}</span>
+                    </div>
+                    <span style="color: rgba(255,255,255,0.3); font-size: 13px;">{{ pedido.criado_em|date:"d/m/Y H:i" }}</span>
+                </div>
+                <div style="color: rgba(255,255,255,0.5); font-size: 14px; margin-top: 8px;">
+                    📍 {{ pedido.localizacao }}
+                    {% if pedido.orcamento %} | 💰 {{ pedido.orcamento }}€{% endif %}
+                </div>
+                <div style="margin-top: 12px;">
+                    <form method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="pedido_id" value="{{ pedido.id }}">
+                        <button type="submit" class="btn-metal" style="padding: 6px 16px; font-size: 12px;">✅ Aceitar Pedido</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div style="background: rgba(255,255,255,0.04); border-radius: 12px; padding: 40px; text-align: center;">
+            <div style="font-size: 48px;">🔍</div>
+            <p style="color: rgba(255,255,255,0.5);">Nenhum pedido encontrado na sua região.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

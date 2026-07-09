@@ -1,0 +1,46 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <h2 style="color: #fff; font-weight: 300; margin-bottom: 8px;">🏢 Dashboard Fornecedor</h2>
+    <p style="color: rgba(255,255,255,0.5); margin-bottom: 24px;">Bem-vindo, {{ fornecedor.nome_empresa }}!</p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 24px;">
+        <div style="background: rgba(255,255,255,0.04); padding: 16px; border-radius: 12px; text-align: center;">
+            <div style="font-size: 28px; font-weight: 700; color: #c0c0c0;">{{ total_produtos }}</div>
+            <div style="font-size: 13px; color: rgba(255,255,255,0.5);">Produtos</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.04); padding: 16px; border-radius: 12px; text-align: center;">
+            <div style="font-size: 28px; font-weight: 700; color: #c0c0c0;">{{ total_transacoes }}</div>
+            <div style="font-size: 13px; color: rgba(255,255,255,0.5);">Transações</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.04); padding: 16px; border-radius: 12px; text-align: center;">
+            <div style="font-size: 28px; font-weight: 700; color: #c0c0c0;">{{ fornecedor.avaliacao_media }}</div>
+            <div style="font-size: 13px; color: rgba(255,255,255,0.5);">⭐ Avaliação</div>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px;">
+        <a href="{% url 'registar_produto' %}" class="btn-metal">📦 Registrar Produto</a>
+        <a href="{% url 'pedidos_proximos' %}" class="btn-metal" style="background: linear-gradient(135deg, #888, #aaa, #666);">🔍 Ver Pedidos Próximos</a>
+        <a href="{% url 'transacoes_fornecedor' %}" class="btn-metal" style="background: linear-gradient(135deg, #888, #aaa, #666);">💰 Transações</a>
+    </div>
+
+    <h3 style="color: rgba(255,255,255,0.8); margin-bottom: 12px;">📦 Meus Produtos</h3>
+    <div style="background: rgba(255,255,255,0.04); border-radius: 12px; padding: 16px;">
+        {% if produtos %}
+            {% for produto in produtos %}
+                <div style="padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong style="color: #fff;">{{ produto.nome }}</strong>
+                        <span style="color: rgba(255,255,255,0.4); font-size: 13px; margin-left: 12px;">{{ produto.preco }}€</span>
+                    </div>
+                    <span style="color: rgba(255,255,255,0.3); font-size: 13px;">{% if produto.disponivel %}✅ Disponível{% else %}❌ Indisponível{% endif %}</span>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p style="color: rgba(255,255,255,0.3); text-align: center; padding: 20px 0;">Nenhum produto registado.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

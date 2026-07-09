@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Contato(models.Model):
     nome = models.CharField(max_length=100)
     telefone = models.CharField(max_length=20)
@@ -288,3 +289,128 @@ class PerfilUsuario(models.Model):
             delta = now().date() - self.data_cadastro.date()
             return delta.days
         return 0
+
+# ============================================
+# MODELOS PARA PLATAFORMA DE INTERMEDIAÇÃO NHONGA
+# ============================================
+
+class Categoria(models.Model):
+    """Categorias de produtos/serviços"""
+    nome = models.CharField(max_length=100, unique=True)
+    icone = models.CharField(max_length=50, blank=True, null=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.nome
+
+class Fornecedor(models.Model):
+    """Fornecedor que oferece produtos/serviços"""
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='fornecedor')
+    nome_empresa = models.CharField(max_length=200)
+    nif = models.CharField(max_length=20, blank=True, null=True)
+    telefone = models.CharField(max_length=20, blank=True, null=True)
+    endereco = models.TextField()
+    cidade = models.CharField(max_length=100)
+    coordenadas = models.JSONField(default=dict)
+    raio_atuacao = models.IntegerField(default=10)
+    descricao = models.TextField(blank=True, null=True)
+    categorias = models.ManyToManyField(Categoria, related_name='fornecedores')
+    verificado = models.BooleanField(default=False)
+    disponivel = models.BooleanField(default=True)
+    avaliacao_media = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    total_avaliacoes = models.IntegerField(default=0)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.nome_empresa} - {self.usuario.username}"
+
+class Produto(models.Model):
+    """Produto ou serviço oferecido pelo fornecedor"""
+    fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE, related_name='produtos')
+    nome = models.CharField(max_length=200)
+    descricao = models.TextField()
+    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)
+    preco = models.DecimalField(max_digits=10, decimal_places=2)
+    imagem = models.ImageField(upload_to='produtos/', null=True, blank=True)
+    disponivel = models.BooleanField(default=True)
+    registado = models.BooleanField(default=False)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.nome} - {self.preco}€"
+
+class Pedido(models.Model):
+    """Pedido criado pelo cliente"""
+    STATUS_CHOICES = [
+        ('aberto', 'Aberto - À espera de fornecedor'),
+        ('em_negociacao', 'Em Negociação'),
+        ('aceite', 'Aceite pelo fornecedor'),
+        ('pago', 'Pago - Em Escrow'),
+        ('em_andamento', 'Em Andamento'),
+        ('concluido', 'Concluído'),
+        ('reembolsado', 'Reembolsado'),
+        ('cancelado', 'Cancelado'),
+    ]
+    
+    cliente = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pedidos')
+    titulo = models.CharField(max_length=200)
+    descricao = models.TextField()
+    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)
+    localizacao = models.CharField(max_length=255)
+    coordenadas = models.JSONField(default=dict)
+    orcamento = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    data_limite = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='aberto')
+    fornecedor_escolhido = models.ForeignKey(Fornecedor, on_delete=models.SET_NULL, null=True, blank=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.cliente.username} - {self.titulo}"
+
+class Transacao(models.Model):
+    """Transação entre cliente e fornecedor com escrow"""
+    STATUS_CHOICES = [
+        ('pendente', 'Aguardando Pagamento'),
+        ('pago', 'Pago - Em Escrow'),
+        ('entregue', 'Entregue - Aguardando Confirmação'),
+        ('confirmado', 'Confirmado - Pagamento Libertado'),
+        ('reembolsado', 'Reembolsado'),
+        ('cancelado', 'Cancelado'),
+    ]
+    
+    pedido = models.OneToOneField(Pedido, on_delete=models.CASCADE, related_name='transacao')
+    fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
+    cliente = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transacoes')
+    valor = models.DecimalField(max_digits=10, decimal_places=2)
+    comissao = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    valor_fornecedor = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
+    codigo_confirmacao = models.CharField(max_length=6, blank=True, null=True)
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    data_confirmacao = models.DateTimeField(null=True, blank=True)
+    data_reembolso = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.cliente.username} → {self.fornecedor.usuario.username} - {self.valor}€"
+
+class Avaliacao(models.Model):
+    """Avaliação do serviço pelo cliente"""
+    transacao = models.OneToOneField(Transacao, on_delete=models.CASCADE, related_name='avaliacao')
+    nota = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
+    comentario = models.TextField(blank=True, null=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.transacao} - {self.nota}★"
+
+class Notificacao(models.Model):
+    """Notificações para utilizadores"""
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notificacoes')
+    mensagem = models.TextField()
+    lida = models.BooleanField(default=False)
+    link = models.CharField(max_length=255, blank=True, null=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.usuario.username} - {self.mensagem[:50]}"

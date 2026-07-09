@@ -1,0 +1,33 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <h2 style="color: #fff; font-weight: 300; margin-bottom: 4px;">🔍 Fornecedores Próximos</h2>
+    <p style="color: rgba(255,255,255,0.5); margin-bottom: 24px;">Fornecedores encontrados para: <strong>{{ pedido.titulo }}</strong></p>
+
+    <a href="{% url 'meus_pedidos' %}" style="color: rgba(255,255,255,0.4); text-decoration: none; display: inline-block; margin-bottom: 16px;">↩️ Voltar</a>
+
+    {% if fornecedores %}
+        {% for fornecedor in fornecedores %}
+            <div style="background: rgba(255,255,255,0.04); border-radius: 12px; padding: 16px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.04); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <div>
+                    <strong style="color: #fff;">{{ fornecedor.nome_empresa }}</strong>
+                    <div style="color: rgba(255,255,255,0.4); font-size: 13px;">📍 {{ fornecedor.cidade }}</div>
+                    <div style="color: rgba(255,255,255,0.4); font-size: 13px;">⭐ {{ fornecedor.avaliacao_media }} ({{ fornecedor.total_avaliacoes }} avaliações)</div>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="fornecedor_id" value="{{ fornecedor.id }}">
+                    <button type="submit" class="btn-metal" style="padding: 8px 20px; font-size: 14px;">Selecionar</button>
+                </form>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div style="background: rgba(255,255,255,0.04); border-radius: 12px; padding: 40px; text-align: center;">
+            <div style="font-size: 48px;">🔍</div>
+            <p style="color: rgba(255,255,255,0.5);">Nenhum fornecedor encontrado na sua região.</p>
+            <a href="{% url 'criar_pedido' %}" class="btn-metal" style="margin-top: 16px; display: inline-block;">Tentar Novamente</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <h2 style="color: #fff; font-weight: 300; margin-bottom: 4px;">🏢 Registar como Fornecedor</h2>
+    <p style="color: rgba(255,255,255,0.5); margin-bottom: 24px;">Preencha os dados para começar a oferecer os seus produtos/serviços.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label style="color: rgba(255,255,255,0.8);">Nome da Empresa</label>
+            {{ form.nome_empresa }}
+        </div>
+        
+        <div class="form-group">
+            <label style="color: rgba(255,255,255,0.8);">NIF</label>
+            {{ form.nif }}
+        </div>
+        
+        <div class="form-group">
+            <label style="color: rgba(255,255,255,0.8);">Telefone</label>
+            {{ form.telefone }}
+        </div>
+        
+        <div class="form-group">
+            <label style="color: rgba(255,255,255,0.8);">Endereço</label>
+            {{ form.endereco }}
+        </div>
+        
+        <div class="form-group">
+            <label style="color: rgba(255,255,255,0.8);">Cidade</label>
+            {{ form.cidade }}
+        </div>
+        
+        <div class="form-group">
+            <label style="color: rgba(255,255,255,0.8);">Raio de Atuação (km)</label>
+            {{ form.raio_atuacao }}
+        </div>
+        
+        <div class="form-group">
+            <label style="color: rgba(255,255,255,0.8);">Descrição</label>
+            {{ form.descricao }}
+        </div>
+        
+        <div class="form-group">
+            <label style="color: rgba(255,255,255,0.8);">Categorias</label>
+            {{ form.categorias }}
+        </div>
+        
+        <button type="submit" class="btn-metal">✅ Registrar Fornecedor</button>
+        <a href="{% url 'home' %}" style="color: rgba(255,255,255,0.4); display: block; text-align: center; margin-top: 12px; text-decoration: none;">↩️ Voltar</a>
+    </form>
+</div>
+{% endblock %}
