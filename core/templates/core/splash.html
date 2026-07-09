@@ -13,7 +13,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #0a1628 0%, #1a3a5c 50%, #0a1628 100%);
+            background: #000000;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -45,12 +45,12 @@
         }
         
         .logo-img {
-                width: 180px;  /* Aumente ou diminua conforme necessário */
-    height: 180px;
-    object-fit: contain;
-    cursor: pointer;
-    transition: transform 0.3s;
-    filter: drop-shadow(0 0 30px rgba(79, 195, 247, 0.3));
+            width: 300px;
+            height: 300px;
+            object-fit: contain;
+            cursor: pointer;
+            transition: transform 0.3s;
+            filter: drop-shadow(0 0 30px rgba(79, 195, 247, 0.3));
         }
         
         .logo-img:hover {
@@ -139,8 +139,8 @@
         
         @media (max-width: 600px) {
             .logo-img {
-                width: 100px;
-                height: 100px;
+                width: 180px;
+                height: 180px;
             }
             .labsec-text {
                 font-size: 28px;
@@ -164,10 +164,10 @@
     <div class="splash-container" id="splashContainer">
         <div class="lock-container" id="lockContainer">
             <!-- Logotipo -->
-            <img src="/static/core/images/logo.png" 
-     alt="Nhonga" 
-     class="logo-img"
-     id="logoImg">
+            <img src="{% static 'core/images/logo.png' %}" 
+                 alt="LabSec" 
+                 class="logo-img"
+                 id="logoImg">
             
             <div class="instrucao" id="instrucao">🔒 Clique no logotipo para continuar</div>
             
