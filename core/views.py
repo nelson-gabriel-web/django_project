@@ -616,6 +616,7 @@ def criar_categorias_iniciais():
         ('pintura', '🎨'),
         ('vidraceiro', '🪟'),
         ('serralheiro', '🔒'),
+        ('lojas', '🏪'),      # NOVO
         ('outro', '📌'),
     ]
     for nome, icone in categorias:
