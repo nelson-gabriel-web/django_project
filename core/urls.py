@@ -26,6 +26,12 @@ urlpatterns = [
     # Perfil
     path('perfil/', views.perfil, name='perfil'),
     
+    # Segurança
+    path('dashboard/', views.dashboard_seguranca, name='dashboard_seguranca'),
+    
+    # Comunidades
+    path('comunidades/', views.comunidades_list, name='comunidades_list'),
+    
     # Moedas
     path('moedas/', views.moedas_list, name='moedas_list'),
     path('moeda/definir/', views.definir_moeda_preferida, name='definir_moeda_preferida'),
