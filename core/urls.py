@@ -22,6 +22,16 @@ urlpatterns = [
     # Recuperação de Password
     path('recuperar/', views.recuperar_password, name='recuperar'),
     path('redefinir/<uidb64>/<token>/', views.redefinir_password, name='redefinir'),
+
+	# Cliente
+path('cliente/dashboard/', views.dashboard_cliente, name='dashboard_cliente'),
+path('cliente/pedido/criar/', views.criar_pedido, name='criar_pedido'),
+path('cliente/pedidos/', views.meus_pedidos, name='meus_pedidos'),
+
+# Fornecedor
+path('fornecedor/dashboard/', views.dashboard_fornecedor, name='dashboard_fornecedor'),
+path('fornecedor/registar/', views.registar_fornecedor, name='registar_fornecedor'),
+path('fornecedor/pedidos/', views.pedidos_proximos, name='pedidos_proximos'),
     
     # Perfil
     path('perfil/', views.perfil, name='perfil'),

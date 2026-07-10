@@ -338,3 +338,30 @@ def definir_moeda_preferida(request):
         messages.success(request, f'Moeda preferida definida: {moeda.simbolo} {moeda.codigo}')
         return redirect('moedas_list')
     return redirect('home')
+
+def dashboard_cliente(request):
+    return render(request, 'core/cliente/dashboard_cliente.html', {
+        'pedidos': [],
+        'total_pedidos': 0,
+        'total_transacoes': 0,
+        'notificacoes': [],
+    })
+
+def criar_pedido(request):
+    return render(request, 'core/cliente/criar_pedido.html')
+
+def meus_pedidos(request):
+    return render(request, 'core/cliente/meus_pedidos.html', {'pedidos': []})
+
+def dashboard_fornecedor(request):
+    return render(request, 'core/fornecedor/dashboard_fornecedor.html', {
+        'produtos': [],
+        'total_produtos': 0,
+        'total_transacoes': 0,
+    })
+
+def registar_fornecedor(request):
+    return render(request, 'core/fornecedor/registar_fornecedor.html')
+
+def pedidos_proximos(request):
+    return render(request, 'core/fornecedor/pedidos_proximos.html', {'pedidos': []})
