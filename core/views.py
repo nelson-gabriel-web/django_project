@@ -4,18 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
-from django.core.mail import send_mail
-from django.contrib.sites.shortcuts import get_current_site
-from django.db.models import Count, Q
-from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
+from django.db.models import Q
 from django.utils import timezone
-from datetime import datetime, timedelta
+from datetime import timedelta
 
-from .models import Contato, TentativaLogin, PerfilUsuario, Moeda, PreferenciaMoeda, RequisicaoCompra
+from .models import Contato, PerfilUsuario, Moeda, PreferenciaMoeda, RequisicaoCompra
 from .forms import ContatoForm, PerfilUsuarioForm, RequisicaoCompraForm
 
 
@@ -146,59 +139,49 @@ def perfil(request):
 def dashboard_seguranca(request):
     return render(request, 'core/dashboard_seguranca.html')
 
+def comunidades_list(request):
+    return render(request, 'core/comunidades_list.html')
+
 @login_required
 def dashboard_cliente(request):
-    requisicoes = RequisicaoCompra.objects.filter(cliente=request.user)
-    context = {
-        'total_requisicoes': requisicoes.count(),
-        'requisicoes_pendentes': requisicoes.filter(status='pendente').count(),
-        'requisicoes_em_analise': requisicoes.filter(status='em_analise').count(),
-        'requisicoes_concluidas': requisicoes.filter(status='concluido').count(),
-        'requisicoes_canceladas': requisicoes.filter(status='cancelado').count(),
-        'ultimas_requisicoes': requisicoes.order_by('-data_criacao')[:5],
-        'fornecedores_interessados': User.objects.filter(
-            perfilusuario__tipo='fornecedor',
-            requisicoes_interessadas__in=requisicoes
-        ).distinct().count(),
-    }
-    return render(request, 'core/cliente/dashboard_cliente.html', context)
+    return render(request, 'core/cliente/dashboard_cliente.html')
 
 @login_required
 def dashboard_fornecedor(request):
-    try:
-        perfil = request.user.perfilusuario
-        if perfil.tipo != 'fornecedor':
-            messages.warning(request, 'Apenas fornecedores podem ver este dashboard.')
-            return redirect('home')
-    except:
-        messages.warning(request, 'Complete seu perfil.')
-        return redirect('perfil')
-    
-    requisicoes_disponiveis = RequisicaoCompra.objects.filter(
-        status__in=['pendente', 'em_analise']
-    ).exclude(cliente=request.user)
-    
-    if perfil.provincia:
-        requisicoes_disponiveis = requisicoes_disponiveis.filter(provincia=perfil.provincia)
-    
-    requisicoes_interessadas = RequisicaoCompra.objects.filter(
-        fornecedores_interessados=request.user
-    )
-    
-    context = {
-        'total_disponiveis': requisicoes_disponiveis.count(),
-        'total_interessadas': requisicoes_interessadas.count(),
-        'requisicoes_em_negociacao': requisicoes_interessadas.filter(status='em_negociacao').count(),
-        'requisicoes_concluidas': requisicoes_interessadas.filter(status='concluido').count(),
-        'ultimas_disponiveis': requisicoes_disponiveis.order_by('-data_criacao')[:5],
-        'ultimas_interessadas': requisicoes_interessadas.order_by('-data_criacao')[:5],
-    }
-    return render(request, 'core/fornecedor/dashboard_fornecedor.html', context)
+    return render(request, 'core/fornecedor/dashboard_fornecedor.html')
 
 
 # ============================================
 # MOEDAS
 # ============================================
+
+@login_required
+def moedas_list(request):
+    moedas = Moeda.objects.filter(ativa=True)
+    preferencia = PreferenciaMoeda.objects.filter(usuario=request.user).first()
+    return render(request, 'core/moedas_list.html', {
+        'moedas': moedas,
+        'preferencia': preferencia,
+    })
+
+@login_required
+def definir_moeda_preferida(request):
+    if request.method == 'POST':
+        moeda_id = request.POST.get('moeda_id')
+        if moeda_id:
+            try:
+                moeda = Moeda.objects.get(id=moeda_id, ativa=True)
+                preferencia, created = PreferenciaMoeda.objects.get_or_create(usuario=request.user)
+                preferencia.moeda = moeda
+                preferencia.save()
+                messages.success(request, f'Moeda definida para {moeda.nome}')
+            except Moeda.DoesNotExist:
+                messages.error(request, 'Moeda não encontrada')
+        else:
+            PreferenciaMoeda.objects.filter(usuario=request.user).delete()
+            messages.info(request, 'Moeda removida')
+        return redirect('moedas_list')
+    return redirect('moedas_list')
 
 @login_required
 def alternar_moeda(request):
@@ -341,9 +324,6 @@ def recuperar_password(request):
 
 def redefinir_password(request, uidb64, token):
     return render(request, 'core/redefinir.html')
-
-def comunidades_list(request):
-    return render(request, 'core/comunidades_list.html')
 
 @login_required
 def criar_pedido(request):
