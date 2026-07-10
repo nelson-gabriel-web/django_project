@@ -1,31 +1,24 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block content %}
-<div style="max-width: 700px; margin: 0 auto; padding: 40px 20px; display: flex; flex-direction: column; justify-content: center; min-height: 60vh;">
-    
-    <div style="text-align: center; margin-bottom: 30px;">
-        <div style="font-size: 56px; margin-bottom: 16px;">🛡️</div>
-        <h2 style="font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 12px;">
-            {% if user.last_login %}
-                Bem-vindo de volta, <strong style="color: #c0c0c0;">{{ user.username }}</strong>!
-            {% else %}
-                Bem-vindo, <strong style="color: #c0c0c0;">{{ user.username }}</strong>!
-            {% endif %}
-        </h2>
-    </div>
-    
-    <div style="background: rgba(255,255,255,0.04); border-radius: 12px; padding: 28px 32px; border-left: 4px solid #c0c0c0; margin-bottom: 28px; text-align: center;">
-        <p style="color: rgba(255,255,255,0.85); font-size: 16px; line-height: 1.8; margin: 0;">
-            Todos os acessos estão <strong style="color: #c0c0c0;">criptografados</strong> e <strong style="color: #c0c0c0;">monitorados em tempo real</strong>. 
-            Caso note qualquer comportamento estranho, nosso sistema já terá registado antes de você. 
-            Aproveite a tranquilidade de operar sob a melhor proteção do mercado.
+<div class="container">
+    <div style="text-align: center; padding: 40px 20px;">
+        <h1 style="color: #fff; font-size: 28px; margin-bottom: 20px;">
+            🔒 Bem-vindo ao Nhonga
+        </h1>
+        <p style="color: rgba(255,255,255,0.6); font-size: 16px; max-width: 600px; margin: 0 auto 30px;">
+            Plataforma de intermediação entre clientes e fornecedores.
         </p>
-    </div>
-    
-    <div style="text-align: center; padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.06);">
-        <p style="color: rgba(255,255,255,0.5); font-size: 15px; font-style: italic; margin: 0; letter-spacing: 0.5px;">
-            "Uma pessoa informada protege a si. Uma pessoa que compartilha protege uma comunidade."
-        </p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; max-width: 400px; margin: 0 auto;">
+            <a href="{% url 'minhas_requisicoes' %}" class="btn-metal" style="padding: 15px;">
+                🔍 Buscar
+            </a>
+            <a href="{% url 'adicionar' %}" class="btn-metal" style="padding: 15px;">
+                ➕ Adicionar
+            </a>
+        </div>
     </div>
 </div>
 {% endblock %}
