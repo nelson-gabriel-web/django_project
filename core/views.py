@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm  # <-- ESTA É IMPORTANTE
 from django.contrib import messages
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -250,7 +251,6 @@ def registar(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            # Criar perfil para o novo usuário
             PerfilUsuario.objects.create(usuario=user)
             messages.success(request, 'Conta criada com sucesso! Faça login.')
             return redirect('login')
