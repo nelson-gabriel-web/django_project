@@ -23,7 +23,9 @@ from .forms import ContatoForm, PerfilUsuarioForm, RequisicaoCompraForm
 # VIEWS EXISTENTES
 # ============================================
 def splash(request):
-    """Página inicial de carregamento (splash)"""
+    # Se o utilizador já estiver logado, redireciona para home
+    if request.user.is_authenticated:
+        return redirect('home')
     return render(request, 'core/splash.html')
 
 def home(request):
@@ -59,12 +61,12 @@ def buscar_contatos(request):
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST.get('username')
+        password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')
+            return redirect('home')  # <-- TEM QUE SER 'home'
         else:
             messages.error(request, 'Credenciais inválidas')
     return render(request, 'core/login.html')
