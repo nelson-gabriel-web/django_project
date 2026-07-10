@@ -3,66 +3,43 @@
 
 {% block content %}
 <div class="container">
-    <h2 style="color: #fff; margin-bottom: 20px;">🛒 Meu Dashboard</h2>
+    <h2 style="color: #fff; margin-bottom: 20px;">🛒 Dashboard Cliente</h2>
     
-    <div class="stats">
-        <div class="stat">
-            <div class="num">{{ total_requisicoes }}</div>
-            <div class="label">Total de Requisições</div>
-        </div>
-        <div class="stat">
-            <div class="num" style="color: #f1c40f;">{{ requisicoes_pendentes }}</div>
-            <div class="label">Pendentes</div>
-        </div>
-        <div class="stat">
-            <div class="num" style="color: #3498db;">{{ requisicoes_em_analise }}</div>
-            <div class="label">Em Análise</div>
-        </div>
-        <div class="stat">
-            <div class="num" style="color: #2ecc71;">{{ requisicoes_concluidas }}</div>
-            <div class="label">Concluídas</div>
-        </div>
+    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+        <p style="color: rgba(255,255,255,0.8); font-size: 18px;">
+            Bem-vindo, <strong>{{ user.perfilusuario.nome_completo|default:user.username }}</strong>!
+        </p>
     </div>
     
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+    <div class="card-grid">
         <a href="{% url 'criar_requisicao' %}" class="card">
-            <div class="icon">📝</div>
+            <div class="icon">🔍</div>
             <div class="label">Nova Requisição</div>
             <div class="sub">Peça o que precisa</div>
         </a>
         <a href="{% url 'minhas_requisicoes' %}" class="card">
             <div class="icon">📋</div>
             <div class="label">Minhas Requisições</div>
-            <div class="sub">Ver todas</div>
+            <div class="sub">Acompanhe seus pedidos</div>
+        </a>
+        <a href="#" class="card">
+            <div class="icon">⭐</div>
+            <div class="label">Avaliações</div>
+            <div class="sub">Avalie fornecedores</div>
+        </a>
+        <a href="#" class="card">
+            <div class="icon">💰</div>
+            <div class="label">Transações</div>
+            <div class="sub">Histórico de compras</div>
         </a>
     </div>
     
     <h3 style="color: #fff; margin: 20px 0 10px;">📌 Últimas Requisições</h3>
-    {% if ultimas_requisicoes %}
-        <div class="table-wrapper">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Título</th>
-                        <th>Status</th>
-                        <th>Data</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for req in ultimas_requisicoes %}
-                    <tr>
-                        <td>{{ req.id }}</td>
-                        <td>{{ req.titulo }}</td>
-                        <td>{{ req.get_status_display }}</td>
-                        <td>{{ req.data_criacao|date:"d/m/Y" }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    {% else %}
-        <p style="color: rgba(255,255,255,0.5);">Nenhuma requisição encontrada.</p>
-    {% endif %}
+    <div style="background: rgba(255,255,255,0.03); padding: 30px; border-radius: 12px; text-align: center;">
+        <p style="color: rgba(255,255,255,0.4);">Nenhuma requisição encontrada.</p>
+        <a href="{% url 'criar_requisicao' %}" class="btn-metal" style="margin-top: 15px; width: auto; padding: 10px 20px;">
+            <i class="fas fa-plus"></i> Criar Requisição
+        </a>
+    </div>
 </div>
 {% endblock %}

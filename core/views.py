@@ -104,8 +104,7 @@ def comunidades_list(request):
 
 @login_required
 def dashboard_cliente(request):
-    """Dashboard do Cliente com estatísticas"""
-    requisicoes = RequisicaoCompra.objects.filter(cliente=request.user)
+    return render(request, 'core/cliente/dashboard_cliente.html')
     
     context = {
         'total_requisicoes': requisicoes.count(),
@@ -123,7 +122,7 @@ def dashboard_cliente(request):
 
 @login_required
 def dashboard_fornecedor(request):
-    """Dashboard do Fornecedor com estatísticas"""
+    return render(request, 'core/fornecedor/dashboard_fornecedor.html')
     try:
         perfil = request.user.perfilusuario
         if perfil.tipo != 'fornecedor':
@@ -456,6 +455,4 @@ def registar_fornecedor(request):
 
 @login_required
 def pedidos_proximos(request):
-    """Lista pedidos próximos para fornecedores"""
-    # View simplificada
     return render(request, 'core/fornecedor/pedidos_proximos.html')
