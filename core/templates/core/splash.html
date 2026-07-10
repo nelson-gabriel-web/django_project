@@ -33,15 +33,16 @@
         .logo-img {
             width: 200px;
             height: auto;
-            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.3));
+            /* Luz dourada atrás do logotipo */
+            filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.4));
             animation: glowPulse 2s ease-in-out infinite;
         }
         @keyframes glowPulse {
             0%, 100% {
-                filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.3));
+                filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.4));
             }
             50% {
-                filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.7));
+                filter: drop-shadow(0 0 60px rgba(255, 215, 0, 0.8));
             }
         }
         .loading-dots {
@@ -57,16 +58,23 @@
         .dot {
             width: 16px;
             height: 16px;
-            background: #f1c40f;
+            background: #f1c40f; /* Dourado */
             border-radius: 50%;
             animation: dotBounce 1.4s infinite ease-in-out both;
         }
-        .dot:nth-child(1) { animation-delay: -0.32s; }
-        .dot:nth-child(2) { animation-delay: -0.16s; }
-        .dot:nth-child(3) { animation-delay: 0; }
+        .dot:nth-child(1) { animation-delay: -0.42s; }
+        .dot:nth-child(2) { animation-delay: -0.28s; }
+        .dot:nth-child(3) { animation-delay: -0.14s; }
+        .dot:nth-child(4) { animation-delay: 0s; }
         @keyframes dotBounce {
-            0%, 80%, 100% { transform: scale(0); background: #f1c40f; }
-            40% { transform: scale(1); background: #f39c12; }
+            0%, 80%, 100% {
+                transform: scale(0);
+                background: #f1c40f;
+            }
+            40% {
+                transform: scale(1);
+                background: #f39c12;
+            }
         }
         .hint-text {
             color: rgba(255, 255, 255, 0.4);
@@ -90,6 +98,7 @@
         </div>
 
         <div class="loading-dots" id="loadingDots">
+            <span class="dot"></span>
             <span class="dot"></span>
             <span class="dot"></span>
             <span class="dot"></span>
