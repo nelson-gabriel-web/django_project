@@ -61,9 +61,14 @@
             
             <div style="grid-column: 1 / -1;">
                 <div class="form-group">
-                    <label style="color: rgba(255,255,255,0.7);">Nome Completo</label>
-                    {{ form.nome_completo }}
-                </div>
+    <label style="color: #fff;">Foto de Perfil</label>
+    <input type="file" name="foto" class="form-control" accept="image/*">
+    {% if perfil.foto %}
+        <div style="margin-top: 10px;">
+            <img src="{{ perfil.foto.url }}" alt="Foto de Perfil" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid #c0c0c0;">
+        </div>
+    {% endif %}
+</div>
             </div>
             
             <div>

@@ -284,3 +284,23 @@ Equipe Nhonga
         self.notificacoes_enviadas = True
         self.data_notificacao = datetime.now()
         self.save()
+# ============================================
+# SISTEMA DE AVALIAÇÕES
+# ============================================
+
+class Avaliacao(models.Model):
+    """Avaliação de fornecedores por clientes"""
+    cliente = models.ForeignKey(User, on_delete=models.CASCADE, related_name='avaliacoes_feitas')
+    fornecedor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='avaliacoes_recebidas')
+    requisicao = models.ForeignKey(RequisicaoCompra, on_delete=models.CASCADE, null=True, blank=True)
+    nota = models.PositiveSmallIntegerField(choices=[(i, f'{i} ★') for i in range(1, 6)])
+    comentario = models.TextField(blank=True, null=True)
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.cliente.username} → {self.fornecedor.username}: {self.nota}★"
+    
+    class Meta:
+        verbose_name = "Avaliação"
+        verbose_name_plural = "Avaliações"
+        ordering = ['-data_criacao']

@@ -88,3 +88,14 @@ CSRF_TRUSTED_ORIGINS = [
 
 LOGIN_URL = 'login'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# ============================================
+# CONFIGURAÇÃO DE EMAIL (SMTP)
+# ============================================
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Para Gmail
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'teuemail@gmail.com'  # Substitui pelo teu email
+EMAIL_HOST_PASSWORD = 'tuapassword'  # Substitui pela tua password
+DEFAULT_FROM_EMAIL = 'Nhonga <noreply@nhonga.com>'

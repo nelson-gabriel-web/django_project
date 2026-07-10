@@ -98,8 +98,59 @@ def dashboard_seguranca(request):
 def comunidades_list(request):
     return render(request, 'core/comunidades_list.html')
 
+@login_required
 def dashboard_cliente(request):
-    return render(request, 'core/dashboard_cliente.html')
+    """Dashboard do Cliente com estatísticas"""
+    requisicoes = RequisicaoCompra.objects.filter(cliente=request.user)
+    
+    context = {
+        'total_requisicoes': requisicoes.count(),
+        'requisicoes_pendentes': requisicoes.filter(status='pendente').count(),
+        'requisicoes_em_analise': requisicoes.filter(status='em_analise').count(),
+        'requisicoes_concluidas': requisicoes.filter(status='concluido').count(),
+        'requisicoes_canceladas': requisicoes.filter(status='cancelado').count(),
+        'ultimas_requisicoes': requisicoes.order_by('-data_criacao')[:5],
+        'fornecedores_interessados': User.objects.filter(
+            perfilusuario__tipo='fornecedor',
+            requisicoes_interessadas__in=requisicoes
+        ).distinct().count(),
+    }
+    return render(request, 'core/cliente/dashboard_cliente.html', context)
+
+@login_required
+def dashboard_fornecedor(request):
+    """Dashboard do Fornecedor com estatísticas"""
+    try:
+        perfil = request.user.perfilusuario
+        if perfil.tipo != 'fornecedor':
+            messages.warning(request, 'Apenas fornecedores podem ver este dashboard.')
+            return redirect('home')
+    except:
+        messages.warning(request, 'Complete seu perfil.')
+        return redirect('perfil')
+    
+    # Requisições que o fornecedor pode atender
+    requisicoes_disponiveis = RequisicaoCompra.objects.filter(
+        status__in=['pendente', 'em_analise']
+    ).exclude(cliente=request.user)
+    
+    if perfil.provincia:
+        requisicoes_disponiveis = requisicoes_disponiveis.filter(provincia=perfil.provincia)
+    
+    # Requisições que o fornecedor já manifestou interesse
+    requisicoes_interessadas = RequisicaoCompra.objects.filter(
+        fornecedores_interessados=request.user
+    )
+    
+    context = {
+        'total_disponiveis': requisicoes_disponiveis.count(),
+        'total_interessadas': requisicoes_interessadas.count(),
+        'requisicoes_em_negociacao': requisicoes_interessadas.filter(status='em_negociacao').count(),
+        'requisicoes_concluidas': requisicoes_interessadas.filter(status='concluido').count(),
+        'ultimas_disponiveis': requisicoes_disponiveis.order_by('-data_criacao')[:5],
+        'ultimas_interessadas': requisicoes_interessadas.order_by('-data_criacao')[:5],
+    }
+    return render(request, 'core/fornecedor/dashboard_fornecedor.html', context)
 
 def dashboard_fornecedor(request):
     return render(request, 'core/dashboard_fornecedor.html')
