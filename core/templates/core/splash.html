@@ -18,48 +18,108 @@
         .splash-container {
             text-align: center;
             padding: 20px;
+            cursor: pointer;
         }
-        .logo {
-            font-size: 72px;
-            color: #c0c0c0;
-            margin-bottom: 20px;
+        .logo-wrapper {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        .logo-wrapper:hover {
+            transform: scale(1.05);
+        }
+        .logo-wrapper:active {
+            transform: scale(0.95);
+        }
+        .logo-img {
+            width: 200px;
+            height: auto;
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.3));
             animation: glowPulse 2s ease-in-out infinite;
         }
-        .logo-text {
-            font-size: 32px;
-            color: #c0c0c0;
-            font-weight: bold;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-        }
-        .loading {
-            color: rgba(255,255,255,0.3);
-            font-size: 14px;
-            margin-top: 30px;
-            animation: blink 1s infinite;
-        }
         @keyframes glowPulse {
-            0%, 100% { text-shadow: 0 0 20px rgba(192,192,192,0.3); }
-            50% { text-shadow: 0 0 40px rgba(192,192,192,0.7); }
+            0%, 100% {
+                filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.3));
+            }
+            50% {
+                filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.7));
+            }
         }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+        .loading-dots {
+            display: none;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 40px;
+            padding: 10px;
+        }
+        .loading-dots.active {
+            display: flex;
+        }
+        .dot {
+            width: 16px;
+            height: 16px;
+            background: #f1c40f;
+            border-radius: 50%;
+            animation: dotBounce 1.4s infinite ease-in-out both;
+        }
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        .dot:nth-child(3) { animation-delay: 0; }
+        @keyframes dotBounce {
+            0%, 80%, 100% { transform: scale(0); background: #f1c40f; }
+            40% { transform: scale(1); background: #f39c12; }
+        }
+        .hint-text {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 14px;
+            margin-top: 20px;
+            transition: opacity 0.3s ease;
+        }
+        .hint-text.hidden {
+            opacity: 0;
+        }
+        @media (max-width: 600px) {
+            .logo-img { width: 150px; }
+            .dot { width: 12px; height: 12px; }
         }
     </style>
 </head>
 <body>
     <div class="splash-container">
-        <div class="logo">🔒</div>
-        <div class="logo-text">NHONGA</div>
-        <div class="loading">Carregando...</div>
+        <div class="logo-wrapper" id="logoWrapper">
+            <img src="{% static 'core/images/logo.png' %}" alt="Nhonga" class="logo-img" id="logo">
+        </div>
+
+        <div class="loading-dots" id="loadingDots">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+
+        <p class="hint-text" id="hintText">Clique no logotipo para continuar</p>
     </div>
 
     <script>
-        // Redireciona para a página inicial após 3 segundos
-        setTimeout(function() {
-            window.location.href = "/home/";
-        }, 3000);
+        const logoWrapper = document.getElementById('logoWrapper');
+        const loadingDots = document.getElementById('loadingDots');
+        const hintText = document.getElementById('hintText');
+        let isProcessing = false;
+
+        logoWrapper.addEventListener('click', function(e) {
+            e.stopPropagation();
+            
+            if (isProcessing) return;
+            
+            isProcessing = true;
+            hintText.classList.add('hidden');
+            loadingDots.classList.add('active');
+            
+            setTimeout(function() {
+                loadingDots.classList.remove('active');
+                hintText.classList.remove('hidden');
+                isProcessing = false;
+                window.location.href = "/home/";
+            }, 4000);
+        });
     </script>
 </body>
 </html>
