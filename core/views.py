@@ -13,13 +13,12 @@ from .forms import ContatoForm, PerfilUsuarioForm, RequisicaoCompraForm
 
 
 
-
 # ============================================
 # SPLASH E HOME
 # ============================================
 
 def splash(request):
-    """Página inicial - redireciona para home se já estiver logado"""
+    """Página inicial - se já estiver logado, vai para home"""
     if request.user.is_authenticated:
         return redirect('home')
     return render(request, 'core/splash.html')
@@ -28,7 +27,6 @@ def splash(request):
 def home(request):
     """Página inicial após login - apenas para utilizadores autenticados"""
     return render(request, 'core/home.html')
-
 
 # ============================================
 # AUTENTICAÇÃO
