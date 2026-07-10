@@ -41,8 +41,55 @@ def registar(request):
 
 # ============ LOGIN ============
 def login_view(request):
-    # ... (mantenha a função login existente)
-    pass
+    if request.method == 'POST':
+        username_or_email = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        if '@' in username_or_email:
+            try:
+                user_obj = User.objects.get(email=username_or_email)
+                username = user_obj.username
+            except User.DoesNotExist:
+                username = username_or_email
+        else:
+            username = username_or_email
+        
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            messages.error(request, 'Credenciais inválidas.')
+            return render(request, 'core/login.html', {'form': AuthenticationForm()})
+        
+        tentativa, created = TentativaLogin.objects.get_or_create(usuario=user)
+        
+        if tentativa.bloqueado:
+            messages.error(request, 'Conta bloqueada por excesso de tentativas.')
+            return redirect('splash')
+        
+        user_authenticated = authenticate(request, username=username, password=password)
+        
+        if user_authenticated is not None:
+            tentativa.tentativas = 0
+            tentativa.bloqueado = False
+            tentativa.save()
+            login(request, user_authenticated)
+            messages.success(request, f'Bem-vindo de volta, {username}!')
+            return redirect('home')
+        else:
+            tentativa.tentativas += 1
+            if tentativa.tentativas >= 3:
+                tentativa.bloqueado = True
+                tentativa.save()
+                messages.error(request, 'Demasiadas tentativas falhadas. Conta bloqueada.')
+                return redirect('splash')
+            else:
+                tentativa.save()
+                tentativas_restantes = 3 - tentativa.tentativas
+                messages.error(request, f'Credenciais inválidas. Tentativas restantes: {tentativas_restantes}')
+    
+    # IMPORTANTE: Esta linha estava em falta!
+    form = AuthenticationForm()
+    return render(request, 'core/login.html', {'form': form})
 
 # ============ LOGOUT ============
 def logout_view(request):
