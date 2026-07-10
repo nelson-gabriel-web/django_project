@@ -11,33 +11,33 @@
         </p>
     </div>
     
-    <div class="card-grid">
-        <a href="{% url 'criar_requisicao' %}" class="card">
-            <div class="icon">🔍</div>
-            <div class="label">Nova Requisição</div>
-            <div class="sub">Peça o que precisa</div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+        <a href="{% url 'criar_requisicao' %}" class="btn-metal" style="padding: 20px; text-align: center; text-decoration: none; display: block;">
+            <div style="font-size: 32px;">🔍</div>
+            <div style="font-size: 16px; font-weight: 600; margin-top: 5px;">Nova Requisição</div>
+            <div style="font-size: 12px; opacity: 0.7;">Peça o que precisa</div>
         </a>
-        <a href="{% url 'minhas_requisicoes' %}" class="card">
-            <div class="icon">📋</div>
-            <div class="label">Minhas Requisições</div>
-            <div class="sub">Acompanhe seus pedidos</div>
+        <a href="{% url 'minhas_requisicoes' %}" class="btn-metal" style="padding: 20px; text-align: center; text-decoration: none; display: block;">
+            <div style="font-size: 32px;">📋</div>
+            <div style="font-size: 16px; font-weight: 600; margin-top: 5px;">Minhas Requisições</div>
+            <div style="font-size: 12px; opacity: 0.7;">Acompanhe seus pedidos</div>
         </a>
-        <a href="#" class="card">
-            <div class="icon">⭐</div>
-            <div class="label">Avaliações</div>
-            <div class="sub">Avalie fornecedores</div>
+        <a href="#" class="btn-metal" style="padding: 20px; text-align: center; text-decoration: none; display: block; background: rgba(255,255,255,0.05); box-shadow: none;">
+            <div style="font-size: 32px;">⭐</div>
+            <div style="font-size: 16px; font-weight: 600; margin-top: 5px;">Avaliações</div>
+            <div style="font-size: 12px; opacity: 0.7;">Avalie fornecedores</div>
         </a>
-        <a href="#" class="card">
-            <div class="icon">💰</div>
-            <div class="label">Transações</div>
-            <div class="sub">Histórico de compras</div>
+        <a href="#" class="btn-metal" style="padding: 20px; text-align: center; text-decoration: none; display: block; background: rgba(255,255,255,0.05); box-shadow: none;">
+            <div style="font-size: 32px;">💰</div>
+            <div style="font-size: 16px; font-weight: 600; margin-top: 5px;">Transações</div>
+            <div style="font-size: 12px; opacity: 0.7;">Histórico de compras</div>
         </a>
     </div>
     
     <h3 style="color: #fff; margin: 20px 0 10px;">📌 Últimas Requisições</h3>
     <div style="background: rgba(255,255,255,0.03); padding: 30px; border-radius: 12px; text-align: center;">
         <p style="color: rgba(255,255,255,0.4);">Nenhuma requisição encontrada.</p>
-        <a href="{% url 'criar_requisicao' %}" class="btn-metal" style="margin-top: 15px; width: auto; padding: 10px 20px;">
+        <a href="{% url 'criar_requisicao' %}" class="btn-metal" style="margin-top: 15px; width: auto; padding: 10px 20px; display: inline-block;">
             <i class="fas fa-plus"></i> Criar Requisição
         </a>
     </div>
