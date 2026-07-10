@@ -99,3 +99,11 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'teuemail@gmail.com'  # Substitui pelo teu email
 EMAIL_HOST_PASSWORD = 'tuapassword'  # Substitui pela tua password
 DEFAULT_FROM_EMAIL = 'Nhonga <noreply@nhonga.com>'
+
+# ============================================
+# CONFIGURAÇÕES DE REDIRECIONAMENTO
+# ============================================
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'login'
