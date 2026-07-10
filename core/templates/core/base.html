@@ -63,9 +63,7 @@
             width: 100%;
             padding: 10px 0;
         }
-        .menu.open {
-            display: flex;
-        }
+        .menu.open { display: flex; }
         .menu a {
             display: block;
             padding: 10px 14px;
@@ -93,37 +91,23 @@
         .mensagem-success { background: rgba(46, 125, 50, 0.2); color: #a5d6a7; border: 1px solid rgba(46, 125, 50, 0.3); }
         .mensagem-error { background: rgba(198, 40, 40, 0.2); color: #ef9a9a; border: 1px solid rgba(198, 40, 40, 0.3); }
         .mensagem-info { background: rgba(0, 140, 186, 0.2); color: #80deea; border: 1px solid rgba(0, 140, 186, 0.3); }
-        .tooltip-container { position: relative; display: inline-block; }
-        .tooltip-container .tooltip-text {
-            visibility: hidden;
-            max-width: 160px;
-            background-color: #333;
-            color: #fff;
+        .btn-metal {
+            background: linear-gradient(135deg, #c0c0c0, #e8e8e8, #a0a0a0);
+            color: #1a1a2e;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
             text-align: center;
-            border-radius: 4px;
-            padding: 4px 8px;
-            position: absolute;
-            z-index: 1;
-            bottom: 130%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 10px;
-            white-space: nowrap;
-            font-weight: 400;
+            box-shadow: 0 4px 15px rgba(192, 192, 192, 0.3);
+            width: 100%;
         }
-        .tooltip-container .tooltip-text::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -4px;
-            border-width: 4px;
-            border-style: solid;
-            border-color: #333 transparent transparent transparent;
-        }
-        .tooltip-container:hover .tooltip-text { visibility: visible; opacity: 1; }
+        .btn-metal:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(192, 192, 192, 0.5); }
+        .btn-metal-sair { background: linear-gradient(135deg, #888, #aaa, #666); color: #fff; }
         .form-group { margin-bottom: 14px; }
         .form-group label { display: block; font-weight: 600; font-size: 14px; color: rgba(255, 255, 255, 0.8); margin-bottom: 4px; }
         .form-control {
@@ -151,92 +135,12 @@
             color: rgba(255, 255, 255, 0.4);
         }
         .password-toggle:hover { color: #c0c0c0; }
-        .btn-metal {
-            background: linear-gradient(135deg, #c0c0c0, #e8e8e8, #a0a0a0);
-            color: #1a1a2e;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(192, 192, 192, 0.3);
-            width: 100%;
-        }
-        .btn-metal:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(192, 192, 192, 0.5); }
-        .btn-metal-sair { background: linear-gradient(135deg, #888, #aaa, #666); color: #fff; }
-        .table-wrapper {
-            overflow-x: auto;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            margin: 12px 0;
-        }
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-            min-width: 480px;
-            color: #fff;
-        }
-        .table th {
-            background: rgba(255, 255, 255, 0.06);
-            padding: 10px 12px;
-            text-align: left;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.8);
-            border-bottom: 2px solid rgba(255, 255, 255, 0.06);
-        }
-        .table td { padding: 10px 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); }
-        .table .actions { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
-        .card-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin: 12px 0;
-        }
-        .card {
-            background: rgba(255, 255, 255, 0.04);
-            padding: 16px 12px;
-            border-radius: 12px;
-            text-align: center;
-            text-decoration: none;
-            color: rgba(255, 255, 255, 0.8);
-            transition: all 0.3s;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .card:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(192, 192, 192, 0.2); }
-        .card .icon { font-size: 28px; }
-        .card .label { font-size: 12px; font-weight: 600; margin-top: 4px; }
-        .card .sub { font-size: 11px; color: rgba(255, 255, 255, 0.4); }
-        .stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .stat {
-            background: rgba(255, 255, 255, 0.04);
-            padding: 14px 10px;
-            border-radius: 12px;
-            text-align: center;
-        }
-        .stat .num { font-size: 24px; font-weight: 700; color: #fff; }
-        .stat .label { font-size: 12px; color: rgba(255, 255, 255, 0.5); }
         @media (max-width: 480px) {
             body { padding: 8px; }
             .container { padding: 12px; border-radius: 12px; }
             .header h1 { font-size: 18px; }
-            .card-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-            .stats { grid-template-columns: 1fr 1fr; gap: 8px; }
-            .stat { padding: 10px 8px; }
-            .stat .num { font-size: 20px; }
             .btn-metal { font-size: 13px; padding: 8px 16px; }
             .form-control { font-size: 14px; padding: 8px 12px; }
-            .table { font-size: 12px; min-width: 400px; }
-            .table th, .table td { padding: 6px 8px; }
             .menu a { font-size: 13px; padding: 8px 12px; }
         }
         @media (min-width: 768px) {
@@ -245,8 +149,6 @@
             .menu-toggle { display: none; }
             .menu { display: flex !important; flex-direction: row; gap: 12px; width: auto; padding: 0; }
             .menu a { background: transparent; padding: 6px 12px; }
-            .card-grid { grid-template-columns: repeat(3, 1fr); }
-            .stats { grid-template-columns: repeat(4, 1fr); }
             .btn-metal { width: auto; }
         }
     </style>
@@ -261,61 +163,24 @@
         </audio>
 
         <div class="header">
-    <h1>🔒 Nhonga</h1>
-    <!-- SELETOR DE MOEDA -->
-    <div class="moeda-selector" style="margin-top: 8px;">
-        <form method="post" action="{% url 'alternar_moeda' %}" style="display: inline;">
-            {% csrf_token %}
-            <select name="moeda" onchange="this.form.submit()" style="padding: 6px 12px; border-radius: 6px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); font-size: 13px; cursor: pointer;">
-                <option value="">💱 Moeda</option>
-                {% for moeda in moedas %}
-                    <option value="{{ moeda.id }}" 
-                        {% if request.session.moeda_usuario == moeda.id|stringformat:"s" %}selected{% endif %}>
-                        {{ moeda.simbolo }} {{ moeda.codigo }}
-                    </option>
-                {% endfor %}
-            </select>
-        </form>
-    </div>
-    <!-- FIM SELETOR DE MOEDA -->
-</div>
+            <h1>🔒 Nhonga</h1>
+        </div>
 
         <button class="menu-toggle" onclick="toggleMenu()">☰ Menu</button>
 
         <div class="menu" id="mainMenu">
-    <a href="{% url 'home' %}">🏠 Início</a>
-    <a href="{% url 'adicionar' %}">➕ Adicionar</a>
-    <a href="{% url 'listar' %}">📋 Contactos</a>
-    <a href="{% url 'buscar' %}">🔍 Buscar</a>
-    <a href="{% url 'perfil' %}">👤 Perfil</a>
-    <a href="{% url 'dashboard_seguranca' %}">🔒 Segurança</a>
-    <a href="{% url 'comunidades_list' %}">🏘️ Comunidades</a>
-    <a href="{% url 'dashboard_cliente' %}">🛒 Cliente</a>
-    <a href="{% url 'dashboard_fornecedor' %}">🏢 Fornecedor</a>
-    
-    <!-- SELETOR DE MOEDA NO MENU -->
-    <div style="padding: 8px 14px; border-top: 1px solid rgba(255,255,255,0.06); margin-top: 4px;">
-        <form method="post" action="{% url 'alternar_moeda' %}" style="display: flex; align-items: center; gap: 8px;">
-<a href="{% url 'moedas_list' %}">💰 Moedas</a>
-            {% csrf_token %}
-            <span style="color: rgba(255,255,255,0.6); font-size: 13px;">💱</span>
-            <select name="moeda" onchange="this.form.submit()" style="flex: 1; padding: 6px 10px; border-radius: 6px; background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.15); font-size: 13px; cursor: pointer;">
-                <option value="">Moeda</option>
-                {% for moeda in moedas %}
-                    <option value="{{ moeda.id }}" 
-                        {% if request.session.moeda_usuario == moeda.id|stringformat:"s" %}selected{% endif %}>
-                        {{ moeda.simbolo }} {{ moeda.codigo }}
-                    </option>
-                {% endfor %}
-            </select>
-        </form>
-    </div>
-    <!-- FIM SELETOR DE MOEDA -->
-    
-    {% if user.is_authenticated %}
-        <a href="{% url 'logout' %}" class="sair">🔓 Sair</a>
-    {% endif %}
-</div>
+            <a href="{% url 'home' %}">🏠 Início</a>
+            <a href="{% url 'adicionar' %}">➕ Adicionar</a>
+            <a href="{% url 'listar' %}">📋 Contactos</a>
+            <a href="{% url 'buscar' %}">🔍 Buscar</a>
+            <a href="{% url 'perfil' %}">👤 Perfil</a>
+            <a href="{% url 'dashboard_seguranca' %}">🔒 Segurança</a>
+            <a href="{% url 'comunidades_list' %}">🏘️ Comunidades</a>
+            <a href="{% url 'moedas_list' %}">💰 Moedas</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="sair">🔓 Sair</a>
+            {% endif %}
+        </div>
 
         {% if messages %}
             {% for message in messages %}
@@ -356,32 +221,5 @@
             }
         }
     </script>
-    <!-- SELETOR DE MOEDA NO RODAPÉ -->
-    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); text-align: center;">
-        <form method="post" action="{% url 'alternar_moeda' %}" style="display: inline;">
-            {% csrf_token %}
-            <label style="color: rgba(255,255,255,0.5); font-size: 13px; margin-right: 8px;">💱 Moeda:</label>
-            <select name="moeda" onchange="this.form.submit()" style="padding: 6px 12px; border-radius: 6px; background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.15); font-size: 13px; cursor: pointer;">
-                <option value="">Selecione</option>
-                {% for moeda in moedas %}
-                    <option value="{{ moeda.id }}" 
-                        {% if request.session.moeda_usuario == moeda.id|stringformat:"s" %}selected{% endif %}>
-                        {{ moeda.simbolo }} {{ moeda.codigo }} - {{ moeda.nome }}
-                    </option>
-                {% endfor %}
-            </select>
-        </form>
-    </div>
-    <!-- FIM SELETOR DE MOEDA -->
-
-    <script>
-        function toggleMenu() {
-            const menu = document.getElementById('mainMenu');
-            menu.classList.toggle('open');
-        }
-        // ... resto do script ...
-    </script>
-</body>
-</html>
 </body>
 </html>
