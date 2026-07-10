@@ -11,33 +11,25 @@
         </p>
     </div>
     
-    <div class="card-grid">
-        <a href="#" class="card">
-            <div class="icon">📦</div>
-            <div class="label">Registrar Produto</div>
-            <div class="sub">Adicione seus produtos</div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+        <a href="#" class="btn-metal" style="padding: 10px 15px; font-size: 13px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            📦 Registrar Produto
         </a>
-        <a href="{% url 'pedidos_proximos' %}" class="card">
-            <div class="icon">📋</div>
-            <div class="label">Ver Pedidos Próximos</div>
-            <div class="sub">Requisições perto de si</div>
+        <a href="{% url 'pedidos_proximos' %}" class="btn-metal" style="padding: 10px 15px; font-size: 13px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            📋 Pedidos Próximos
         </a>
-        <a href="#" class="card">
-            <div class="icon">💰</div>
-            <div class="label">Transações</div>
-            <div class="sub">Histórico de vendas</div>
+        <a href="#" class="btn-metal" style="padding: 10px 15px; font-size: 13px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(255,255,255,0.08); box-shadow: none;">
+            💰 Transações
         </a>
-        <a href="#" class="card">
-            <div class="icon">⭐</div>
-            <div class="label">Avaliação</div>
-            <div class="sub">Veja suas avaliações</div>
+        <a href="#" class="btn-metal" style="padding: 10px 15px; font-size: 13px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(255,255,255,0.08); box-shadow: none;">
+            ⭐ Avaliações
         </a>
     </div>
     
-    <h3 style="color: #fff; margin: 20px 0 10px;">📦 Meus Produtos</h3>
-    <div style="background: rgba(255,255,255,0.03); padding: 30px; border-radius: 12px; text-align: center;">
-        <p style="color: rgba(255,255,255,0.4);">Nenhum produto registado.</p>
-        <a href="#" class="btn-metal" style="margin-top: 15px; width: auto; padding: 10px 20px;">
+    <h3 style="color: #fff; margin: 20px 0 10px; font-size: 16px;">📦 Meus Produtos</h3>
+    <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; text-align: center;">
+        <p style="color: rgba(255,255,255,0.4); font-size: 14px;">Nenhum produto registado.</p>
+        <a href="#" class="btn-metal" style="margin-top: 10px; width: auto; padding: 8px 16px; font-size: 13px; display: inline-block;">
             <i class="fas fa-plus"></i> Adicionar Produto
         </a>
     </div>
