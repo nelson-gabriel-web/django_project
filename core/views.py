@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
@@ -12,14 +12,21 @@ from .models import Contato, PerfilUsuario, Moeda, PreferenciaMoeda, RequisicaoC
 from .forms import ContatoForm, PerfilUsuarioForm, RequisicaoCompraForm
 
 
+
+
 # ============================================
 # SPLASH E HOME
 # ============================================
 
 def splash(request):
+    """Página inicial - redireciona para home se já estiver logado"""
+    if request.user.is_authenticated:
+        return redirect('home')
     return render(request, 'core/splash.html')
 
+@login_required
 def home(request):
+    """Página inicial após login - apenas para utilizadores autenticados"""
     return render(request, 'core/home.html')
 
 
