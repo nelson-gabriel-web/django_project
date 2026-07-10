@@ -1,0 +1,33 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <h2 style="color: #fff; font-weight: 300; margin-bottom: 8px;">💰 Moedas Disponíveis</h2>
+    <p style="color: rgba(255,255,255,0.5); margin-bottom: 24px;">Selecione a sua moeda preferida para transações.</p>
+
+    {% if preferencia.moeda %}
+        <div style="background: rgba(255,255,255,0.04); border-radius: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid rgba(192,192,192,0.2);">
+            <p style="color: rgba(255,255,255,0.6);">Moeda atual: <strong style="color: #c0c0c0;">{{ preferencia.moeda.simbolo }} {{ preferencia.moeda.codigo }}</strong></p>
+        </div>
+    {% endif %}
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        {% for moeda in moedas %}
+            <form method="post" action="{% url 'definir_moeda_preferida' %}">
+                {% csrf_token %}
+                <input type="hidden" name="moeda_id" value="{{ moeda.id }}">
+                <button type="submit" style="width: 100%; background: {% if preferencia.moeda and preferencia.moeda.id == moeda.id %}rgba(192,192,192,0.2){% else %}rgba(255,255,255,0.04){% endif %}; border: 1px solid {% if preferencia.moeda and preferencia.moeda.id == moeda.id %}#c0c0c0{% else %}rgba(255,255,255,0.06){% endif %}; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s;">
+                    <div style="font-size: 28px; color: #c0c0c0;">{{ moeda.simbolo }}</div>
+                    <div style="color: #fff; font-weight: 600; margin-top: 4px;">{{ moeda.codigo }}</div>
+                    <div style="color: rgba(255,255,255,0.4); font-size: 13px;">{{ moeda.nome }}</div>
+                    <div style="color: rgba(255,255,255,0.3); font-size: 11px; margin-top: 4px;">1 USD = {{ moeda.taxa_cambio }} {{ moeda.codigo }}</div>
+                </button>
+            </form>
+        {% endfor %}
+    </div>
+
+    <div style="margin-top: 20px; text-align: center;">
+        <a href="{% url 'home' %}" style="color: rgba(255,255,255,0.4); text-decoration: none;">↩️ Voltar</a>
+    </div>
+</div>
+{% endblock %}

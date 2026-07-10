@@ -2,40 +2,31 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    # Splash e Home
     path('', views.splash, name='splash'),
     path('home/', views.home, name='home'),
+    
+    # Autenticação
     path('registar/', views.registar, name='registar'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
+    
+    # Contactos
     path('adicionar/', views.adicionar_contato, name='adicionar'),
     path('editar/<int:pk>/', views.editar_contato, name='editar'),
     path('excluir/<int:pk>/', views.excluir_contato, name='excluir'),
     path('sucesso/', views.sucesso, name='sucesso'),
     path('listar/', views.listar_contatos, name='listar'),
     path('buscar/', views.buscar_contatos, name='buscar'),
+    
+    # Recuperação de Password
     path('recuperar/', views.recuperar_password, name='recuperar'),
     path('redefinir/<uidb64>/<token>/', views.redefinir_password, name='redefinir'),
-    path('dashboard/', views.dashboard_seguranca, name='dashboard_seguranca'),
-    path('comunidades/', views.comunidades_list, name='comunidades_list'),
-    path('comunidade/adicionar/', views.adicionar_comunidade, name='adicionar_comunidade'),
-    path('comunidade/<int:pk>/', views.comunidade_detalhe, name='comunidade_detalhe'),
-    path('comunidade/<int:comunidade_pk>/crime/adicionar/', views.adicionar_crime, name='adicionar_crime'),
-    path('comunidade/<int:comunidade_pk>/estrategia/adicionar/', views.adicionar_estrategia, name='adicionar_estrategia'),
-    path('comunidade/<int:comunidade_pk>/avaliar/', views.avaliar_seguranca, name='avaliar_seguranca'),
-    path('comunidade/relatorio/<int:pk>/', views.relatorio_comunidade, name='relatorio_comunidade'),
-    path('api/evento/', views.api_evento, name='api_evento'),
-path('perfil/', views.perfil, name='perfil'),
-# Plataforma de Intermediação Nhonga
-path('cliente/dashboard/', views.dashboard_cliente, name='dashboard_cliente'),
-path('cliente/pedido/criar/', views.criar_pedido, name='criar_pedido'),
-path('cliente/pedidos/', views.meus_pedidos, name='meus_pedidos'),
-path('cliente/pedido/<int:pedido_id>/fornecedores/', views.fornecedores_proximos, name='fornecedores_proximos'),
-path('cliente/pedido/<int:pedido_id>/confirmar/', views.confirmar_compra, name='confirmar_compra'),
-path('cliente/transacao/<int:transacao_id>/confirmar-rececao/', views.confirmar_rececao, name='confirmar_rececao'),
-
-path('fornecedor/dashboard/', views.dashboard_fornecedor, name='dashboard_fornecedor'),
-path('fornecedor/registar/', views.registar_fornecedor, name='registar_fornecedor'),
-path('fornecedor/pedidos/', views.pedidos_proximos, name='pedidos_proximos'),
-path('fornecedor/produto/registar/', views.registar_produto, name='registar_produto'),
-path('fornecedor/transacoes/', views.transacoes_fornecedor, name='transacoes_fornecedor'),
+    
+    # Perfil
+    path('perfil/', views.perfil, name='perfil'),
+    
+    # Moedas
+    path('moedas/', views.moedas_list, name='moedas_list'),
+    path('moeda/definir/', views.definir_moeda_preferida, name='definir_moeda_preferida'),
 ]
