@@ -18,26 +18,16 @@
         .splash-container {
             text-align: center;
             padding: 20px;
-            cursor: pointer;
         }
         .logo-wrapper {
             display: inline-block;
-            transition: transform 0.3s ease;
-        }
-        .logo-wrapper:hover {
-            transform: scale(1.05);
-        }
-        .logo-wrapper:active {
-            transform: scale(0.95);
         }
         .logo-img {
             width: 200px;
             height: auto;
-            /* Luz branca atrás do logotipo */
             filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.3));
             animation: glowPulse 3s ease-in-out infinite;
         }
-        /* Luz branca a oscilar devagar */
         @keyframes glowPulse {
             0%, 100% {
                 filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.2));
@@ -45,11 +35,6 @@
             50% {
                 filter: drop-shadow(0 0 60px rgba(255, 255, 255, 0.6));
             }
-        }
-        /* Quando clica, a luz para e fica estatica */
-        .logo-img.static {
-            animation: none !important;
-            filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.3));
         }
         .loading-dots {
             display: none;
@@ -103,25 +88,16 @@
     </div>
 
     <script>
-        const logo = document.getElementById('logo');
-        const logoWrapper = document.getElementById('logoWrapper');
-        const loadingDots = document.getElementById('loadingDots');
-        let isProcessing = false;
-
-        logoWrapper.addEventListener('click', function(e) {
-            e.stopPropagation();
+        // DOM carregado
+        document.addEventListener('DOMContentLoaded', function() {
+            const logo = document.getElementById('logo');
+            const loadingDots = document.getElementById('loadingDots');
             
-            if (isProcessing) return;
-            
-            isProcessing = true;
-            
-            // Para a animação da luz - fica estática
+            // Luz para e mostra dots
             logo.classList.add('static');
-            
-            // Mostra os dots cinzentos
             loadingDots.classList.add('active');
             
-            // Aguarda 4 segundos e redireciona para o LOGIN
+            // Após 4 segundos, redireciona para o login
             setTimeout(function() {
                 window.location.href = "/login/";
             }, 4000);
