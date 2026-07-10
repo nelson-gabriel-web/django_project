@@ -1,0 +1,75 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+        <h2 style="color: #fff;">🔍 Minhas Requisições</h2>
+        <a href="{% url 'criar_requisicao' %}" class="btn-metal" style="width: auto; padding: 10px 20px;">
+            <i class="fas fa-plus"></i> Nova Requisição
+        </a>
+    </div>
+    
+    {% if requisicoes %}
+        <div class="table-wrapper">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Título</th>
+                        <th>Categoria</th>
+                        <th>Status</th>
+                        <th>Data</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in requisicoes %}
+                    <tr>
+                        <td>{{ req.id }}</td>
+                        <td>{{ req.titulo }}</td>
+                        <td>{{ req.categoria|default:"-" }}</td>
+                        <td>
+                            <span style="
+                                background: 
+                                    {% if req.status == 'pendente' %}#f1c40f{% endif %}
+                                    {% if req.status == 'em_analise' %}#3498db{% endif %}
+                                    {% if req.status == 'encontrado' %}#2ecc71{% endif %}
+                                    {% if req.status == 'concluido' %}#27ae60{% endif %}
+                                    {% if req.status == 'cancelado' %}#e74c3c{% endif %};
+                                padding: 4px 12px;
+                                border-radius: 20px;
+                                color: #000;
+                                font-size: 12px;
+                                font-weight: 600;
+                            ">
+                                {{ req.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ req.data_criacao|date:"d/m/Y" }}</td>
+                        <td>
+                            <div class="actions">
+                                <a href="{% url 'detalhe_requisicao' req.id %}" class="btn-metal" style="padding: 4px 12px; font-size: 12px;">
+                                    Ver
+                                </a>
+                                {% if req.status == 'pendente' %}
+                                    <a href="{% url 'cancelar_requisicao' req.id %}" class="btn-metal" style="padding: 4px 12px; font-size: 12px; background: #e74c3c;" onclick="return confirm('Cancelar esta requisição?')">
+                                        Cancelar
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 40px; background: rgba(255,255,255,0.03); border-radius: 12px;">
+            <i class="fas fa-search" style="font-size: 48px; color: rgba(255,255,255,0.2);"></i>
+            <h3 style="color: rgba(255,255,255,0.5); margin-top: 15px;">Nenhuma requisição encontrada</h3>
+            <p style="color: rgba(255,255,255,0.3);">Clique em "Nova Requisição" para começar.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

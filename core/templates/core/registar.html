@@ -1,49 +1,40 @@
-{% extends 'core/base_login.html' %}
+{% extends 'core/base.html' %}
+{% load static %}
 
 {% block content %}
-<div style="max-width: 400px; margin: 0 auto; text-align: center;">
-    <div style="font-size: 48px; margin-bottom: 8px;">📝</div>
-    <h2 style="font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 4px;">Registo</h2>
-    <p style="color: rgba(255,255,255,0.6); margin-bottom: 32px;">Crie a sua conta.</p>
-
-    <form method="post">
+<div class="container" style="max-width: 500px; margin: 0 auto;">
+    <h2 style="color: #fff; text-align: center; margin-bottom: 30px;">📝 Criar Conta</h2>
+    
+    <form method="post" style="background: rgba(255,255,255,0.05); padding: 30px; border-radius: 12px;">
         {% csrf_token %}
         
         <div class="form-group">
-            <label style="color: rgba(255,255,255,0.8);">Utilizador</label>
-            <input type="text" name="username" class="form-control" placeholder="Escolha um nome de utilizador" required>
+            <label style="color: #fff;">Nome de Utilizador</label>
+            {{ form.username }}
         </div>
         
         <div class="form-group">
-            <label style="color: rgba(255,255,255,0.8);">Email</label>
-            <input type="email" name="email" class="form-control" placeholder="Digite seu email" required>
+            <label style="color: #fff;">Email</label>
+            {{ form.email }}
         </div>
         
         <div class="form-group">
-            <label style="color: rgba(255,255,255,0.8);">Palavra-passe</label>
-            <div class="password-wrapper">
-                <input type="password" id="passwordRegisto1" name="password1" class="form-control" placeholder="Digite sua palavra-passe" required>
-                <i id="eyeRegisto1" onclick="togglePassword('passwordRegisto1', 'eyeRegisto1')" 
-                   class="fas fa-eye-slash password-toggle"></i>
-            </div>
+            <label style="color: #fff;">Palavra-passe</label>
+            {{ form.password1 }}
         </div>
         
         <div class="form-group">
-            <label style="color: rgba(255,255,255,0.8);">Confirmar Palavra-passe</label>
-            <div class="password-wrapper">
-                <input type="password" id="passwordRegisto2" name="password2" class="form-control" placeholder="Confirme sua palavra-passe" required>
-                <i id="eyeRegisto2" onclick="togglePassword('passwordRegisto2', 'eyeRegisto2')" 
-                   class="fas fa-eye-slash password-toggle"></i>
-            </div>
+            <label style="color: #fff;">Confirmar Palavra-passe</label>
+            {{ form.password2 }}
         </div>
         
-        <button type="submit" style="background: #28a745; color: #fff; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: background 0.3s;">
-            ✅ Registar
+        <button type="submit" class="btn-metal" style="width: 100%; margin-top: 10px;">
+            <i class="fas fa-user-plus"></i> Criar Conta
         </button>
     </form>
-
-    <p style="margin-top: 20px; color: rgba(255,255,255,0.5);">
-        Já tem conta? <a href="{% url 'login' %}" style="color: #4fc3f7; text-decoration: none;">Entre aqui</a>
+    
+    <p style="text-align: center; color: rgba(255,255,255,0.5); margin-top: 15px;">
+        Já tem conta? <a href="{% url 'login' %}" style="color: #c0c0c0;">Faça login</a>
     </p>
 </div>
 {% endblock %}

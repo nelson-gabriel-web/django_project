@@ -1,0 +1,75 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2 style="color: #fff; margin-bottom: 20px;">🔍 Nova Requisição de Compra</h2>
+    
+    <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+        <p style="color: rgba(255,255,255,0.6);">
+            <i class="fas fa-info-circle"></i> 
+            Descreva o que precisa comprar. Fornecedores próximos serão notificados por email.
+        </p>
+    </div>
+    
+    <form method="post" style="max-width: 800px;">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label style="color: #fff;">Título da Requisição</label>
+            {{ form.titulo }}
+        </div>
+        
+        <div class="form-group">
+            <label style="color: #fff;">Descrição Detalhada</label>
+            {{ form.descricao }}
+        </div>
+        
+        <div class="form-group">
+            <label style="color: #fff;">Categoria</label>
+            {{ form.categoria }}
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+                <label style="color: #fff;">Quantidade</label>
+                {{ form.quantidade }}
+            </div>
+            <div class="form-group">
+                <label style="color: #fff;">Valor Máximo</label>
+                {{ form.valor_maximo }}
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label style="color: #fff;">Moeda</label>
+            {{ form.moeda }}
+        </div>
+        
+        <div class="form-group">
+            <label style="color: #fff;">Data Limite</label>
+            {{ form.data_limite }}
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button type="submit" class="btn-metal" style="flex: 1;">
+                <i class="fas fa-paper-plane"></i> Enviar Requisição
+            </button>
+            <a href="{% url 'minhas_requisicoes' %}" class="btn-metal" style="background: #444; box-shadow: none; flex: 0.3;">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const now = new Date();
+        const sevenDaysLater = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+        const input = document.getElementById('id_data_limite');
+        if (input) {
+            input.value = sevenDaysLater.toISOString().slice(0, 16);
+        }
+    });
+</script>
+{% endblock %}

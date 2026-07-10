@@ -2,204 +2,47 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nhonga</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: #000000;
-            min-height: 100vh;
+            background: #0a0e1a;
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
             font-family: Arial, sans-serif;
-            overflow: hidden;
         }
-        
         .splash-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            width: 100%;
-            padding: 20px;
+            text-align: center;
         }
-        
-        .logo-wrapper {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
+        .logo {
+            font-size: 48px;
+            color: #c0c0c0;
+            margin-bottom: 20px;
         }
-        
-        /* Luz a oscilar atrás do logotipo */
-        .glow {
-            position: absolute;
-            width: 350px;
-            height: 350px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(192, 192, 192, 0.3) 0%, rgba(192, 192, 192, 0.1) 40%, transparent 70%);
-            animation: pulseGlow 2s ease-in-out infinite;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
+        .loading {
+            color: rgba(255,255,255,0.3);
+            font-size: 14px;
+            animation: blink 1s infinite;
         }
-        
-        .glow.static {
-            animation: none;
-            opacity: 0.6;
-            transform: scale(1);
-        }
-        
-        @keyframes pulseGlow {
-            0%, 100% {
-                transform: scale(0.8);
-                opacity: 0.3;
-            }
-            50% {
-                transform: scale(1.2);
-                opacity: 0.8;
-            }
-        }
-        
-        .logo-img {
-            width: 200px;
-            height: 200px;
-            object-fit: contain;
-            position: relative;
-            z-index: 1;
-            transition: transform 0.3s;
-            filter: drop-shadow(0 0 20px rgba(192, 192, 192, 0.2));
-        }
-        
-        .logo-img:hover {
-            transform: scale(1.05);
-        }
-        
-        /* Loading dots */
-        .loading-dots {
-            margin-top: 30px;
-            display: none;
-            gap: 10px;
-        }
-        
-        .loading-dots.show {
-            display: flex;
-        }
-        
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #c0c0c0, #e8e8e8, #a0a0a0);
-            animation: dotPulse 1.2s infinite;
-            box-shadow: 0 0 10px rgba(192, 192, 192, 0.3);
-        }
-        
-        .dot:nth-child(1) { animation-delay: 0s; }
-        .dot:nth-child(2) { animation-delay: 0.2s; }
-        .dot:nth-child(3) { animation-delay: 0.4s; }
-        .dot:nth-child(4) { animation-delay: 0.6s; }
-        
-        @keyframes dotPulse {
-            0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
-            40% { transform: scale(1); opacity: 1; }
-        }
-        
-        @media (max-width: 600px) {
-            .logo-img {
-                width: 140px;
-                height: 140px;
-            }
-            .glow {
-                width: 220px;
-                height: 220px;
-            }
-            .dot {
-                width: 10px;
-                height: 10px;
-            }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
     </style>
 </head>
 <body>
     <div class="splash-container">
-        <div class="logo-wrapper" id="logoWrapper">
-            <!-- Luz a oscilar -->
-            <div class="glow" id="glow"></div>
-            
-            <!-- Logotipo -->
-            <img src="{% static 'core/images/logo.png' %}" 
-                 alt="Nhonga" 
-                 class="logo-img"
-                 id="logoImg">
-        </div>
-        
-        <!-- Loading dots -->
-        <div class="loading-dots" id="loadingDots">
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-        </div>
+        <div class="logo">🔒 Nhonga</div>
+        <div class="loading">Carregando...</div>
     </div>
-
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const logoWrapper = document.getElementById('logoWrapper');
-            const logoImg = document.getElementById('logoImg');
-            const loadingDots = document.getElementById('loadingDots');
-            const glow = document.getElementById('glow');
-            
-            let animationStarted = false;
-            
-            function startAnimation() {
-                if (animationStarted) return;
-                animationStarted = true;
-                
-                // 1. Luz para de oscilar e fica estática
-                glow.classList.add('static');
-                
-                // 2. Logotipo mantém-se estático (não encolhe)
-                // Apenas muda o cursor
-                logoWrapper.style.cursor = 'default';
-                
-                // 3. Mostrar dots após 0.3s
-                setTimeout(() => {
-                    loadingDots.classList.add('show');
-                }, 300);
-                
-                // 4. Redirecionar para o login após 4 segundos
-                setTimeout(() => {
-                    window.location.href = "{% url 'login' %}";
-                }, 4000);
-            }
-            
-            // Clique no logotipo
-            logoWrapper.addEventListener('click', function(e) {
-                startAnimation();
-            });
-            
-            // Efeito hover
-            logoImg.addEventListener('mouseenter', function() {
-                if (!animationStarted) {
-                    this.style.transform = 'scale(1.05)';
-                }
-            });
-            
-            logoImg.addEventListener('mouseleave', function() {
-                if (!animationStarted) {
-                    this.style.transform = 'scale(1)';
-                }
-            });
-        });
+        setTimeout(function() {
+            window.location.href = "{% url 'home' %}";
+        }, 2000);
     </script>
 </body>
 </html>

@@ -1,39 +1,140 @@
 from django import forms
-from .models import Contato, PerfilUsuario
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from .models import Contato, PerfilUsuario, RequisicaoCompra, Moeda
 
 class ContatoForm(forms.ModelForm):
     class Meta:
         model = Contato
         fields = ['nome', 'telefone', 'endereco']
-        widgets = {
-            'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite seu nome'}),
-            'telefone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite seu telefone'}),
-            'endereco': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Digite seu endereço', 'rows': 3}),
-        }
 
-class PerfilForm(forms.ModelForm):
+class PerfilUsuarioForm(forms.ModelForm):
     class Meta:
         model = PerfilUsuario
         fields = [
-            'nome_completo', 'idade', 'data_nascimento', 'genero', 
-            'nacionalidade', 'estado_civil', 'endereco', 'nuit', 
-            'cidade', 'pais', 'email_comunicacao', 'whatsapp', 
-            'sms', 'push_notification', 'foto'
+            'nome_completo', 'idade', 'data_nascimento', 'genero',
+            'nacionalidade', 'estado_civil', 'cpf', 'nuit',
+            'endereco', 'endereco_completo', 'bairro', 'cidade',
+            'provincia', 'pais', 'telefone',
+            'receber_notificacoes', 'receber_emails', 'whatsapp', 'sms'
         ]
         widgets = {
-            'nome_completo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite seu nome completo'}),
-            'idade': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Digite sua idade'}),
-            'data_nascimento': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'genero': forms.Select(attrs={'class': 'form-control'}),
-            'nacionalidade': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite sua nacionalidade'}),
-            'estado_civil': forms.Select(attrs={'class': 'form-control'}),
-            'endereco': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Digite seu endereço'}),
-            'nuit': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite seu NUIT'}),
-            'cidade': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite sua cidade'}),
-            'pais': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite seu país'}),
-            'email_comunicacao': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'whatsapp': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'sms': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'push_notification': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'foto': forms.FileInput(attrs={'class': 'form-control'}),
+            'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
+            'endereco': forms.Textarea(attrs={'rows': 3}),
+            'endereco_completo': forms.Textarea(attrs={'rows': 3}),
         }
+
+# ============================================
+# FORMULÁRIO DE REQUISIÇÃO DE COMPRA
+# ============================================
+
+class RequisicaoCompraForm(forms.ModelForm):
+    class Meta:
+        model = RequisicaoCompra
+        fields = [
+            'titulo', 'descricao', 'categoria', 'quantidade',
+            'valor_maximo', 'moeda', 'data_limite'
+        ]
+        widgets = {
+            'descricao': forms.Textarea(attrs={
+                'rows': 5,
+                'placeholder': 'Descreva detalhadamente o que precisa comprar (marca, modelo, cor, especificações...)',
+                'class': 'form-control'
+            }),
+            'titulo': forms.TextInput(attrs={
+                'placeholder': 'Ex: Toyota Fortuner 2025',
+                'class': 'form-control'
+            }),
+            'quantidade': forms.NumberInput(attrs={
+                'min': 1,
+                'class': 'form-control'
+            }),
+            'valor_maximo': forms.NumberInput(attrs={
+                'step': '0.01',
+                'min': 0,
+                'placeholder': 'Deixe em branco se for negociável',
+                'class': 'form-control'
+            }),
+            'data_limite': forms.DateTimeInput(attrs={
+                'type': 'datetime-local',
+                'class': 'form-control'
+            }),
+            'categoria': forms.TextInput(attrs={
+                'placeholder': 'Ex: Veículos, Eletrônicos, Alimentação...',
+                'class': 'form-control'
+            }),
+            'moeda': forms.Select(attrs={'class': 'form-control'}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Carrega as moedas ativas, se existir
+        if Moeda.objects.exists():
+            self.fields['moeda'].queryset = Moeda.objects.filter(ativa=True)
+        else:
+            self.fields['moeda'].queryset = Moeda.objects.none()
+            self.fields['moeda'].help_text = "Nenhuma moeda cadastrada ainda. Cadastre uma moeda primeiro."
+
+
+# ============================================
+# FORMULÁRIO PARA ALTERNAR MOEDA
+# ============================================
+
+class AlternarMoedaForm(forms.Form):
+    moeda = forms.ModelChoiceField(
+        queryset=Moeda.objects.filter(ativa=True),
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+            'onchange': 'this.form.submit()'
+        }),
+        empty_label="Selecione uma moeda"
+    )
+
+# ============================================
+# NOVOS FORMULÁRIOS ADICIONADOS
+# ============================================
+
+from .models import RequisicaoCompra, Moeda  # ADICIONE ESTA LINHA NO TOPO DO ARQUIVO
+
+class RequisicaoCompraForm(forms.ModelForm):
+    class Meta:
+        model = RequisicaoCompra
+        fields = [
+            'titulo', 'descricao', 'categoria', 'quantidade',
+            'valor_maximo', 'moeda', 'data_limite'
+        ]
+        widgets = {
+            'descricao': forms.Textarea(attrs={
+                'rows': 5,
+                'placeholder': 'Descreva detalhadamente o que precisa comprar...',
+                'class': 'form-control'
+            }),
+            'titulo': forms.TextInput(attrs={
+                'placeholder': 'Ex: Toyota Fortuner 2025',
+                'class': 'form-control'
+            }),
+            'quantidade': forms.NumberInput(attrs={
+                'min': 1,
+                'class': 'form-control'
+            }),
+            'valor_maximo': forms.NumberInput(attrs={
+                'step': '0.01',
+                'min': 0,
+                'placeholder': 'Deixe em branco se for negociável',
+                'class': 'form-control'
+            }),
+            'data_limite': forms.DateTimeInput(attrs={
+                'type': 'datetime-local',
+                'class': 'form-control'
+            }),
+            'categoria': forms.TextInput(attrs={
+                'placeholder': 'Ex: Veículos, Eletrônicos...',
+                'class': 'form-control'
+            }),
+            'moeda': forms.Select(attrs={'class': 'form-control'}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if Moeda.objects.exists():
+            self.fields['moeda'].queryset = Moeda.objects.filter(ativa=True)

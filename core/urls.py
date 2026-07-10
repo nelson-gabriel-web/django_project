@@ -45,4 +45,35 @@ urlpatterns = [
     path('fornecedor/dashboard/', views.dashboard_fornecedor, name='dashboard_fornecedor'),
     path('fornecedor/registar/', views.registar_fornecedor, name='registar_fornecedor'),
     path('fornecedor/pedidos/', views.pedidos_proximos, name='pedidos_proximos'),
+
+# Requisições de Compra
+path('requisicao/criar/', views.criar_requisicao, name='criar_requisicao'),
+path('requisicoes/', views.minhas_requisicoes, name='minhas_requisicoes'),
+path('requisicao/<int:requisicao_id>/', views.detalhe_requisicao, name='detalhe_requisicao'),
+path('requisicao/<int:requisicao_id>/cancelar/', views.cancelar_requisicao, name='cancelar_requisicao'),
+path('requisicoes/fornecedor/', views.requisicoes_fornecedor, name='requisicoes_fornecedor'),
+path('requisicao/<int:requisicao_id>/interessar/', views.interessar_requisicao, name='interessar_requisicao'),
+
+    # URLs existentes
+    path('', views.home, name='home'),
+    path('adicionar/', views.adicionar_contato, name='adicionar'),
+    path('listar/', views.listar_contatos, name='listar'),
+    path('buscar/', views.buscar_contatos, name='buscar'),
+    path('perfil/', views.perfil, name='perfil'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('dashboard_seguranca/', views.dashboard_seguranca, name='dashboard_seguranca'),
+	path('perfil/', views.perfil, name='perfil'),
+    path('comunidades/', views.comunidades_list, name='comunidades_list'),
+    path('dashboard_cliente/', views.dashboard_cliente, name='dashboard_cliente'),
+    path('dashboard_fornecedor/', views.dashboard_fornecedor, name='dashboard_fornecedor'),
+    path('alternar-moeda/', views.alternar_moeda, name='alternar_moeda'),
+    
+    # URLs das Requisições de Compra
+    path('requisicao/criar/', views.criar_requisicao, name='criar_requisicao'),
+    path('requisicoes/', views.minhas_requisicoes, name='minhas_requisicoes'),
+    path('requisicao/<int:requisicao_id>/', views.detalhe_requisicao, name='detalhe_requisicao'),
+    path('requisicao/<int:requisicao_id>/cancelar/', views.cancelar_requisicao, name='cancelar_requisicao'),
+    path('requisicoes/fornecedor/', views.requisicoes_fornecedor, name='requisicoes_fornecedor'),
+    path('requisicao/<int:requisicao_id>/interessar/', views.interessar_requisicao, name='interessar_requisicao'),
 ]

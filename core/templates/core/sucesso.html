@@ -1,23 +1,14 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block content %}
-<h2>✅ Contacto Salvo!</h2>
-<p>O contacto foi adicionado com sucesso.</p>
-
-<div style="margin-top: 20px;">
-    <div class="tooltip-container" style="display: inline-block; margin-right: 10px;">
-        <a href="{% url 'adicionar' %}" style="background: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">➕ Adicionar Outro</a>
-        <span class="tooltip-text">Adicionar outro contacto</span>
-    </div>
-    
-    <div class="tooltip-container" style="display: inline-block; margin-right: 10px;">
-        <a href="{% url 'listar' %}" style="background: #008CBA; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">📋 Ver Lista</a>
-        <span class="tooltip-text">Ver todos os contactos</span>
-    </div>
-    
-    <div class="tooltip-container" style="display: inline-block;">
-        <a href="{% url 'home' %}" style="background: #555; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">🏠 Início</a>
-        <span class="tooltip-text">Voltar à página inicial</span>
+<div class="container" style="text-align: center; max-width: 500px; margin: 0 auto;">
+    <div style="background: rgba(255,255,255,0.05); padding: 40px; border-radius: 12px;">
+        <i class="fas fa-check-circle" style="font-size: 64px; color: #2ecc71;"></i>
+        <h2 style="color: #fff; margin: 20px 0;">✅ Operação realizada com sucesso!</h2>
+        <a href="{% url 'home' %}" class="btn-metal" style="width: auto; padding: 10px 30px;">
+            <i class="fas fa-home"></i> Voltar ao Início
+        </a>
     </div>
 </div>
 {% endblock %}
