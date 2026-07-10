@@ -36,3 +36,48 @@ urlpatterns = [
     path('moedas/', views.moedas_list, name='moedas_list'),
     path('moeda/definir/', views.definir_moeda_preferida, name='definir_moeda_preferida'),
 ]
+# ============================================
+# CLIENTE
+# ============================================
+
+@login_required
+def dashboard_cliente(request):
+    return render(request, 'core/cliente/dashboard_cliente.html', {
+        'pedidos': [],
+        'total_pedidos': 0,
+        'total_transacoes': 0,
+    })
+
+@login_required
+def criar_pedido(request):
+    if request.method == 'POST':
+        messages.success(request, 'Pedido criado com sucesso!')
+        return redirect('dashboard_cliente')
+    return render(request, 'core/cliente/criar_pedido.html')
+
+@login_required
+def meus_pedidos(request):
+    return render(request, 'core/cliente/meus_pedidos.html', {'pedidos': []})
+
+# ============================================
+# FORNECEDOR
+# ============================================
+
+@login_required
+def dashboard_fornecedor(request):
+    return render(request, 'core/fornecedor/dashboard_fornecedor.html', {
+        'produtos': [],
+        'total_produtos': 0,
+        'total_transacoes': 0,
+    })
+
+@login_required
+def registar_fornecedor(request):
+    if request.method == 'POST':
+        messages.success(request, 'Registo como fornecedor concluído!')
+        return redirect('dashboard_fornecedor')
+    return render(request, 'core/fornecedor/registar_fornecedor.html')
+
+@login_required
+def pedidos_proximos(request):
+    return render(request, 'core/fornecedor/pedidos_proximos.html', {'pedidos': []})
