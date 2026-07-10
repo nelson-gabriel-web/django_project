@@ -111,14 +111,9 @@
             if (isProcessing) return;
             
             isProcessing = true;
-            
-            // Para a animação da luz
             logo.classList.add('static');
-            
-            // Mostra os dots
             loadingDots.classList.add('active');
             
-            // Aguarda 4 segundos e redireciona para o LOGIN
             setTimeout(function() {
                 window.location.href = "/login/";
             }, 4000);
