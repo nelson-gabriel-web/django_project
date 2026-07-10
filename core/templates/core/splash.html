@@ -64,7 +64,7 @@
         .dot {
             width: 16px;
             height: 16px;
-            background: #888888; /* Cinzento */
+            background: #888888;
             border-radius: 50%;
             animation: dotBounce 1.4s infinite ease-in-out both;
         }
@@ -81,15 +81,6 @@
                 transform: scale(1);
                 background: #cccccc;
             }
-        }
-        .hint-text {
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 14px;
-            margin-top: 20px;
-            transition: opacity 0.3s ease;
-        }
-        .hint-text.hidden {
-            opacity: 0;
         }
         @media (max-width: 600px) {
             .logo-img { width: 150px; }
@@ -109,15 +100,12 @@
             <span class="dot"></span>
             <span class="dot"></span>
         </div>
-
-        <p class="hint-text" id="hintText">Clique no logotipo para continuar</p>
     </div>
 
     <script>
         const logo = document.getElementById('logo');
         const logoWrapper = document.getElementById('logoWrapper');
         const loadingDots = document.getElementById('loadingDots');
-        const hintText = document.getElementById('hintText');
         let isProcessing = false;
 
         logoWrapper.addEventListener('click', function(e) {
@@ -130,28 +118,12 @@
             // Para a animação da luz - fica estática
             logo.classList.add('static');
             
-            // Esconde o texto de dica
-            hintText.classList.add('hidden');
-            
             // Mostra os dots cinzentos
             loadingDots.classList.add('active');
             
-            // Aguarda 4 segundos
+            // Aguarda 4 segundos e redireciona para o LOGIN
             setTimeout(function() {
-                // Esconde os dots
-                loadingDots.classList.remove('active');
-                
-                // Mostra o texto de dica novamente
-                hintText.classList.remove('hidden');
-                
-                // Remove a classe static para voltar a animação
-                logo.classList.remove('static');
-                
-                // Libera para novos cliques
-                isProcessing = false;
-                
-                // Redireciona para a página inicial
-                window.location.href = "/home/";
+                window.location.href = "/login/";
             }, 4000);
         });
     </script>
