@@ -1,0 +1,37 @@
+===========================================
+COMANDOS ÚTEIS DO PROJETO NHONGA
+===========================================
+
+1. Rodar servidor local:
+   python manage.py runserver
+
+2. Fazer migrações:
+   python manage.py makemigrations
+   python manage.py migrate
+
+3. Coletar arquivos estáticos:
+   python manage.py collectstatic --noinput
+
+4. Criar superusuário:
+   python manage.py createsuperuser
+
+5. Criar moedas:
+   python criar_moedas.py
+
+6. Deploy:
+   git add .
+   git commit -m "mensagem"
+   git push origin main
+
+7. No Railway:
+   - Redeploy
+   - python manage.py collectstatic --noinput
+
+===========================================
+URLS IMPORTANTES
+===========================================
+- Local: http://127.0.0.1:8000
+- Splash: http://127.0.0.1:8000/
+- Login: http://127.0.0.1:8000/login/
+- Admin: http://127.0.0.1:8000/admin/
+- Deploy: web-production-a9ad2f.up.railway.app
