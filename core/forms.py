@@ -33,7 +33,8 @@ class RequisicaoCompraForm(forms.ModelForm):
         model = RequisicaoCompra
         fields = [
             'titulo', 'descricao', 'categoria', 'quantidade',
-            'valor_maximo', 'moeda', 'data_limite'
+            'valor_maximo', 'moeda', 'data_limite',
+            'marca', 'modelo', 'ano', 'cor', 'condicao'
         ]
         widgets = {
             'descricao': forms.Textarea(attrs={

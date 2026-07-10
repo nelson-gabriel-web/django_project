@@ -118,7 +118,7 @@ class PerfilUsuario(models.Model):
 
 
 # ============================================
-# MOEDAS PARA TRANSAÇÕES
+# MOEDAS
 # ============================================
 
 class Moeda(models.Model):
@@ -147,7 +147,7 @@ class PreferenciaMoeda(models.Model):
 
 
 # ============================================
-# NOVOS MODELOS ADICIONADOS
+# CATEGORIA
 # ============================================
 
 class Categoria(models.Model):
@@ -164,6 +164,10 @@ class Categoria(models.Model):
         verbose_name = "Categoria"
         verbose_name_plural = "Categorias"
 
+
+# ============================================
+# FORNECEDOR
+# ============================================
 
 class Fornecedor(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='fornecedor')
@@ -199,6 +203,10 @@ class Fornecedor(models.Model):
         verbose_name_plural = "Fornecedores"
 
 
+# ============================================
+# REQUISIÇÃO DE COMPRA
+# ============================================
+
 class RequisicaoCompra(models.Model):
     STATUS_CHOICES = (
         ('pendente', '🟡 Pendente'),
@@ -209,27 +217,45 @@ class RequisicaoCompra(models.Model):
         ('cancelado', '❌ Cancelado'),
     )
     
+    CONDICAO_CHOICES = (
+        ('novo', 'Novo'),
+        ('usado', 'Usado'),
+        ('seminovo', 'Seminovo'),
+    )
+    
     cliente = models.ForeignKey(User, on_delete=models.CASCADE, related_name='requisicoes')
     titulo = models.CharField(max_length=200, help_text="Ex: Toyota Fortuner 2025")
     descricao = models.TextField(help_text="Descrição detalhada do que precisa comprar")
     categoria = models.CharField(max_length=100, blank=True, null=True, help_text="Ex: Veículos, Eletrônicos, etc")
     
+    # Detalhes do produto
+    marca = models.CharField(max_length=100, blank=True, null=True, help_text="Ex: Toyota")
+    modelo = models.CharField(max_length=100, blank=True, null=True, help_text="Ex: Fortuner")
+    ano = models.IntegerField(blank=True, null=True, help_text="Ex: 2025")
+    cor = models.CharField(max_length=50, blank=True, null=True)
+    condicao = models.CharField(max_length=20, choices=CONDICAO_CHOICES, blank=True, null=True)
+    
+    # Detalhes da compra
     quantidade = models.PositiveIntegerField(default=1)
     valor_maximo = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True, help_text="Valor máximo que pretende pagar (MT)")
     moeda = models.ForeignKey(Moeda, on_delete=models.PROTECT, null=True, blank=True)
     
+    # Localização
     endereco_entrega = models.TextField(blank=True, null=True)
     cidade = models.CharField(max_length=100, blank=True, null=True)
     provincia = models.CharField(max_length=100, blank=True, null=True)
     
+    # Status e datas
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_atualizacao = models.DateTimeField(auto_now=True)
     data_limite = models.DateTimeField(null=True, blank=True, help_text="Data limite para encontrar fornecedor")
     
+    # Fornecedores interessados
     fornecedores_interessados = models.ManyToManyField(User, related_name='requisicoes_interessadas', blank=True)
     fornecedor_escolhido = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='requisicoes_escolhidas')
     
+    # Notificações
     notificacoes_enviadas = models.BooleanField(default=False)
     data_notificacao = models.DateTimeField(null=True, blank=True)
     
@@ -263,6 +289,11 @@ Olá {fornecedor.perfilusuario.nome_completo or fornecedor.username}!
 Um cliente está procurando: {self.titulo}
 
 📝 Descrição: {self.descricao}
+🚗 Marca: {self.marca or 'Não especificada'}
+🚘 Modelo: {self.modelo or 'Não especificado'}
+📅 Ano: {self.ano or 'Não especificado'}
+🎨 Cor: {self.cor or 'Não especificada'}
+📦 Condição: {self.get_condicao_display() or 'Não especificada'}
 📦 Quantidade: {self.quantidade}
 💰 Valor máximo: {self.valor_maximo or 'A negociar'} MT
 📍 Localização: {self.cidade}, {self.provincia}
@@ -284,23 +315,3 @@ Equipe Nhonga
         self.notificacoes_enviadas = True
         self.data_notificacao = datetime.now()
         self.save()
-# ============================================
-# SISTEMA DE AVALIAÇÕES
-# ============================================
-
-class Avaliacao(models.Model):
-    """Avaliação de fornecedores por clientes"""
-    cliente = models.ForeignKey(User, on_delete=models.CASCADE, related_name='avaliacoes_feitas')
-    fornecedor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='avaliacoes_recebidas')
-    requisicao = models.ForeignKey(RequisicaoCompra, on_delete=models.CASCADE, null=True, blank=True)
-    nota = models.PositiveSmallIntegerField(choices=[(i, f'{i} ★') for i in range(1, 6)])
-    comentario = models.TextField(blank=True, null=True)
-    data_criacao = models.DateTimeField(auto_now_add=True)
-    
-    def __str__(self):
-        return f"{self.cliente.username} → {self.fornecedor.username}: {self.nota}★"
-    
-    class Meta:
-        verbose_name = "Avaliação"
-        verbose_name_plural = "Avaliações"
-        ordering = ['-data_criacao']

@@ -50,6 +50,32 @@
             <label style="color: #fff;">Data Limite</label>
             {{ form.data_limite }}
         </div>
+
+	<div class="form-group">
+    <label style="color: #fff;">Marca</label>
+    {{ form.marca }}
+</div>
+
+<div class="form-group">
+    <label style="color: #fff;">Modelo</label>
+    {{ form.modelo }}
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+    <div class="form-group">
+        <label style="color: #fff;">Ano</label>
+        {{ form.ano }}
+    </div>
+    <div class="form-group">
+        <label style="color: #fff;">Cor</label>
+        {{ form.cor }}
+    </div>
+</div>
+
+<div class="form-group">
+    <label style="color: #fff;">Condição</label>
+    {{ form.condicao }}
+</div>
         
         <div style="display: flex; gap: 10px; margin-top: 20px;">
             <button type="submit" class="btn-metal" style="flex: 1;">
