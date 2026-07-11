@@ -1,31 +1,31 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from django.db.models import Q
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import send_mail
+from django.contrib.sites.shortcuts import get_current_site
+from django.db.models import Count, Q
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 from django.utils import timezone
-from datetime import timedelta
+from datetime import datetime, timedelta
 
-from .models import Contato, PerfilUsuario, Moeda, PreferenciaMoeda, RequisicaoCompra
+from .models import Contato, TentativaLogin, PerfilUsuario, Moeda, PreferenciaMoeda, RequisicaoCompra
 from .forms import ContatoForm, PerfilUsuarioForm, RequisicaoCompraForm
-
-
 
 # ============================================
 # SPLASH E HOME
 # ============================================
 
 def splash(request):
-    """Página inicial - se já estiver logado, vai para home"""
-    if request.user.is_authenticated:
-        return redirect('home')
     return render(request, 'core/splash.html')
 
-@login_required
 def home(request):
-    """Página inicial após login - apenas para utilizadores autenticados"""
     return render(request, 'core/home.html')
 
 # ============================================
@@ -59,7 +59,6 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
-
 
 # ============================================
 # CONTACTOS
@@ -118,7 +117,6 @@ def excluir_contato(request, pk):
         return redirect('listar')
     return render(request, 'core/excluir.html', {'contato': contato})
 
-
 # ============================================
 # PERFIL
 # ============================================
@@ -136,7 +134,6 @@ def perfil(request):
         form = PerfilUsuarioForm(instance=perfil)
     return render(request, 'core/perfil.html', {'form': form, 'perfil': perfil})
 
-
 # ============================================
 # DASHBOARDS
 # ============================================
@@ -144,17 +141,20 @@ def perfil(request):
 def dashboard_seguranca(request):
     return render(request, 'core/dashboard_seguranca.html')
 
-def comunidades_list(request):
-    return render(request, 'core/comunidades_list.html')
-
-@login_required
 def dashboard_cliente(request):
     return render(request, 'core/cliente/dashboard_cliente.html')
 
-@login_required
 def dashboard_fornecedor(request):
     return render(request, 'core/fornecedor/dashboard_fornecedor.html')
 
+def sucesso(request):
+    return render(request, 'core/sucesso.html')
+
+def recuperar_password(request):
+    return render(request, 'core/recuperar.html')
+
+def redefinir_password(request, uidb64, token):
+    return render(request, 'core/redefinir.html')
 
 # ============================================
 # MOEDAS
@@ -206,6 +206,25 @@ def alternar_moeda(request):
             messages.info(request, 'Moeda padrão restaurada')
     return redirect(request.META.get('HTTP_REFERER', 'home'))
 
+# ============================================
+# PEDIDOS E FORNECEDORES
+# ============================================
+
+@login_required
+def criar_pedido(request):
+    return render(request, 'core/cliente/criar_pedido.html')
+
+@login_required
+def meus_pedidos(request):
+    return render(request, 'core/cliente/meus_pedidos.html')
+
+@login_required
+def registar_fornecedor(request):
+    return render(request, 'core/fornecedor/registar_fornecedor.html')
+
+@login_required
+def pedidos_proximos(request):
+    return render(request, 'core/fornecedor/pedidos_proximos.html')
 
 # ============================================
 # REQUISIÇÕES DE COMPRA
@@ -315,33 +334,3 @@ def interessar_requisicao(request, requisicao_id):
         messages.error(request, 'Complete seu perfil primeiro.')
     
     return redirect('requisicoes_fornecedor')
-
-
-# ============================================
-# OUTRAS VIEWS
-# ============================================
-
-def sucesso(request):
-    return render(request, 'core/sucesso.html')
-
-def recuperar_password(request):
-    return render(request, 'core/recuperar.html')
-
-def redefinir_password(request, uidb64, token):
-    return render(request, 'core/redefinir.html')
-
-@login_required
-def criar_pedido(request):
-    return render(request, 'core/cliente/criar_pedido.html')
-
-@login_required
-def meus_pedidos(request):
-    return render(request, 'core/cliente/meus_pedidos.html')
-
-@login_required
-def registar_fornecedor(request):
-    return render(request, 'core/fornecedor/registar_fornecedor.html')
-
-@login_required
-def pedidos_proximos(request):
-    return render(request, 'core/fornecedor/pedidos_proximos.html')
