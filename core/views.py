@@ -125,7 +125,7 @@ def excluir_contato(request, pk):
 def perfil(request):
     perfil, created = PerfilUsuario.objects.get_or_create(usuario=request.user)
     if request.method == 'POST':
-        form = PerfilUsuarioForm(request.POST, request.FILES, instance=perfil)
+        form = PerfilUsuarioForm(request.POST, request.FILES, instance=perfil)  # <-- TEM request.FILES
         if form.is_valid():
             form.save()
             messages.success(request, 'Perfil atualizado!')
