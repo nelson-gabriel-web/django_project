@@ -92,6 +92,9 @@ class PerfilUsuario(models.Model):
     ultimo_ip = models.GenericIPAddressField(null=True, blank=True)
     ultimo_dispositivo = models.CharField(max_length=200, blank=True, null=True)
     ultimo_login = models.DateTimeField(null=True, blank=True)
+    ativo_2fa = models.BooleanField(default=False)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    
     
     # Canais de Comunicação
     receber_notificacoes = models.BooleanField(default=True)
