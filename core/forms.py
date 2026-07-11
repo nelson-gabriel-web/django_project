@@ -15,7 +15,8 @@ class PerfilUsuarioForm(forms.ModelForm):
             'nome_completo', 'idade', 'data_nascimento', 'genero',
             'nacionalidade', 'estado_civil', 'cpf', 'nuit',
             'endereco', 'endereco_completo', 'bairro', 'cidade',
-            'provincia', 'pais', 'telefone', 'tipo', 'foto',  # <-- TEM QUE ESTAR AQUI
+            'provincia', 'pais', 'telefone', 'tipo', 'foto',
+            'latitude', 'longitude',  # <-- ADICIONA AQUI
             'receber_notificacoes', 'receber_emails', 'whatsapp', 'sms'
         ]
         widgets = {

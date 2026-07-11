@@ -393,3 +393,41 @@ def logout_all(request):
         messages.success(request, 'Todas as sessões foram terminadas.')
     
     return redirect('dashboard_seguranca')
+@login_required
+def mapa_fornecedores(request):
+    """Página com mapa de fornecedores próximos"""
+    # Buscar fornecedores com localização
+    fornecedores = PerfilUsuario.objects.filter(
+        tipo='fornecedor',
+        status='ativo',
+        latitude__isnull=False,
+        longitude__isnull=False
+    )
+    
+    # Pegar localização do cliente
+    try:
+        cliente = request.user.perfilusuario
+        cliente_lat = float(cliente.latitude) if cliente.latitude else None
+        cliente_lng = float(cliente.longitude) if cliente.longitude else None
+    except:
+        cliente_lat = None
+        cliente_lng = None
+    
+    # Preparar dados para o mapa
+    fornecedores_data = []
+    for f in fornecedores:
+        fornecedores_data.append({
+            'nome': f.nome_completo or f.usuario.username,
+            'latitude': float(f.latitude),
+            'longitude': float(f.longitude),
+            'telefone': f.telefone or 'Não disponível',
+            'cidade': f.cidade or 'Não informada',
+        })
+    
+    context = {
+        'fornecedores': fornecedores_data,
+        'cliente_lat': cliente_lat,
+        'cliente_lng': cliente_lng,
+        'total_fornecedores': len(fornecedores_data),
+    }
+    return render(request, 'core/mapa_fornecedores.html', context)

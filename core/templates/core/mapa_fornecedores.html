@@ -1,0 +1,119 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2 style="color: #fff; margin-bottom: 20px;">🗺️ Mapa de Fornecedores</h2>
+    
+    <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+        <p style="color: rgba(255,255,255,0.6); font-size: 14px;">
+            <i class="fas fa-info-circle"></i> 
+            Total de fornecedores: <strong style="color: #fff;">{{ total_fornecedores }}</strong>
+            {% if cliente_lat and cliente_lng %}
+                - 📍 Sua localização: {{ cliente_lat|floatformat:4 }}, {{ cliente_lng|floatformat:4 }}
+            {% else %}
+                - ⚠️ Atualize seu perfil com a localização para ver fornecedores próximos.
+            {% endif %}
+        </p>
+    </div>
+    
+    <!-- Mapa -->
+    <div id="map" style="height: 500px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);"></div>
+</div>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    // Coordenadas padrão (Maputo)
+    var defaultLat = -25.9692;
+    var defaultLng = 32.5732;
+    
+    // Coordenadas do cliente
+    var clienteLat = {{ cliente_lat|default:"null" }};
+    var clienteLng = {{ cliente_lng|default:"null" }};
+    
+    // Inicializar mapa
+    var map = L.map('map');
+    
+    // Adicionar camada de tiles (OpenStreetMap)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    
+    // Definir centro do mapa
+    var centerLat = clienteLat || defaultLat;
+    var centerLng = clienteLng || defaultLng;
+    map.setView([centerLat, centerLng], 12);
+    
+    // Adicionar marcador do cliente
+    if (clienteLat && clienteLng) {
+        var clienteIcon = L.divIcon({
+            html: '<div style="background: #3498db; width: 20px; height: 20px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 10px rgba(52,152,219,0.5);"></div>',
+            className: '',
+            iconSize: [20, 20],
+            iconAnchor: [10, 10]
+        });
+        
+        L.marker([clienteLat, clienteLng], {icon: clienteIcon})
+            .addTo(map)
+            .bindPopup('<b>📍 Sua Localização</b>');
+    }
+    
+    // Adicionar marcadores dos fornecedores
+    var fornecedores = {{ fornecedores|safe }};
+    
+    // Ícone personalizado para fornecedores
+    var fornecedorIcon = L.divIcon({
+        html: '<div style="background: #2ecc71; width: 20px; height: 20px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 10px rgba(46,204,113,0.5);"></div>',
+        className: '',
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
+    });
+    
+    fornecedores.forEach(function(f) {
+        if (f.latitude && f.longitude) {
+            var popupContent = `
+                <b>🏢 ${f.nome}</b><br>
+                📞 ${f.telefone}<br>
+                📍 ${f.cidade}
+            `;
+            
+            L.marker([f.latitude, f.longitude], {icon: fornecedorIcon})
+                .addTo(map)
+                .bindPopup(popupContent);
+        }
+    });
+    
+    // Ajustar mapa para mostrar todos os marcadores
+    if (fornecedores.length > 0 || (clienteLat && clienteLng)) {
+        var bounds = L.latLngBounds();
+        
+        if (clienteLat && clienteLng) {
+            bounds.extend([clienteLat, clienteLng]);
+        }
+        
+        fornecedores.forEach(function(f) {
+            if (f.latitude && f.longitude) {
+                bounds.extend([f.latitude, f.longitude]);
+            }
+        });
+        
+        if (bounds.isValid()) {
+            map.fitBounds(bounds, {padding: [50, 50]});
+        }
+    }
+</script>
+
+<style>
+    .leaflet-popup-content {
+        color: #1a1a2e;
+        font-size: 14px;
+    }
+    .leaflet-popup-content b {
+        color: #1a1a2e;
+    }
+</style>
+{% endblock %}

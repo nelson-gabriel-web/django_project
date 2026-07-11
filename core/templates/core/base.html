@@ -178,6 +178,7 @@
     <a href="{% url 'dashboard_cliente' %}">🛒 Cliente</a>
     <a href="{% url 'dashboard_fornecedor' %}">🏢 Fornecedor</a>
     {% if user.is_authenticated %}
+    <a href="{% url 'mapa_fornecedores' %}">🗺️ Mapa</a>
         <a href="{% url 'logout' %}" class="sair">🔓 Sair</a>
     {% endif %}
 </div>
