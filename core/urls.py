@@ -49,6 +49,7 @@ urlpatterns = [
     path('fornecedor/dashboard/', views.dashboard_fornecedor, name='dashboard_fornecedor'),
     path('fornecedor/registar/', views.registar_fornecedor, name='registar_fornecedor'),
     path('fornecedor/pedidos/', views.pedidos_proximos, name='pedidos_proximos'),
+    path('mapa/', views.mapa_fornecedores, name='mapa_fornecedores'),
     
     # Requisições de Compra
     path('requisicao/criar/', views.criar_requisicao, name='criar_requisicao'),
