@@ -125,7 +125,7 @@ def excluir_contato(request, pk):
 def perfil(request):
     perfil, created = PerfilUsuario.objects.get_or_create(usuario=request.user)
     if request.method == 'POST':
-        form = PerfilUsuarioForm(request.POST, request.FILES, instance=perfil)  # <-- TEM request.FILES
+        form = PerfilUsuarioForm(request.POST, request.FILES, instance=perfil)
         if form.is_valid():
             form.save()
             messages.success(request, 'Perfil atualizado!')
@@ -334,3 +334,62 @@ def interessar_requisicao(request, requisicao_id):
         messages.error(request, 'Complete seu perfil primeiro.')
     
     return redirect('requisicoes_fornecedor')
+
+# ============================================
+# SEGURANÇA
+# ============================================
+
+@login_required
+def alterar_password(request):
+    if request.method == 'POST':
+        password_atual = request.POST.get('password_atual')
+        nova_password = request.POST.get('nova_password')
+        confirmar_password = request.POST.get('confirmar_password')
+        
+        user = request.user
+        
+        if not user.check_password(password_atual):
+            messages.error(request, 'Password atual incorreta.')
+            return redirect('dashboard_seguranca')
+        
+        if nova_password != confirmar_password:
+            messages.error(request, 'As novas passwords não coincidem.')
+            return redirect('dashboard_seguranca')
+        
+        if len(nova_password) < 8:
+            messages.error(request, 'A password deve ter pelo menos 8 caracteres.')
+            return redirect('dashboard_seguranca')
+        
+        user.set_password(nova_password)
+        user.save()
+        
+        logout(request)
+        messages.success(request, 'Password alterada com sucesso! Faça login novamente.')
+        return redirect('login')
+    
+    return redirect('dashboard_seguranca')
+
+@login_required
+def toggle_2fa(request):
+    if request.method == 'POST':
+        perfil = request.user.perfilusuario
+        perfil.ativo_2fa = not perfil.ativo_2fa
+        perfil.save()
+        
+        if perfil.ativo_2fa:
+            messages.success(request, '2FA ativado com sucesso!')
+        else:
+            messages.success(request, '2FA desativado com sucesso!')
+    
+    return redirect('dashboard_seguranca')
+
+@login_required
+def logout_all(request):
+    if request.method == 'POST':
+        from django.contrib.sessions.models import Session
+        sessions = Session.objects.filter(session_key=request.session.session_key)
+        for session in sessions:
+            session.delete()
+        messages.success(request, 'Todas as sessões foram terminadas.')
+    
+    return redirect('dashboard_seguranca')

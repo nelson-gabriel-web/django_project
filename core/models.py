@@ -83,6 +83,68 @@ class PerfilUsuario(models.Model):
     
     # Contato
     telefone = models.CharField(max_length=20, blank=True, null=True)
+    foto = models.ImageField(upload_to='perfil/', null=True, blank=True)
+    
+    # Segurança
+    codigo_2fa = models.CharField(max_length=100, blank=True, null=True)
+    ativo_2fa = models.BooleanField(default=False)
+    codigos_recuperacao = models.JSONField(default=list, blank=True)
+    ultimo_ip = models.GenericIPAddressField(null=True, blank=True)
+    ultimo_dispositivo = models.CharField(max_length=200, blank=True, null=True)
+    ultimo_login = models.DateTimeField(null=True, blank=True)
+    
+    # Canais de Comunicação
+    receber_notificacoes = models.BooleanField(default=True)
+    receber_emails = models.BooleanField(default=True)
+    email_comunicacao = models.BooleanField(default=True)
+    whatsapp = models.BooleanField(default=True)
+    sms = models.BooleanField(default=False)
+    push_notification = models.BooleanField(default=True)
+    
+    # Status
+    status = models.CharField(max_length=20, default='ativo', choices=STATUS_CHOICES)
+    data_cadastro = models.DateTimeField(auto_now_add=True)
+    
+    # Indicações
+    indicacoes = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.usuario.username} - {self.tipo} - {self.status}"
+
+    @property
+    def antiguidade(self):
+        if self.data_cadastro:
+            delta = timezone.now().date() - self.data_cadastro.date()
+            return delta.days
+        return 0
+    
+    def is_fornecedor(self):
+        return self.tipo == 'fornecedor'
+    
+    # Dados Pessoais
+    nome_completo = models.CharField(max_length=200, blank=True, null=True)
+    idade = models.IntegerField(blank=True, null=True)
+    data_nascimento = models.DateField(blank=True, null=True)
+    genero = models.CharField(max_length=20, blank=True, null=True, choices=GENERO_CHOICES)
+    nacionalidade = models.CharField(max_length=100, blank=True, null=True)
+    estado_civil = models.CharField(max_length=30, blank=True, null=True, choices=ESTADO_CIVIL_CHOICES)
+    
+    # Documentos
+    cpf = models.CharField(max_length=20, blank=True, null=True, help_text="NUIT ou Documento")
+    nuit = models.CharField(max_length=20, blank=True, null=True)
+    
+    # Localização
+    endereco = models.TextField(blank=True, null=True)
+    endereco_completo = models.TextField(blank=True, null=True)
+    bairro = models.CharField(max_length=100, blank=True, null=True)
+    cidade = models.CharField(max_length=100, blank=True, null=True)
+    provincia = models.CharField(max_length=100, blank=True, null=True)
+    pais = models.CharField(max_length=100, blank=True, null=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    
+    # Contato
+    telefone = models.CharField(max_length=20, blank=True, null=True)
     codigo_2fa = models.CharField(max_length=100, blank=True, null=True)
     ativo_2fa = models.BooleanField(default=False)
     codigos_recuperacao = models.JSONField(default=list, blank=True)

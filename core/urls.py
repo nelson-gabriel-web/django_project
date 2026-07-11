@@ -1,6 +1,9 @@
 from django.urls import path
 from . import views
 
+from django.urls import path
+from . import views
+
 urlpatterns = [
     # Splash e Home
     path('', views.splash, name='splash'),
@@ -12,6 +15,11 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('recuperar/', views.recuperar_password, name='recuperar'),
     path('redefinir/<uidb64>/<token>/', views.redefinir_password, name='redefinir'),
+    
+    # Segurança
+    path('alterar-password/', views.alterar_password, name='alterar_password'),
+    path('toggle-2fa/', views.toggle_2fa, name='toggle_2fa'),
+    path('logout-all/', views.logout_all, name='logout_all'),
     
     # Contactos
     path('adicionar/', views.adicionar_contato, name='adicionar'),
@@ -50,3 +58,7 @@ urlpatterns = [
     path('requisicoes/fornecedor/', views.requisicoes_fornecedor, name='requisicoes_fornecedor'),
     path('requisicao/<int:requisicao_id>/interessar/', views.interessar_requisicao, name='interessar_requisicao'),
 ]
+def logout_view(request):
+    from django.contrib.auth import logout
+    logout(request)
+    return redirect('login')

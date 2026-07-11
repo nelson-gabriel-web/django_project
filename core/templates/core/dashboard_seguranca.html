@@ -1,57 +1,195 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block content %}
-<h2 style="font-size: 20px; font-weight: 700; color: #1a1a2e; margin-bottom: 12px;">🔒 Segurança</h2>
-
-<!-- Estatísticas -->
-<div class="stats">
-    <div class="stat info">
-        <div class="num">{{ cameras|length }}</div>
-        <div class="label">📹 Câmeras</div>
-    </div>
-    <div class="stat success">
-        <div class="num">{{ sensores|length }}</div>
-        <div class="label">📡 Sensores</div>
-    </div>
-    <div class="stat danger">
-        <div class="num">{{ alertas_nao_lidos }}</div>
-        <div class="label">⚠️ Alertas</div>
-    </div>
-    <div class="stat">
-        <div class="num">{{ total_eventos }}</div>
-        <div class="label">📊 Eventos</div>
-    </div>
-</div>
-
-<!-- Botões rápidos -->
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px;">
-    <a href="{% url 'cameras_list' %}" class="btn btn-primary btn-block" style="text-align: center;">📹 Câmeras</a>
-    <a href="{% url 'eventos_seguranca' %}" class="btn btn-secondary btn-block" style="text-align: center;">📋 Eventos</a>
-    <a href="{% url 'mapa_risco' %}" class="btn btn-danger btn-block" style="text-align: center;">🗺️ Risco</a>
-    <a href="{% url 'adicionar_camera' %}" class="btn btn-success btn-block" style="text-align: center;">➕ Adicionar</a>
-</div>
-
-<!-- Últimos eventos -->
-<h3 style="font-size: 16px; margin-bottom: 8px;">📋 Últimos Eventos</h3>
-<div style="background: #f8f9fa; border-radius: 10px; padding: 8px; border: 1px solid #eee;">
-    {% if eventos %}
-        {% for evento in eventos %}
-            <div style="padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
-                <div>
-                    <strong>{{ evento.get_tipo_display }}</strong>
-                    <span style="color: #888; font-size: 11px; display: block;">{{ evento.criado_em|date:"d/m/Y H:i" }}</span>
-                </div>
-                <div>
-                    {% if evento.processado %}
-                        <span style="background: #28a745; color: white; padding: 2px 8px; border-radius: 4px; font-size: 10px;">✅ OK</span>
-                    {% else %}
-                        <span style="background: #ffc107; color: #856404; padding: 2px 8px; border-radius: 4px; font-size: 10px;">⏳ Pendente</span>
-                    {% endif %}
-                </div>
+<div class="container">
+    <h2 style="color: #fff; margin-bottom: 20px;">🔒 Dashboard de Segurança</h2>
+    
+    <!-- Status Geral -->
+    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+            <div>
+                <p style="color: rgba(255,255,255,0.6); font-size: 14px;">Status da Conta</p>
+                <p style="color: #2ecc71; font-size: 20px; font-weight: 600;">✅ Protegida</p>
             </div>
-        {% endfor %}
-    {% else %}
-        <p style="color: #888; font-size: 14px; text-align: center; padding: 16px 0;">Nenhum evento registado.</p>
-    {% endif %}
+            <div>
+                <p style="color: rgba(255,255,255,0.6); font-size: 14px;">Último Login</p>
+                <p style="color: #fff; font-size: 16px;">{{ ultimo_login|default:"Nunca" }}</p>
+            </div>
+            <div>
+                <p style="color: rgba(255,255,255,0.6); font-size: 14px;">IP do Último Login</p>
+                <p style="color: #fff; font-size: 16px;">{{ ultimo_ip|default:"Não registado" }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Cards de Segurança -->
+    <div class="card-grid">
+        <!-- Alterar Password -->
+        <a href="#" class="card" onclick="mostrarModalPassword(); return false;" style="cursor: pointer;">
+            <div class="icon">🔑</div>
+            <div class="label">Alterar Password</div>
+            <div class="sub">Atualize a sua palavra-passe</div>
+        </a>
+        
+        <!-- Autenticação de Dois Fatores -->
+        <a href="#" class="card" onclick="mostrarModal2FA(); return false;" style="cursor: pointer;">
+            <div class="icon">📱</div>
+            <div class="label">Autenticação de Dois Fatores</div>
+            <div class="sub">
+                {% if twofa_status %}
+                    ✅ Ativado
+                {% else %}
+                    ⚠️ Desativado
+                {% endif %}
+            </div>
+        </a>
+        
+        <!-- Sessões Ativas -->
+        <a href="#" class="card" onclick="mostrarModalSessoes(); return false;" style="cursor: pointer;">
+            <div class="icon">💻</div>
+            <div class="label">Sessões Ativas</div>
+            <div class="sub">Gerir sessões ativas</div>
+        </a>
+        
+        <!-- Histórico de Atividades -->
+        <a href="#" class="card" onclick="mostrarModalAtividades(); return false;" style="cursor: pointer;">
+            <div class="icon">📋</div>
+            <div class="label">Histórico de Atividades</div>
+            <div class="sub">Ver registo de atividades</div>
+        </a>
+    </div>
+    
+    <!-- Dispositivo Atual -->
+    <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; margin-top: 10px;">
+        <p style="color: rgba(255,255,255,0.5); font-size: 13px;">
+            <i class="fas fa-laptop"></i> Dispositivo atual: 
+            <span style="color: rgba(255,255,255,0.7);">
+                {{ ultimo_dispositivo|default:"Desconhecido"|truncatechars:60 }}
+            </span>
+        </p>
+    </div>
 </div>
+
+<!-- Modal de Alterar Password -->
+<div id="modalPassword" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: #1a1a2e; padding: 30px; border-radius: 12px; max-width: 400px; width: 90%;">
+        <h3 style="color: #fff; margin-bottom: 20px;">🔑 Alterar Password</h3>
+        <form method="post" action="{% url 'alterar_password' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label style="color: #fff;">Password Atual</label>
+                <input type="password" name="password_atual" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label style="color: #fff;">Nova Password</label>
+                <input type="password" name="nova_password" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label style="color: #fff;">Confirmar Nova Password</label>
+                <input type="password" name="confirmar_password" class="form-control" required>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn-metal" style="flex: 1;">Alterar</button>
+                <button type="button" onclick="fecharModal('modalPassword')" class="btn-metal" style="background: #444; box-shadow: none; flex: 0.3;">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal 2FA -->
+<div id="modal2FA" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: #1a1a2e; padding: 30px; border-radius: 12px; max-width: 400px; width: 90%;">
+        <h3 style="color: #fff; margin-bottom: 20px;">📱 Autenticação de Dois Fatores</h3>
+        <form method="post" action="{% url 'toggle_2fa' %}">
+            {% csrf_token %}
+            <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px;">
+                {% if twofa_status %}
+                    A 2FA está ativada. Deseja desativar?
+                {% else %}
+                    A 2FA está desativada. Deseja ativar?
+                {% endif %}
+            </p>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn-metal" style="flex: 1;">
+                    {% if twofa_status %}
+                        Desativar 2FA
+                    {% else %}
+                        Ativar 2FA
+                    {% endif %}
+                </button>
+                <button type="button" onclick="fecharModal('modal2FA')" class="btn-metal" style="background: #444; box-shadow: none; flex: 0.3;">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Sessões -->
+<div id="modalSessoes" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: #1a1a2e; padding: 30px; border-radius: 12px; max-width: 500px; width: 90%;">
+        <h3 style="color: #fff; margin-bottom: 20px;">💻 Sessões Ativas</h3>
+        <div style="border-bottom: 1px solid rgba(255,255,255,0.1); padding: 10px 0;">
+            <p style="color: rgba(255,255,255,0.8);">Sessão Atual</p>
+            <p style="color: rgba(255,255,255,0.4); font-size: 12px;">{{ ultimo_dispositivo|default:"Desconhecido" }}</p>
+            <p style="color: rgba(255,255,255,0.4); font-size: 12px;">IP: {{ ultimo_ip|default:"Não registado" }}</p>
+        </div>
+        <form method="post" action="{% url 'logout_all' %}">
+            {% csrf_token %}
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button type="submit" class="btn-metal" style="flex: 1; background: #e74c3c; box-shadow: none;">
+                    <i class="fas fa-sign-out-alt"></i> Terminar Todas as Sessões
+                </button>
+                <button type="button" onclick="fecharModal('modalSessoes')" class="btn-metal" style="background: #444; box-shadow: none; flex: 0.3;">Fechar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Atividades -->
+<div id="modalAtividades" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; overflow-y: auto;">
+    <div style="background: #1a1a2e; padding: 30px; border-radius: 12px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;">
+        <h3 style="color: #fff; margin-bottom: 20px;">📋 Histórico de Atividades</h3>
+        <p style="color: rgba(255,255,255,0.4); font-size: 14px; margin-bottom: 15px;">
+            Últimas atividades registadas na sua conta.
+        </p>
+        <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; text-align: center;">
+            <p style="color: rgba(255,255,255,0.3); font-size: 13px;">
+                <i class="fas fa-info-circle"></i> 
+                Nenhuma atividade recente registada.
+            </p>
+        </div>
+        <button type="button" onclick="fecharModal('modalAtividades')" class="btn-metal" style="margin-top: 15px; background: #444; box-shadow: none; width: 100%;">Fechar</button>
+    </div>
+</div>
+
+<script>
+    function mostrarModalPassword() {
+        document.getElementById('modalPassword').style.display = 'flex';
+    }
+    
+    function mostrarModal2FA() {
+        document.getElementById('modal2FA').style.display = 'flex';
+    }
+    
+    function mostrarModalSessoes() {
+        document.getElementById('modalSessoes').style.display = 'flex';
+    }
+    
+    function mostrarModalAtividades() {
+        document.getElementById('modalAtividades').style.display = 'flex';
+    }
+    
+    function fecharModal(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+    
+    // Fechar modal ao clicar fora
+    document.querySelectorAll('[id^="modal"]').forEach(function(modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
+    });
+</script>
 {% endblock %}
