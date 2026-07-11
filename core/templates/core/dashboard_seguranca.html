@@ -23,41 +23,78 @@
         </div>
     </div>
     
-    <!-- Cards de Segurança -->
-    <div class="card-grid">
+    <!-- Botões de Segurança -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+        
         <!-- Alterar Password -->
-        <a href="#" class="card" onclick="mostrarModalPassword(); return false;" style="cursor: pointer;">
-            <div class="icon">🔑</div>
-            <div class="label">Alterar Password</div>
-            <div class="sub">Atualize a sua palavra-passe</div>
-        </a>
+        <button onclick="mostrarModalPassword()" style="
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 20px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        " onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">
+            <div style="font-size: 28px;">🔑</div>
+            <div style="font-size: 14px; font-weight: 600; margin-top: 5px;">Alterar Password</div>
+            <div style="font-size: 11px; color: rgba(255,255,255,0.4);">Atualize a sua palavra-passe</div>
+        </button>
         
         <!-- Autenticação de Dois Fatores -->
-        <a href="#" class="card" onclick="mostrarModal2FA(); return false;" style="cursor: pointer;">
-            <div class="icon">📱</div>
-            <div class="label">Autenticação de Dois Fatores</div>
-            <div class="sub">
-                {% if twofa_status %}
-                    ✅ Ativado
-                {% else %}
-                    ⚠️ Desativado
-                {% endif %}
+        <button onclick="mostrarModal2FA()" style="
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 20px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        " onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">
+            <div style="font-size: 28px;">📱</div>
+            <div style="font-size: 14px; font-weight: 600; margin-top: 5px;">Autenticação de Dois Fatores</div>
+            <div style="font-size: 11px; color: {% if twofa_status %}#2ecc71{% else %}#e74c3c{% endif %};">
+                {% if twofa_status %}✅ Ativado{% else %}❌ Desativado{% endif %}
             </div>
-        </a>
+        </button>
         
         <!-- Sessões Ativas -->
-        <a href="#" class="card" onclick="mostrarModalSessoes(); return false;" style="cursor: pointer;">
-            <div class="icon">💻</div>
-            <div class="label">Sessões Ativas</div>
-            <div class="sub">Gerir sessões ativas</div>
-        </a>
+        <button onclick="mostrarModalSessoes()" style="
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 20px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        " onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">
+            <div style="font-size: 28px;">💻</div>
+            <div style="font-size: 14px; font-weight: 600; margin-top: 5px;">Sessões Ativas</div>
+            <div style="font-size: 11px; color: rgba(255,255,255,0.4);">Gerir sessões ativas</div>
+        </button>
         
         <!-- Histórico de Atividades -->
-        <a href="#" class="card" onclick="mostrarModalAtividades(); return false;" style="cursor: pointer;">
-            <div class="icon">📋</div>
-            <div class="label">Histórico de Atividades</div>
-            <div class="sub">Ver registo de atividades</div>
-        </a>
+        <button onclick="mostrarModalAtividades()" style="
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 20px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        " onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">
+            <div style="font-size: 28px;">📋</div>
+            <div style="font-size: 14px; font-weight: 600; margin-top: 5px;">Histórico de Atividades</div>
+            <div style="font-size: 11px; color: rgba(255,255,255,0.4);">Ver registo de atividades</div>
+        </button>
     </div>
     
     <!-- Dispositivo Atual -->
@@ -91,7 +128,7 @@
             </div>
             <div style="display: flex; gap: 10px; margin-top: 20px;">
                 <button type="submit" class="btn-metal" style="flex: 1;">Alterar</button>
-                <button type="button" onclick="fecharModal('modalPassword')" class="btn-metal" style="background: #444; box-shadow: none; flex: 0.3;">Cancelar</button>
+                <button type="button" onclick="fecharModal('modalPassword')" style="background: #444; color: #fff; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; flex: 0.3;">Cancelar</button>
             </div>
         </form>
     </div>
@@ -118,7 +155,7 @@
                         Ativar 2FA
                     {% endif %}
                 </button>
-                <button type="button" onclick="fecharModal('modal2FA')" class="btn-metal" style="background: #444; box-shadow: none; flex: 0.3;">Cancelar</button>
+                <button type="button" onclick="fecharModal('modal2FA')" style="background: #444; color: #fff; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; flex: 0.3;">Cancelar</button>
             </div>
         </form>
     </div>
@@ -136,10 +173,10 @@
         <form method="post" action="{% url 'logout_all' %}">
             {% csrf_token %}
             <div style="margin-top: 20px; display: flex; gap: 10px;">
-                <button type="submit" class="btn-metal" style="flex: 1; background: #e74c3c; box-shadow: none;">
+                <button type="submit" style="flex: 1; background: #e74c3c; color: #fff; border: none; padding: 12px; border-radius: 8px; cursor: pointer;">
                     <i class="fas fa-sign-out-alt"></i> Terminar Todas as Sessões
                 </button>
-                <button type="button" onclick="fecharModal('modalSessoes')" class="btn-metal" style="background: #444; box-shadow: none; flex: 0.3;">Fechar</button>
+                <button type="button" onclick="fecharModal('modalSessoes')" style="background: #444; color: #fff; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; flex: 0.3;">Fechar</button>
             </div>
         </form>
     </div>
@@ -158,7 +195,7 @@
                 Nenhuma atividade recente registada.
             </p>
         </div>
-        <button type="button" onclick="fecharModal('modalAtividades')" class="btn-metal" style="margin-top: 15px; background: #444; box-shadow: none; width: 100%;">Fechar</button>
+        <button type="button" onclick="fecharModal('modalAtividades')" style="margin-top: 15px; background: #444; color: #fff; border: none; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%;">Fechar</button>
     </div>
 </div>
 
