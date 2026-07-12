@@ -685,16 +685,3 @@ def dashboard_transacoes(request):
     }
     
     return render(request, 'core/transacoes/dashboard_transacoes.html', context)
-        
-        # Fornecedor
-        'fornecedor_total': fornecedor_transacoes.count(),
-        'fornecedor_pendentes': fornecedor_transacoes.filter(status='pendente').count(),
-        'fornecedor_pagos': fornecedor_transacoes.filter(status='pago').count(),
-        'fornecedor_enviados': fornecedor_transacoes.filter(status='enviado').count(),
-        'fornecedor_confirmados': fornecedor_transacoes.filter(status='confirmado').count(),
-        'fornecedor_concluidos': fornecedor_transacoes.filter(status='concluido').count(),
-        'fornecedor_cancelados': fornecedor_transacoes.filter(status='cancelado').count(),
-        'fornecedor_ultimas': fornecedor_transacoes.order_by('-data_criacao')[:5],
-    }
-    
-    return render(request, 'core/transacoes/dashboard_transacoes.html', context)
