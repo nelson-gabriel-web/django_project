@@ -3,74 +3,124 @@
 
 {% block content %}
 <div class="container">
-    <h2 style="color: #fff; margin-bottom: 20px;">📊 Dashboard de Transações</h2>
+    <h2 style="color: #fff; margin-bottom: 20px;">💰 Dashboard de Transações</h2>
     
-    <!-- Resumo Cliente -->
-    <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
-        <h3 style="color: #fff; margin-bottom: 10px;">🛒 Como Cliente</h3>
-        <div class="stats">
-            <div class="stat"><div class="num">{{ cliente_total }}</div><div class="label">Total</div></div>
-            <div class="stat"><div class="num" style="color: #f1c40f;">{{ cliente_pendentes }}</div><div class="label">Pendentes</div></div>
-            <div class="stat"><div class="num" style="color: #3498db;">{{ cliente_pagos }}</div><div class="label">Pagos</div></div>
-            <div class="stat"><div class="num" style="color: #2ecc71;">{{ cliente_concluidos }}</div><div class="label">Concluídos</div></div>
+    <!-- Resumo das Transações -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px;">
+        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.06);">
+            <div style="font-size: 28px;">📊</div>
+            <div style="color: #fff; font-size: 22px; font-weight: 700;">0</div>
+            <div style="color: rgba(255,255,255,0.4); font-size: 12px;">Total</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid rgba(241,196,15,0.2);">
+            <div style="font-size: 28px;">⏳</div>
+            <div style="color: #f1c40f; font-size: 22px; font-weight: 700;">0</div>
+            <div style="color: rgba(255,255,255,0.4); font-size: 12px;">Pendentes</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid rgba(52,152,219,0.2);">
+            <div style="font-size: 28px;">💰</div>
+            <div style="color: #3498db; font-size: 22px; font-weight: 700;">0</div>
+            <div style="color: rgba(255,255,255,0.4); font-size: 12px;">Pagos</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid rgba(46,204,113,0.2);">
+            <div style="font-size: 28px;">✅</div>
+            <div style="color: #2ecc71; font-size: 22px; font-weight: 700;">0</div>
+            <div style="color: rgba(255,255,255,0.4); font-size: 12px;">Concluídas</div>
         </div>
     </div>
     
-    <!-- Resumo Fornecedor -->
-    <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
-        <h3 style="color: #fff; margin-bottom: 10px;">🏪 Como Fornecedor</h3>
-        <div class="stats">
-            <div class="stat"><div class="num">{{ fornecedor_total }}</div><div class="label">Total</div></div>
-            <div class="stat"><div class="num" style="color: #f1c40f;">{{ fornecedor_pendentes }}</div><div class="label">Pendentes</div></div>
-            <div class="stat"><div class="num" style="color: #3498db;">{{ fornecedor_pagos }}</div><div class="label">Pagos</div></div>
-            <div class="stat"><div class="num" style="color: #2ecc71;">{{ fornecedor_concluidos }}</div><div class="label">Concluídos</div></div>
+    <!-- Botões de Ação -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+        
+        <!-- Nova Transação -->
+        <a href="{% url 'criar_requisicao' %}" style="
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: #fff;
+            padding: 16px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(46,204,113,0.3);
+            display: block;
+        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(46,204,113,0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(46,204,113,0.3)'">
+            <div style="font-size: 28px;">➕</div>
+            <div style="font-size: 14px; font-weight: 600;">Nova Transação</div>
+            <div style="font-size: 11px; opacity: 0.7;">Iniciar uma transação</div>
+        </a>
+        
+        <!-- Histórico -->
+        <a href="{% url 'minhas_requisicoes' %}" style="
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: #fff;
+            padding: 16px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52,152,219,0.3);
+            display: block;
+        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(52,152,219,0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(52,152,219,0.3)'">
+            <div style="font-size: 28px;">📋</div>
+            <div style="font-size: 14px; font-weight: 600;">Histórico</div>
+            <div style="font-size: 11px; opacity: 0.7;">Ver todas as transações</div>
+        </a>
+        
+        <!-- Relatórios -->
+        <a href="#" style="
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: #fff;
+            padding: 16px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(155,89,182,0.3);
+            display: block;
+        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(155,89,182,0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(155,89,182,0.3)'">
+            <div style="font-size: 28px;">📊</div>
+            <div style="font-size: 14px; font-weight: 600;">Relatórios</div>
+            <div style="font-size: 11px; opacity: 0.7;">Ver relatórios detalhados</div>
+        </a>
+    </div>
+    
+    <!-- Últimas Transações (Cliente) -->
+    <div style="background: rgba(255,255,255,0.03); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05);">
+        <h3 style="color: #fff; margin-bottom: 10px; font-size: 16px;">🛒 Como Cliente</h3>
+        <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 8px; text-align: center;">
+            <p style="color: rgba(255,255,255,0.3); font-size: 14px;">
+                <i class="fas fa-info-circle"></i> 
+                Nenhuma transação encontrada
+            </p>
         </div>
     </div>
     
-    <!-- Últimas Transações -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-        <div>
-            <h3 style="color: #fff; margin-bottom: 10px;">📋 Últimas como Cliente</h3>
-            {% if cliente_ultimas %}
-                <div class="table-wrapper">
-                    <table class="table">
-                        <thead><tr><th>#</th><th>Produto</th><th>Status</th></tr></thead>
-                        <tbody>
-                            {% for t in cliente_ultimas %}
-                            <tr>
-                                <td><a href="{% url 'detalhe_transacao' t.id %}" style="color: #c0c0c0;">TX-{{ t.id }}</a></td>
-                                <td>{{ t.titulo|truncatechars:20 }}</td>
-                                <td>{{ t.get_status_display }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% else %}
-                <p style="color: rgba(255,255,255,0.4);">Nenhuma transação como cliente.</p>
-            {% endif %}
+    <!-- Últimas Transações (Fornecedor) -->
+    <div style="background: rgba(255,255,255,0.03); border-radius: 12px; padding: 15px; border: 1px solid rgba(255,255,255,0.05);">
+        <h3 style="color: #fff; margin-bottom: 10px; font-size: 16px;">🏪 Como Fornecedor</h3>
+        <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 8px; text-align: center;">
+            <p style="color: rgba(255,255,255,0.3); font-size: 14px;">
+                <i class="fas fa-info-circle"></i> 
+                Nenhuma transação encontrada
+            </p>
         </div>
-        <div>
-            <h3 style="color: #fff; margin-bottom: 10px;">📋 Últimas como Fornecedor</h3>
-            {% if fornecedor_ultimas %}
-                <div class="table-wrapper">
-                    <table class="table">
-                        <thead><tr><th>#</th><th>Produto</th><th>Status</th></tr></thead>
-                        <tbody>
-                            {% for t in fornecedor_ultimas %}
-                            <tr>
-                                <td><a href="{% url 'detalhe_transacao' t.id %}" style="color: #c0c0c0;">TX-{{ t.id }}</a></td>
-                                <td>{{ t.titulo|truncatechars:20 }}</td>
-                                <td>{{ t.get_status_display }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% else %}
-                <p style="color: rgba(255,255,255,0.4);">Nenhuma transação como fornecedor.</p>
-            {% endif %}
-        </div>
+    </div>
+    
+    <!-- Botão de Ajuda -->
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="#" style="
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.6);
+            padding: 10px 25px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 13px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+            display: inline-block;
+        " onmouseover="this.style.background='rgba(255,255,255,0.15)'; this.style.color='#fff'" onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.color='rgba(255,255,255,0.6)'">
+            <i class="fas fa-life-ring"></i> Preciso de Ajuda
+        </a>
     </div>
 </div>
 {% endblock %}
