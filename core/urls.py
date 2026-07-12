@@ -1,9 +1,6 @@
 from django.urls import path
 from . import views
 
-from django.urls import path
-from . import views
-
 urlpatterns = [
     # Splash e Home
     path('', views.splash, name='splash'),
@@ -15,21 +12,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('recuperar/', views.recuperar_password, name='recuperar'),
     path('redefinir/<uidb64>/<token>/', views.redefinir_password, name='redefinir'),
-    
-    # Segurança
-    path('alterar-password/', views.alterar_password, name='alterar_password'),
-    path('toggle-2fa/', views.toggle_2fa, name='toggle_2fa'),
-    path('logout-all/', views.logout_all, name='logout_all'),
-
-    # Transações 
-    path('transacoes/', views.minhas_transacoes, name='minhas_transacoes'),
-    path('transacao/criar/<int:requisicao_id>/', views.criar_transacao, name='criar_transacao'),
-    path('transacao/<int:transacao_id>/', views.detalhe_transacao, name='detalhe_transacao'),
-    path('transacao/<int:transacao_id>/pagar/', views.pagar_transacao, name='pagar_transacao'),
-    path('transacao/<int:transacao_id>/confirmar-envio/', views.confirmar_envio, name='confirmar_envio'),
-    path('transacao/<int:transacao_id>/confirmar-rececao/', views.confirmar_rececao, name='confirmar_rececao'),
-    path('transacao/<int:transacao_id>/disputa/', views.abrir_disputa, name='abrir_disputa'),
-    path('dashboard/transacoes/', views.dashboard_transacoes, name='dashboard_transacoes'),
     
     # Contactos
     path('adicionar/', views.adicionar_contato, name='adicionar'),
@@ -59,7 +41,6 @@ urlpatterns = [
     path('fornecedor/dashboard/', views.dashboard_fornecedor, name='dashboard_fornecedor'),
     path('fornecedor/registar/', views.registar_fornecedor, name='registar_fornecedor'),
     path('fornecedor/pedidos/', views.pedidos_proximos, name='pedidos_proximos'),
-    path('mapa/', views.mapa_fornecedores, name='mapa_fornecedores'),
     
     # Requisições de Compra
     path('requisicao/criar/', views.criar_requisicao, name='criar_requisicao'),
@@ -68,8 +49,10 @@ urlpatterns = [
     path('requisicao/<int:requisicao_id>/cancelar/', views.cancelar_requisicao, name='cancelar_requisicao'),
     path('requisicoes/fornecedor/', views.requisicoes_fornecedor, name='requisicoes_fornecedor'),
     path('requisicao/<int:requisicao_id>/interessar/', views.interessar_requisicao, name='interessar_requisicao'),
+    
+    # Mapa
+    path('mapa/', views.mapa_fornecedores, name='mapa_fornecedores'),
+    
+    # Transações (apenas o dashboard)
+    path('dashboard/transacoes/', views.dashboard_transacoes, name='dashboard_transacoes'),
 ]
-def logout_view(request):
-    from django.contrib.auth import logout
-    logout(request)
-    return redirect('login')
