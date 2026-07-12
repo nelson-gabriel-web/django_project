@@ -26,6 +26,9 @@ urlpatterns = [
     
     # Segurança
     path('dashboard/', views.dashboard_seguranca, name='dashboard_seguranca'),
+    path('alterar-password/', views.alterar_password, name='alterar_password'),
+    path('toggle-2fa/', views.toggle_2fa, name='toggle_2fa'),
+    path('logout-all/', views.logout_all, name='logout_all'),
     
     # Moedas
     path('moedas/', views.moedas_list, name='moedas_list'),
@@ -53,11 +56,12 @@ urlpatterns = [
     # Mapa
     path('mapa/', views.mapa_fornecedores, name='mapa_fornecedores'),
     
-    # Transações (apenas o dashboard)
+    # Transações
     path('dashboard/transacoes/', views.dashboard_transacoes, name='dashboard_transacoes'),
 
     # Pagamentos M-Pesa
     path('pagamento/iniciar/<int:transacao_id>/', views.iniciar_pagamento, name='iniciar_pagamento'),
     path('pagamento/confirmar/<int:transacao_id>/', views.confirmar_pagamento, name='confirmar_pagamento'),
     path('api/mpesa/callback/', views.callback_mpesa, name='callback_mpesa'),
+
 ]
