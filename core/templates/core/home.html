@@ -2,26 +2,134 @@
 {% load static %}
 
 {% block content %}
-{% extends 'core/base.html' %}
-{% load static %}
-
-{% block content %}
 <div class="container">
-    <div style="text-align: center; padding: 40px 20px;">
-        <h1 style="color: #fff; font-size: 28px; margin-bottom: 20px;">
-            🔒 Bem-vindo ao Nhonga
-        </h1>
-        <p style="color: rgba(255,255,255,0.6); font-size: 16px; max-width: 600px; margin: 0 auto 30px;">
-            Plataforma de intermediação entre clientes e fornecedores.
-        </p>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; max-width: 400px; margin: 0 auto;">
-            <a href="{% url 'minhas_requisicoes' %}" class="btn-metal" style="padding: 15px;">
-                🔍 Buscar
+    <!-- Cabeçalho de Boas-vindas -->
+    <div style="
+        background: linear-gradient(135deg, rgba(192,192,192,0.08), rgba(255,255,255,0.03));
+        border-radius: 16px;
+        padding: 25px 20px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255,255,255,0.06);
+    ">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+            <div>
+                <p style="color: rgba(255,255,255,0.5); font-size: 14px; margin-bottom: 2px;">Bem-vindo de volta,</p>
+                <h1 style="color: #fff; font-size: 24px; font-weight: 700; margin: 0;">
+                    {{ user.perfilusuario.nome_completo|default:user.username }}!
+                </h1>
+                <p style="color: rgba(255,255,255,0.4); font-size: 13px; margin-top: 4px;">
+                    <i class="fas fa-calendar-alt"></i> 
+                    {% now "l, d \d\e F \d\e Y" %}
+                </p>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <span style="background: rgba(46,204,113,0.15); padding: 6px 14px; border-radius: 20px; font-size: 12px; color: #2ecc71; border: 1px solid rgba(46,204,113,0.2);">
+                    <i class="fas fa-check-circle"></i> Ativo
+                </span>
+                <span style="background: rgba(52,152,219,0.15); padding: 6px 14px; border-radius: 20px; font-size: 12px; color: #3498db; border: 1px solid rgba(52,152,219,0.2);">
+                    <i class="fas fa-user"></i> {{ user.perfilusuario.tipo|default:"Cliente"|title }}
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Estatísticas Rápidas -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px;">
+        <div style="background: rgba(255,255,255,0.04); padding: 14px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
+            <div style="font-size: 20px;">📋</div>
+            <div style="color: #fff; font-size: 18px; font-weight: 700;">0</div>
+            <div style="color: rgba(255,255,255,0.4); font-size: 11px;">Requisições</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.04); padding: 14px; border-radius: 12px; text-align: center; border: 1px solid rgba(46,204,113,0.15);">
+            <div style="font-size: 20px;">✅</div>
+            <div style="color: #2ecc71; font-size: 18px; font-weight: 700;">0</div>
+            <div style="color: rgba(255,255,255,0.4); font-size: 11px;">Concluídas</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.04); padding: 14px; border-radius: 12px; text-align: center; border: 1px solid rgba(241,196,15,0.15);">
+            <div style="font-size: 20px;">⏳</div>
+            <div style="color: #f1c40f; font-size: 18px; font-weight: 700;">0</div>
+            <div style="color: rgba(255,255,255,0.4); font-size: 11px;">Pendentes</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.04); padding: 14px; border-radius: 12px; text-align: center; border: 1px solid rgba(52,152,219,0.15);">
+            <div style="font-size: 20px;">💰</div>
+            <div style="color: #3498db; font-size: 18px; font-weight: 700;">0</div>
+            <div style="color: rgba(255,255,255,0.4); font-size: 11px;">Transações</div>
+        </div>
+    </div>
+    
+    <!-- Ações Rápidas -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+        <a href="{% url 'criar_requisicao' %}" style="
+            background: rgba(46,204,113,0.08);
+            padding: 14px 10px;
+            border-radius: 12px;
+            text-align: center;
+            text-decoration: none;
+            color: #2ecc71;
+            border: 1px solid rgba(46,204,113,0.15);
+            transition: all 0.3s ease;
+        " onmouseover="this.style.background='rgba(46,204,113,0.15)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='rgba(46,204,113,0.08)'; this.style.transform='translateY(0)'">
+            <div style="font-size: 22px;">🔍</div>
+            <div style="font-size: 12px; font-weight: 600; margin-top: 4px;">Buscar</div>
+        </a>
+        <a href="{% url 'adicionar' %}" style="
+            background: rgba(52,152,219,0.08);
+            padding: 14px 10px;
+            border-radius: 12px;
+            text-align: center;
+            text-decoration: none;
+            color: #3498db;
+            border: 1px solid rgba(52,152,219,0.15);
+            transition: all 0.3s ease;
+        " onmouseover="this.style.background='rgba(52,152,219,0.15)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='rgba(52,152,219,0.08)'; this.style.transform='translateY(0)'">
+            <div style="font-size: 22px;">➕</div>
+            <div style="font-size: 12px; font-weight: 600; margin-top: 4px;">Adicionar</div>
+        </a>
+        <a href="{% url 'mapa_fornecedores' %}" style="
+            background: rgba(155,89,182,0.08);
+            padding: 14px 10px;
+            border-radius: 12px;
+            text-align: center;
+            text-decoration: none;
+            color: #9b59b6;
+            border: 1px solid rgba(155,89,182,0.15);
+            transition: all 0.3s ease;
+        " onmouseover="this.style.background='rgba(155,89,182,0.15)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='rgba(155,89,182,0.08)'; this.style.transform='translateY(0)'">
+            <div style="font-size: 22px;">🗺️</div>
+            <div style="font-size: 12px; font-weight: 600; margin-top: 4px;">Mapa</div>
+        </a>
+        <a href="{% url 'dashboard_cliente' %}" style="
+            background: rgba(241,196,15,0.08);
+            padding: 14px 10px;
+            border-radius: 12px;
+            text-align: center;
+            text-decoration: none;
+            color: #f1c40f;
+            border: 1px solid rgba(241,196,15,0.15);
+            transition: all 0.3s ease;
+        " onmouseover="this.style.background='rgba(241,196,15,0.15)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='rgba(241,196,15,0.08)'; this.style.transform='translateY(0)'">
+            <div style="font-size: 22px;">📊</div>
+            <div style="font-size: 12px; font-weight: 600; margin-top: 4px;">Dashboard</div>
+        </a>
+    </div>
+    
+    <!-- Atividade Recente -->
+    <div style="background: rgba(255,255,255,0.02); border-radius: 12px; padding: 15px; border: 1px solid rgba(255,255,255,0.04);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="color: #fff; font-size: 15px; margin: 0;">
+                <i class="fas fa-clock"></i> Atividade Recente
+            </h3>
+            <a href="#" style="color: rgba(255,255,255,0.3); font-size: 12px; text-decoration: none; transition: 0.3s;" onmouseover="this.style.color='#c0c0c0'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">
+                Ver todos →
             </a>
-            <a href="{% url 'adicionar' %}" class="btn-metal" style="padding: 15px;">
-                ➕ Adicionar
-            </a>
+        </div>
+        <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 8px; text-align: center;">
+            <p style="color: rgba(255,255,255,0.25); font-size: 13px;">
+                <i class="fas fa-inbox"></i> Nenhuma atividade recente
+            </p>
+            <p style="color: rgba(255,255,255,0.15); font-size: 12px; margin-top: 4px;">
+                Comece a usar a plataforma fazendo uma requisição!
+            </p>
         </div>
     </div>
 </div>
