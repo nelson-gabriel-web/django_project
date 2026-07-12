@@ -39,7 +39,7 @@
             width: 100%;
         }
         .logo-img {
-            width: 400px;
+            width: 500px;
             max-width: 90vw;
             height: auto;
             display: block;
@@ -54,41 +54,6 @@
                 filter: drop-shadow(0 0 60px rgba(255, 255, 255, 0.6));
             }
         }
-        .logo-img.static {
-            animation: none !important;
-            filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.3));
-        }
-        .loading-dots {
-            display: none;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 40px;
-            padding: 10px;
-        }
-        .loading-dots.active {
-            display: flex;
-        }
-        .dot {
-            width: 16px;
-            height: 16px;
-            background: #888888;
-            border-radius: 50%;
-            animation: dotBounce 1.4s infinite ease-in-out both;
-        }
-        .dot:nth-child(1) { animation-delay: -0.42s; }
-        .dot:nth-child(2) { animation-delay: -0.28s; }
-        .dot:nth-child(3) { animation-delay: -0.14s; }
-        .dot:nth-child(4) { animation-delay: 0s; }
-        @keyframes dotBounce {
-            0%, 80%, 100% {
-                transform: scale(0);
-                background: #888888;
-            }
-            40% {
-                transform: scale(1);
-                background: #cccccc;
-            }
-        }
         @media (max-width: 768px) {
             .splash-container {
                 padding: 10px;
@@ -96,21 +61,13 @@
                 justify-content: center;
             }
             .logo-img {
-                width: 280px;
+                width: 320px;
                 max-width: 85vw;
-            }
-            .dot {
-                width: 12px;
-                height: 12px;
-            }
-            .loading-dots {
-                gap: 10px;
-                margin-top: 30px;
             }
         }
         @media (max-width: 480px) {
             .logo-img {
-                width: 220px;
+                width: 250px;
                 max-width: 80vw;
             }
         }
@@ -121,41 +78,31 @@
         <div class="logo-wrapper">
             <img src="{% static 'core/images/logo.png' %}" alt="Nhonga" class="logo-img" id="logo">
         </div>
-
-        <div class="loading-dots" id="loadingDots">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-        </div>
     </div>
 
     <script>
-        const logo = document.getElementById('logo');
         const splashContainer = document.getElementById('splashContainer');
-        const loadingDots = document.getElementById('loadingDots');
         let isProcessing = false;
         
         // Detectar se é dispositivo móvel
         const isMobile = window.innerWidth <= 768;
 
-        splashContainer.addEventListener('click', function(e) {
-            // No mobile: clicar para redirecionar
-            if (isMobile) {
+        // Mobile: apenas com clique
+        if (isMobile) {
+            splashContainer.addEventListener('click', function(e) {
                 if (isProcessing) return;
-                
                 isProcessing = true;
-                logo.classList.add('static');
-                loadingDots.classList.add('active');
+                
+                // Pequeno efeito visual (opcional)
+                splashContainer.style.opacity = '0.7';
                 
                 setTimeout(function() {
                     window.location.href = "/login/";
-                }, 4000);
-            }
-        });
-
-        // No desktop: redirecionamento automático após 4 segundos
-        if (!isMobile) {
+                }, 1000);
+            });
+        } 
+        // Desktop: automático após 4 segundos
+        else {
             setTimeout(function() {
                 window.location.href = "/login/";
             }, 4000);
