@@ -210,19 +210,18 @@ class Fornecedor(models.Model):
         verbose_name = "Fornecedor"
         verbose_name_plural = "Fornecedores"
 
-
 # ============================================
-# REQUISIÇÃO DE COMPRA
+# REQUISICAO DE COMPRA
 # ============================================
 
 class RequisicaoCompra(models.Model):
     STATUS_CHOICES = (
-        ('pendente', '🟡 Pendente'),
-        ('em_analise', '🔵 Em Análise'),
-        ('encontrado', '🟢 Fornecedor Encontrado'),
-        ('em_negociacao', '🟣 Em Negociação'),
-        ('concluido', '✅ Concluído'),
-        ('cancelado', '❌ Cancelado'),
+        ('pendente', 'Pendente'),
+        ('em_analise', 'Em Analise'),
+        ('encontrado', 'Fornecedor Encontrado'),
+        ('em_negociacao', 'Em Negociacao'),
+        ('concluido', 'Concluido'),
+        ('cancelado', 'Cancelado'),
     )
     
     CONDICAO_CHOICES = (
@@ -232,94 +231,114 @@ class RequisicaoCompra(models.Model):
     )
     
     cliente = models.ForeignKey(User, on_delete=models.CASCADE, related_name='requisicoes')
-    titulo = models.CharField(max_length=200, help_text="Ex: Toyota Fortuner 2025")
-    descricao = models.TextField(help_text="Descrição detalhada do que precisa comprar")
-    categoria = models.CharField(max_length=100, blank=True, null=True, help_text="Ex: Veículos, Eletrônicos, etc")
+    titulo = models.CharField(max_length=200)
+    descricao = models.TextField()
+    categoria = models.CharField(max_length=100, blank=True, null=True)
     
-    # Detalhes do produto
-    marca = models.CharField(max_length=100, blank=True, null=True, help_text="Ex: Toyota")
-    modelo = models.CharField(max_length=100, blank=True, null=True, help_text="Ex: Fortuner")
-    ano = models.IntegerField(blank=True, null=True, help_text="Ex: 2025")
+    marca = models.CharField(max_length=100, blank=True, null=True)
+    modelo = models.CharField(max_length=100, blank=True, null=True)
+    ano = models.IntegerField(blank=True, null=True)
     cor = models.CharField(max_length=50, blank=True, null=True)
     condicao = models.CharField(max_length=20, choices=CONDICAO_CHOICES, blank=True, null=True)
     
-    # Detalhes da compra
     quantidade = models.PositiveIntegerField(default=1)
-    valor_maximo = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True, help_text="Valor máximo que pretende pagar (MT)")
-    moeda = models.ForeignKey(Moeda, on_delete=models.PROTECT, null=True, blank=True)
+    valor_maximo = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    moeda = models.ForeignKey('Moeda', on_delete=models.PROTECT, null=True, blank=True)
     
-    # Localização
     endereco_entrega = models.TextField(blank=True, null=True)
     cidade = models.CharField(max_length=100, blank=True, null=True)
     provincia = models.CharField(max_length=100, blank=True, null=True)
     
-    # Status e datas
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_atualizacao = models.DateTimeField(auto_now=True)
-    data_limite = models.DateTimeField(null=True, blank=True, help_text="Data limite para encontrar fornecedor")
+    data_limite = models.DateTimeField(null=True, blank=True)
     
-    # Fornecedores interessados
     fornecedores_interessados = models.ManyToManyField(User, related_name='requisicoes_interessadas', blank=True)
     fornecedor_escolhido = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='requisicoes_escolhidas')
     
-    # Notificações
     notificacoes_enviadas = models.BooleanField(default=False)
     data_notificacao = models.DateTimeField(null=True, blank=True)
     
     def __str__(self):
-        return f"Requisição #{self.id} - {self.titulo}"
+        return f"Requisicao #{self.id} - {self.titulo}"
     
     def fornecedores_proximos(self):
-        fornecedores = User.objects.filter(
+        return User.objects.filter(
             perfilusuario__tipo='fornecedor',
             perfilusuario__status='ativo'
-        )
-        if self.provincia:
-            fornecedores = fornecedores.filter(
-                perfilusuario__provincia__icontains=self.provincia
-            )
-        return fornecedores[:10]
+        )[:10]
     
     def notificar_fornecedores(self):
         from django.core.mail import send_mail
         from django.conf import settings
         from datetime import datetime
         
-        fornecedores = self.fornecedores_proximos()
-        
-        for fornecedor in fornecedores:
+        for fornecedor in self.fornecedores_proximos():
             if fornecedor.email:
-                assunto = f"🔔 Nova Requisição: {self.titulo}"
-                mensagem = f"""
-Olá {fornecedor.perfilusuario.nome_completo or fornecedor.username}!
-
-Um cliente está procurando: {self.titulo}
-
-📝 Descrição: {self.descricao}
-🚗 Marca: {self.marca or 'Não especificada'}
-🚘 Modelo: {self.modelo or 'Não especificado'}
-📅 Ano: {self.ano or 'Não especificado'}
-🎨 Cor: {self.cor or 'Não especificada'}
-📦 Condição: {self.get_condicao_display() or 'Não especificada'}
-📦 Quantidade: {self.quantidade}
-💰 Valor máximo: {self.valor_maximo or 'A negociar'} MT
-📍 Localização: {self.cidade}, {self.provincia}
-
-Acesse a plataforma Nhonga para mais detalhes.
-
-Atenciosamente,
-Equipe Nhonga
-"""
-                
-                send_mail(
-                    assunto,
-                    mensagem,
-                    settings.DEFAULT_FROM_EMAIL,
-                    [fornecedor.email],
-                    fail_silently=True,
-                )
+                assunto = f"Nova Requisicao: {self.titulo}"
+                mensagem = f"Cliente procura: {self.titulo}\nDescricao: {self.descricao}"
+                send_mail(assunto, mensagem, settings.DEFAULT_FROM_EMAIL, [fornecedor.email], fail_silently=True)
         
         self.notificacoes_enviadas = True
         self.data_notificacao = datetime.now()
         self.save()
+
+
+# ============================================
+# SISTEMA DE TRANSACOES (SIMPLIFICADO)
+# ============================================
+
+class Transacao(models.Model):
+    STATUS_CHOICES = (
+        ('pendente', 'Pendente'),
+        ('pago', 'Pago'),
+        ('enviado', 'Enviado'),
+        ('confirmado', 'Confirmado'),
+        ('concluido', 'Concluido'),
+        ('cancelado', 'Cancelado'),
+    )
+    
+    cliente = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transacoes_cliente')
+    fornecedor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transacoes_fornecedor')
+    requisicao = models.ForeignKey(RequisicaoCompra, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    titulo = models.CharField(max_length=200)
+    descricao = models.TextField(blank=True, null=True)
+    
+    valor_total = models.DecimalField(max_digits=15, decimal_places=2)
+    comissao = models.DecimalField(max_digits=15, decimal_places=2, default=0)
+    valor_fornecedor = models.DecimalField(max_digits=15, decimal_places=2, default=0)
+    
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
+    codigo_confirmacao = models.CharField(max_length=10, unique=True, null=True, blank=True)
+    
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    data_pagamento = models.DateTimeField(null=True, blank=True)
+    data_envio = models.DateTimeField(null=True, blank=True)
+    data_confirmacao = models.DateTimeField(null=True, blank=True)
+    
+    def save(self, *args, **kwargs):
+        from decimal import Decimal
+        if self.comissao == 0:
+            self.comissao = self.valor_total * Decimal('0.04')
+            self.valor_fornecedor = self.valor_total - self.comissao
+        if not self.codigo_confirmacao and self.status == 'pago':
+            import random
+            self.codigo_confirmacao = ''.join(random.choices('0123456789', k=6))
+        super().save(*args, **kwargs)
+    
+    def __str__(self):
+        return f"TX-{self.id} - {self.cliente.username} -> {self.fornecedor.username}"
+
+
+class HistoricoTransacao(models.Model):
+    transacao = models.ForeignKey(Transacao, on_delete=models.CASCADE, related_name='historico')
+    status_anterior = models.CharField(max_length=20)
+    status_novo = models.CharField(max_length=20)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    observacao = models.TextField(blank=True, null=True)
+    data = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.transacao.id}: {self.status_anterior} -> {self.status_novo}"
