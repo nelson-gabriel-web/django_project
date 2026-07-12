@@ -1,4 +1,3 @@
-from .models import Transacao, HistoricoTransacao, ComprovativoEnvio, ProvaRececao, Disputa, Mediacao
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -15,9 +14,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.utils import timezone
 from datetime import datetime, timedelta
+from decimal import Decimal
 
-from .models import Contato, TentativaLogin, PerfilUsuario, Moeda, PreferenciaMoeda, RequisicaoCompra
+from .models import Contato, TentativaLogin, PerfilUsuario, Moeda, PreferenciaMoeda, RequisicaoCompra, Transacao, HistoricoTransacao
 from .forms import ContatoForm, PerfilUsuarioForm, RequisicaoCompraForm
+
 
 # ============================================
 # SPLASH E HOME
@@ -28,6 +29,7 @@ def splash(request):
 
 def home(request):
     return render(request, 'core/home.html')
+
 
 # ============================================
 # AUTENTICAÇÃO
@@ -60,6 +62,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
 
 # ============================================
 # CONTACTOS
@@ -118,6 +121,7 @@ def excluir_contato(request, pk):
         return redirect('listar')
     return render(request, 'core/excluir.html', {'contato': contato})
 
+
 # ============================================
 # PERFIL
 # ============================================
@@ -135,6 +139,7 @@ def perfil(request):
         form = PerfilUsuarioForm(instance=perfil)
     return render(request, 'core/perfil.html', {'form': form, 'perfil': perfil})
 
+
 # ============================================
 # DASHBOARDS
 # ============================================
@@ -142,11 +147,36 @@ def perfil(request):
 def dashboard_seguranca(request):
     return render(request, 'core/dashboard_seguranca.html')
 
+@login_required
 def dashboard_cliente(request):
     return render(request, 'core/cliente/dashboard_cliente.html')
 
+@login_required
 def dashboard_fornecedor(request):
     return render(request, 'core/fornecedor/dashboard_fornecedor.html')
+
+@login_required
+def dashboard_transacoes(request):
+    """Dashboard de transações simplificado"""
+    context = {
+        'cliente_total': 0,
+        'cliente_pendentes': 0,
+        'cliente_pagos': 0,
+        'cliente_enviados': 0,
+        'cliente_confirmados': 0,
+        'cliente_concluidos': 0,
+        'cliente_cancelados': 0,
+        'cliente_ultimas': [],
+        'fornecedor_total': 0,
+        'fornecedor_pendentes': 0,
+        'fornecedor_pagos': 0,
+        'fornecedor_enviados': 0,
+        'fornecedor_confirmados': 0,
+        'fornecedor_concluidos': 0,
+        'fornecedor_cancelados': 0,
+        'fornecedor_ultimas': [],
+    }
+    return render(request, 'core/transacoes/dashboard_transacoes.html', context)
 
 def sucesso(request):
     return render(request, 'core/sucesso.html')
@@ -156,6 +186,7 @@ def recuperar_password(request):
 
 def redefinir_password(request, uidb64, token):
     return render(request, 'core/redefinir.html')
+
 
 # ============================================
 # MOEDAS
@@ -207,6 +238,7 @@ def alternar_moeda(request):
             messages.info(request, 'Moeda padrão restaurada')
     return redirect(request.META.get('HTTP_REFERER', 'home'))
 
+
 # ============================================
 # PEDIDOS E FORNECEDORES
 # ============================================
@@ -226,6 +258,7 @@ def registar_fornecedor(request):
 @login_required
 def pedidos_proximos(request):
     return render(request, 'core/fornecedor/pedidos_proximos.html')
+
 
 # ============================================
 # REQUISIÇÕES DE COMPRA
@@ -336,6 +369,7 @@ def interessar_requisicao(request, requisicao_id):
     
     return redirect('requisicoes_fornecedor')
 
+
 # ============================================
 # SEGURANÇA
 # ============================================
@@ -394,10 +428,15 @@ def logout_all(request):
         messages.success(request, 'Todas as sessões foram terminadas.')
     
     return redirect('dashboard_seguranca')
+
+
+# ============================================
+# MAPA
+# ============================================
+
 @login_required
 def mapa_fornecedores(request):
     """Página com mapa de fornecedores próximos"""
-    # Buscar fornecedores com localização
     fornecedores = PerfilUsuario.objects.filter(
         tipo='fornecedor',
         status='ativo',
@@ -405,7 +444,6 @@ def mapa_fornecedores(request):
         longitude__isnull=False
     )
     
-    # Pegar localização do cliente
     try:
         cliente = request.user.perfilusuario
         cliente_lat = float(cliente.latitude) if cliente.latitude else None
@@ -414,7 +452,6 @@ def mapa_fornecedores(request):
         cliente_lat = None
         cliente_lng = None
     
-    # Preparar dados para o mapa
     fornecedores_data = []
     for f in fornecedores:
         fornecedores_data.append({
@@ -432,256 +469,3 @@ def mapa_fornecedores(request):
         'total_fornecedores': len(fornecedores_data),
     }
     return render(request, 'core/mapa_fornecedores.html', context)
-# ============================================
-# VIEWS DO SISTEMA DE TRANSAÇÕES
-# ============================================
-
-from decimal import Decimal
-from django.utils import timezone
-from datetime import timedelta
-from .models import Transacao, HistoricoTransacao, ComprovativoEnvio, ProvaRececao, Disputa, Mediacao
-
-@login_required
-def criar_transacao(request, requisicao_id):
-    """Criar uma transação a partir de uma requisição"""
-    requisicao = get_object_or_404(RequisicaoCompra, id=requisicao_id, cliente=request.user)
-    
-    if request.method == 'POST':
-        fornecedor_id = request.POST.get('fornecedor_id')
-        valor = request.POST.get('valor')
-        
-        fornecedor = get_object_or_404(User, id=fornecedor_id)
-        
-        transacao = Transacao.objects.create(
-            cliente=request.user,
-            fornecedor=fornecedor,
-            requisicao=requisicao,
-            titulo=requisicao.titulo,
-            descricao=requisicao.descricao,
-            valor_total=Decimal(valor),
-            status='pendente'
-        )
-        
-        # Registrar no histórico
-        HistoricoTransacao.objects.create(
-            transacao=transacao,
-            status_anterior='pendente',
-            status_novo='pendente',
-            usuario=request.user,
-            observacao='Transação criada'
-        )
-        
-        messages.success(request, f'✅ Transação #{transacao.id} criada! Aguarde o pagamento.')
-        return redirect('detalhe_transacao', transacao_id=transacao.id)
-    
-    # Buscar fornecedores interessados
-    fornecedores = requisicao.fornecedores_interessados.all()
-    return render(request, 'core/transacoes/criar_transacao.html', {
-        'requisicao': requisicao,
-        'fornecedores': fornecedores,
-    })
-
-@login_required
-def minhas_transacoes(request):
-    """Listar todas as transações do utilizador"""
-    transacoes_cliente = Transacao.objects.filter(cliente=request.user).order_by('-data_criacao')
-    transacoes_fornecedor = Transacao.objects.filter(fornecedor=request.user).order_by('-data_criacao')
-    
-    return render(request, 'core/transacoes/minhas_transacoes.html', {
-        'transacoes_cliente': transacoes_cliente,
-        'transacoes_fornecedor': transacoes_fornecedor,
-    })
-
-@login_required
-def detalhe_transacao(request, transacao_id):
-    """Detalhes de uma transação específica"""
-    transacao = get_object_or_404(Transacao, id=transacao_id)
-    
-    # Verificar se o utilizador é parte envolvida
-    if request.user != transacao.cliente and request.user != transacao.fornecedor:
-        messages.error(request, 'Você não tem permissão para ver esta transação.')
-        return redirect('minhas_transacoes')
-    
-    # Buscar histórico
-    historico = transacao.historico.all().order_by('-data')
-    
-    # Buscar comprovativos
-    comprovativos = transacao.comprovativos.all()
-    
-    # Buscar provas de receção
-    provas = transacao.provas_rececao.all()
-    
-    # Buscar disputas
-    disputas = transacao.disputas.all()
-    
-    return render(request, 'core/transacoes/detalhe_transacao.html', {
-        'transacao': transacao,
-        'historico': historico,
-        'comprovativos': comprovativos,
-        'provas': provas,
-        'disputas': disputas,
-        'is_cliente': request.user == transacao.cliente,
-        'is_fornecedor': request.user == transacao.fornecedor,
-    })
-
-@login_required
-def pagar_transacao(request, transacao_id):
-    """Simular pagamento da transação (integração com M-Pesa)"""
-    transacao = get_object_or_404(Transacao, id=transacao_id, cliente=request.user)
-    
-    if transacao.status != 'pendente':
-        messages.error(request, 'Esta transação já foi paga ou está em processamento.')
-        return redirect('detalhe_transacao', transacao_id=transacao.id)
-    
-    # Simular pagamento
-    transacao.status = 'pago'
-    transacao.data_pagamento = timezone.now()
-    transacao.save()
-    
-    # Registrar no histórico
-    HistoricoTransacao.objects.create(
-        transacao=transacao,
-        status_anterior='pendente',
-        status_novo='pago',
-        usuario=request.user,
-        observacao='Pagamento confirmado'
-    )
-    
-    messages.success(request, f'✅ Pagamento de {transacao.valor_total} MT confirmado!')
-    return redirect('detalhe_transacao', transacao_id=transacao.id)
-
-@login_required
-def confirmar_envio(request, transacao_id):
-    """Fornecedor confirma envio do produto"""
-    transacao = get_object_or_404(Transacao, id=transacao_id, fornecedor=request.user)
-    
-    if transacao.status != 'pago':
-        messages.error(request, 'A transação ainda não foi paga.')
-        return redirect('detalhe_transacao', transacao_id=transacao.id)
-    
-    if request.method == 'POST':
-        codigo_rastreamento = request.POST.get('codigo_rastreamento', '')
-        transportadora = request.POST.get('transportadora', '')
-        
-        transacao.status = 'enviado'
-        transacao.data_envio = timezone.now()
-        transacao.codigo_rastreamento = codigo_rastreamento
-        transacao.transportadora = transportadora
-        transacao.save()
-        
-        # Registrar no histórico
-        HistoricoTransacao.objects.create(
-            transacao=transacao,
-            status_anterior='pago',
-            status_novo='enviado',
-            usuario=request.user,
-            observacao='Produto enviado'
-        )
-        
-        messages.success(request, '✅ Produto enviado! Aguarde a confirmação do cliente.')
-        return redirect('detalhe_transacao', transacao_id=transacao.id)
-    
-    return render(request, 'core/transacoes/confirmar_envio.html', {'transacao': transacao})
-
-@login_required
-def confirmar_rececao(request, transacao_id):
-    """Cliente confirma receção do produto"""
-    transacao = get_object_or_404(Transacao, id=transacao_id, cliente=request.user)
-    
-    if transacao.status != 'enviado':
-        messages.error(request, 'O produto ainda não foi enviado.')
-        return redirect('detalhe_transacao', transacao_id=transacao.id)
-    
-    if request.method == 'POST':
-        codigo = request.POST.get('codigo_confirmacao')
-        
-        if codigo == transacao.codigo_confirmacao:
-            transacao.status = 'confirmado'
-            transacao.data_confirmacao = timezone.now()
-            transacao.save()
-            
-            # Registrar no histórico
-            HistoricoTransacao.objects.create(
-                transacao=transacao,
-                status_anterior='enviado',
-                status_novo='confirmado',
-                usuario=request.user,
-                observacao='Receção confirmada'
-            )
-            
-            # Libertar pagamento (simulado)
-            transacao.status = 'concluido'
-            transacao.data_conclusao = timezone.now()
-            transacao.save()
-            
-            HistoricoTransacao.objects.create(
-                transacao=transacao,
-                status_anterior='confirmado',
-                status_novo='concluido',
-                usuario=request.user,
-                observacao='Pagamento libertado para o fornecedor'
-            )
-            
-            messages.success(request, '✅ Receção confirmada! Pagamento libertado para o fornecedor.')
-        else:
-            messages.error(request, '❌ Código inválido. Verifique com o fornecedor.')
-        
-        return redirect('detalhe_transacao', transacao_id=transacao.id)
-    
-    return render(request, 'core/transacoes/confirmar_rececao.html', {'transacao': transacao})
-
-@login_required
-def abrir_disputa(request, transacao_id):
-    """Cliente abre disputa"""
-    transacao = get_object_or_404(Transacao, id=transacao_id, cliente=request.user)
-    
-    if request.method == 'POST':
-        motivo = request.POST.get('motivo')
-        evidencia = request.FILES.get('evidencia')
-        
-        Disputa.objects.create(
-            transacao=transacao,
-            cliente=request.user,
-            fornecedor=transacao.fornecedor,
-            motivo=motivo,
-            evidencia=evidencia,
-            status='aberta'
-        )
-        
-        messages.success(request, '✅ Disputa aberta com sucesso! A equipa Nhonga vai analisar.')
-        return redirect('detalhe_transacao', transacao_id=transacao.id)
-    
-    return render(request, 'core/transacoes/abrir_disputa.html', {'transacao': transacao})
-
-@login_required
-def dashboard_transacoes(request):
-    """Dashboard de transações para cliente e fornecedor"""
-    # Transações do cliente
-    cliente_transacoes = Transacao.objects.filter(cliente=request.user)
-    
-    # Transações do fornecedor
-    fornecedor_transacoes = Transacao.objects.filter(fornecedor=request.user)
-    
-    context = {
-        # Cliente
-        'cliente_total': cliente_transacoes.count(),
-        'cliente_pendentes': cliente_transacoes.filter(status='pendente').count(),
-        'cliente_pagos': cliente_transacoes.filter(status='pago').count(),
-        'cliente_enviados': cliente_transacoes.filter(status='enviado').count(),
-        'cliente_confirmados': cliente_transacoes.filter(status='confirmado').count(),
-        'cliente_concluidos': cliente_transacoes.filter(status='concluido').count(),
-        'cliente_cancelados': cliente_transacoes.filter(status='cancelado').count(),
-        'cliente_ultimas': cliente_transacoes.order_by('-data_criacao')[:5],
-        
-        # Fornecedor
-        'fornecedor_total': fornecedor_transacoes.count(),
-        'fornecedor_pendentes': fornecedor_transacoes.filter(status='pendente').count(),
-        'fornecedor_pagos': fornecedor_transacoes.filter(status='pago').count(),
-        'fornecedor_enviados': fornecedor_transacoes.filter(status='enviado').count(),
-        'fornecedor_confirmados': fornecedor_transacoes.filter(status='confirmado').count(),
-        'fornecedor_concluidos': fornecedor_transacoes.filter(status='concluido').count(),
-        'fornecedor_cancelados': fornecedor_transacoes.filter(status='cancelado').count(),
-        'fornecedor_ultimas': fornecedor_transacoes.order_by('-data_criacao')[:5],
-    }
-    
-    return render(request, 'core/transacoes/dashboard_transacoes.html', context)
