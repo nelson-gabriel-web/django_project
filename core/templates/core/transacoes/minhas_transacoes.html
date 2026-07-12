@@ -1,0 +1,55 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2 style="color: #fff; margin-bottom: 20px;">📋 Minhas Transações</h2>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div>
+            <h3 style="color: #fff; margin-bottom: 10px;">🛒 Como Cliente</h3>
+            {% if transacoes_cliente %}
+                <div class="table-wrapper">
+                    <table class="table">
+                        <thead><tr><th>#</th><th>Produto</th><th>Status</th><th>Valor</th></tr></thead>
+                        <tbody>
+                            {% for t in transacoes_cliente %}
+                            <tr>
+                                <td><a href="{% url 'detalhe_transacao' t.id %}" style="color: #c0c0c0;">TX-{{ t.id }}</a></td>
+                                <td>{{ t.titulo|truncatechars:15 }}</td>
+                                <td>{{ t.get_status_display }}</td>
+                                <td>{{ t.valor_total }} MT</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p style="color: rgba(255,255,255,0.4);">Nenhuma transação.</p>
+            {% endif %}
+        </div>
+        <div>
+            <h3 style="color: #fff; margin-bottom: 10px;">🏪 Como Fornecedor</h3>
+            {% if transacoes_fornecedor %}
+                <div class="table-wrapper">
+                    <table class="table">
+                        <thead><tr><th>#</th><th>Produto</th><th>Status</th><th>Valor</th></tr></thead>
+                        <tbody>
+                            {% for t in transacoes_fornecedor %}
+                            <tr>
+                                <td><a href="{% url 'detalhe_transacao' t.id %}" style="color: #c0c0c0;">TX-{{ t.id }}</a></td>
+                                <td>{{ t.titulo|truncatechars:15 }}</td>
+                                <td>{{ t.get_status_display }}</td>
+                                <td>{{ t.valor_total }} MT</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p style="color: rgba(255,255,255,0.4);">Nenhuma transação.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

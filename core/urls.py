@@ -20,6 +20,16 @@ urlpatterns = [
     path('alterar-password/', views.alterar_password, name='alterar_password'),
     path('toggle-2fa/', views.toggle_2fa, name='toggle_2fa'),
     path('logout-all/', views.logout_all, name='logout_all'),
+
+    # Transações 
+    path('transacoes/', views.minhas_transacoes, name='minhas_transacoes'),
+    path('transacao/criar/<int:requisicao_id>/', views.criar_transacao, name='criar_transacao'),
+    path('transacao/<int:transacao_id>/', views.detalhe_transacao, name='detalhe_transacao'),
+    path('transacao/<int:transacao_id>/pagar/', views.pagar_transacao, name='pagar_transacao'),
+    path('transacao/<int:transacao_id>/confirmar-envio/', views.confirmar_envio, name='confirmar_envio'),
+    path('transacao/<int:transacao_id>/confirmar-rececao/', views.confirmar_rececao, name='confirmar_rececao'),
+    path('transacao/<int:transacao_id>/disputa/', views.abrir_disputa, name='abrir_disputa'),
+    path('dashboard/transacoes/', views.dashboard_transacoes, name='dashboard_transacoes'),
     
     # Contactos
     path('adicionar/', views.adicionar_contato, name='adicionar'),

@@ -1,0 +1,76 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2 style="color: #fff; margin-bottom: 20px;">📊 Dashboard de Transações</h2>
+    
+    <!-- Resumo Cliente -->
+    <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+        <h3 style="color: #fff; margin-bottom: 10px;">🛒 Como Cliente</h3>
+        <div class="stats">
+            <div class="stat"><div class="num">{{ cliente_total }}</div><div class="label">Total</div></div>
+            <div class="stat"><div class="num" style="color: #f1c40f;">{{ cliente_pendentes }}</div><div class="label">Pendentes</div></div>
+            <div class="stat"><div class="num" style="color: #3498db;">{{ cliente_pagos }}</div><div class="label">Pagos</div></div>
+            <div class="stat"><div class="num" style="color: #2ecc71;">{{ cliente_concluidos }}</div><div class="label">Concluídos</div></div>
+        </div>
+    </div>
+    
+    <!-- Resumo Fornecedor -->
+    <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+        <h3 style="color: #fff; margin-bottom: 10px;">🏪 Como Fornecedor</h3>
+        <div class="stats">
+            <div class="stat"><div class="num">{{ fornecedor_total }}</div><div class="label">Total</div></div>
+            <div class="stat"><div class="num" style="color: #f1c40f;">{{ fornecedor_pendentes }}</div><div class="label">Pendentes</div></div>
+            <div class="stat"><div class="num" style="color: #3498db;">{{ fornecedor_pagos }}</div><div class="label">Pagos</div></div>
+            <div class="stat"><div class="num" style="color: #2ecc71;">{{ fornecedor_concluidos }}</div><div class="label">Concluídos</div></div>
+        </div>
+    </div>
+    
+    <!-- Últimas Transações -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div>
+            <h3 style="color: #fff; margin-bottom: 10px;">📋 Últimas como Cliente</h3>
+            {% if cliente_ultimas %}
+                <div class="table-wrapper">
+                    <table class="table">
+                        <thead><tr><th>#</th><th>Produto</th><th>Status</th></tr></thead>
+                        <tbody>
+                            {% for t in cliente_ultimas %}
+                            <tr>
+                                <td><a href="{% url 'detalhe_transacao' t.id %}" style="color: #c0c0c0;">TX-{{ t.id }}</a></td>
+                                <td>{{ t.titulo|truncatechars:20 }}</td>
+                                <td>{{ t.get_status_display }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p style="color: rgba(255,255,255,0.4);">Nenhuma transação como cliente.</p>
+            {% endif %}
+        </div>
+        <div>
+            <h3 style="color: #fff; margin-bottom: 10px;">📋 Últimas como Fornecedor</h3>
+            {% if fornecedor_ultimas %}
+                <div class="table-wrapper">
+                    <table class="table">
+                        <thead><tr><th>#</th><th>Produto</th><th>Status</th></tr></thead>
+                        <tbody>
+                            {% for t in fornecedor_ultimas %}
+                            <tr>
+                                <td><a href="{% url 'detalhe_transacao' t.id %}" style="color: #c0c0c0;">TX-{{ t.id }}</a></td>
+                                <td>{{ t.titulo|truncatechars:20 }}</td>
+                                <td>{{ t.get_status_display }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p style="color: rgba(255,255,255,0.4);">Nenhuma transação como fornecedor.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
