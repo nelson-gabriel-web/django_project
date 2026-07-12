@@ -55,4 +55,9 @@ urlpatterns = [
     
     # Transações (apenas o dashboard)
     path('dashboard/transacoes/', views.dashboard_transacoes, name='dashboard_transacoes'),
+
+    # Pagamentos M-Pesa
+    path('pagamento/iniciar/<int:transacao_id>/', views.iniciar_pagamento, name='iniciar_pagamento'),
+    path('pagamento/confirmar/<int:transacao_id>/', views.confirmar_pagamento, name='confirmar_pagamento'),
+    path('api/mpesa/callback/', views.callback_mpesa, name='callback_mpesa'),
 ]

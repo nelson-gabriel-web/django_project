@@ -1,0 +1,33 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container" style="max-width: 500px; margin: 0 auto;">
+    <h2 style="color: #fff; text-align: center; margin-bottom: 30px;">💰 Pagamento M-Pesa</h2>
+    
+    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+        <p style="color: rgba(255,255,255,0.6);">Produto</p>
+        <p style="color: #fff; font-size: 18px;">{{ transacao.titulo }}</p>
+        <p style="color: rgba(255,255,255,0.6); margin-top: 10px;">Valor Total</p>
+        <p style="color: #2ecc71; font-size: 24px; font-weight: 600;">{{ transacao.valor_total }} MT</p>
+    </div>
+    
+    <form method="post" style="background: rgba(255,255,255,0.05); padding: 30px; border-radius: 12px;">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label style="color: #fff;">Número de Telefone M-Pesa</label>
+            <input type="tel" name="phone_number" class="form-control" placeholder="Ex: 841234567" required>
+            <small style="color: rgba(255,255,255,0.4);">Use números que começam com 84 ou 85</small>
+        </div>
+        
+        <button type="submit" class="btn-metal" style="width: 100%; margin-top: 10px;">
+            <i class="fas fa-mobile-alt"></i> Pagar com M-Pesa
+        </button>
+    </form>
+    
+    <p style="text-align: center; color: rgba(255,255,255,0.4); margin-top: 15px; font-size: 13px;">
+        <i class="fas fa-lock"></i> Pagamento seguro via M-Pesa
+    </p>
+</div>
+{% endblock %}

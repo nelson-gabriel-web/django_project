@@ -469,3 +469,130 @@ def mapa_fornecedores(request):
         'total_fornecedores': len(fornecedores_data),
     }
     return render(request, 'core/mapa_fornecedores.html', context)
+# ============================================
+# VIEWS M-PESA
+# ============================================
+
+from .services.mpesa import MpesaService
+from .models import TransacaoMpesa, Transacao
+from decimal import Decimal
+import json
+
+@login_required
+def iniciar_pagamento(request, transacao_id):
+    """Inicia um pagamento via M-Pesa"""
+    transacao = get_object_or_404(Transacao, id=transacao_id, cliente=request.user)
+    
+    if request.method == 'POST':
+        phone_number = request.POST.get('phone_number', '').strip()
+        
+        if not phone_number:
+            messages.error(request, 'Número de telefone é obrigatório.')
+            return redirect('iniciar_pagamento', transacao_id=transacao.id)
+        
+        # Validar número (84 ou 85 para M-Pesa)
+        if not phone_number.startswith('84') and not phone_number.startswith('85'):
+            messages.error(request, 'Número de telefone inválido para M-Pesa. Use 84 ou 85.')
+            return redirect('iniciar_pagamento', transacao_id=transacao.id)
+        
+        # Iniciar pagamento
+        mpesa = MpesaService()
+        referencia = f"NHONGA-{transacao.id}-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+        
+        result = mpesa.stk_push(
+            phone_number=phone_number,
+            amount=transacao.valor_total,
+            reference=referencia,
+            description=f"Pagamento Nhonga - {transacao.titulo}"
+        )
+        
+        if result.get('success'):
+            # Salvar transação M-Pesa
+            transacao_mpesa = TransacaoMpesa.objects.create(
+                usuario=request.user,
+                transacao=transacao,
+                checkout_request_id=result.get('checkout_request_id'),
+                merchant_request_id=result.get('merchant_request_id'),
+                phone_number=phone_number,
+                amount=transacao.valor_total,
+                status='pending'
+            )
+            
+            messages.success(request, '✅ Pedido de pagamento enviado! Confirme no seu telemóvel M-Pesa.')
+            return redirect('confirmar_pagamento', transacao_id=transacao.id)
+        else:
+            messages.error(request, f'❌ Erro: {result.get("message")}')
+            return redirect('iniciar_pagamento', transacao_id=transacao.id)
+    
+    return render(request, 'core/pagamento/iniciar_pagamento.html', {
+        'transacao': transacao,
+    })
+
+@login_required
+def confirmar_pagamento(request, transacao_id):
+    """Confirmação do pagamento"""
+    transacao = get_object_or_404(Transacao, id=transacao_id, cliente=request.user)
+    
+    # Buscar transação M-Pesa
+    try:
+        transacao_mpesa = TransacaoMpesa.objects.filter(
+            transacao=transacao,
+            usuario=request.user
+        ).order_by('-data_criacao').first()
+    except:
+        transacao_mpesa = None
+    
+    # Se ainda pendente, consultar status
+    if transacao_mpesa and transacao_mpesa.status == 'pending':
+        mpesa = MpesaService()
+        result = mpesa.query_status(transacao_mpesa.checkout_request_id)
+        
+        if result.get('success'):
+            if result.get('status') == 'success':
+                transacao_mpesa.mark_success()
+                transacao.status = 'pago'
+                transacao.data_pagamento = timezone.now()
+                transacao.save()
+                messages.success(request, '✅ Pagamento confirmado com sucesso!')
+            elif result.get('status') == 'failed':
+                transacao_mpesa.mark_failed(result.get('result_description', 'Falha no pagamento'))
+    
+    return render(request, 'core/pagamento/confirmar_pagamento.html', {
+        'transacao': transacao,
+        'transacao_mpesa': transacao_mpesa,
+    })
+
+@csrf_exempt
+def callback_mpesa(request):
+    """Callback da M-Pesa para confirmação de pagamento"""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            
+            # Extrair dados do callback
+            result_code = data.get('Body', {}).get('stkCallback', {}).get('ResultCode')
+            result_desc = data.get('Body', {}).get('stkCallback', {}).get('ResultDesc')
+            checkout_request_id = data.get('Body', {}).get('stkCallback', {}).get('CheckoutRequestID')
+            
+            # Buscar transação
+            try:
+                transacao_mpesa = TransacaoMpesa.objects.get(checkout_request_id=checkout_request_id)
+                
+                if result_code == '0':  # Sucesso
+                    transacao_mpesa.mark_success()
+                    
+                    # Atualizar transação principal
+                    if transacao_mpesa.transacao:
+                        transacao_mpesa.transacao.status = 'pago'
+                        transacao_mpesa.transacao.data_pagamento = timezone.now()
+                        transacao_mpesa.transacao.save()
+                else:
+                    transacao_mpesa.mark_failed(result_desc)
+                
+                return JsonResponse({'status': 'ok'})
+            except TransacaoMpesa.DoesNotExist:
+                return JsonResponse({'status': 'error', 'message': 'Transação não encontrada'}, status=404)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    
+    return JsonResponse({'status': 'error', 'message': 'Método não permitido'}, status=405)

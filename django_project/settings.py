@@ -101,9 +101,21 @@ EMAIL_HOST_PASSWORD = 'tuapassword'  # Substitui pela tua password
 DEFAULT_FROM_EMAIL = 'Nhonga <noreply@nhonga.com>'
 
 # ============================================
+# CONFIGURAÇÕES M-PESA
+# ============================================
+
+MPESA_CONSUMER_KEY = os.environ.get('MPESA_CONSUMER_KEY', '')
+MPESA_CONSUMER_SECRET = os.environ.get('MPESA_CONSUMER_SECRET', '')
+MPESA_PASSKEY = os.environ.get('MPESA_PASSKEY', '')
+MPESA_SHORTCODE = os.environ.get('MPESA_SHORTCODE', '174379')  # Código de teste
+MPESA_CALLBACK_URL = os.environ.get('MPESA_CALLBACK_URL', 'https://web-production-a9ad2f.up.railway.app/api/mpesa/callback/')
+MPESA_ENVIRONMENT = os.environ.get('MPESA_ENVIRONMENT', 'sandbox')  # 'sandbox' ou 'production'
+
+# ============================================
 # CONFIGURAÇÕES DE REDIRECIONAMENTO
 # ============================================
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'login'
+
