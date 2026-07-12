@@ -3,92 +3,95 @@
 
 {% block content %}
 <div class="container">
-    <h2 style="color: #fff; margin-bottom: 20px;">💰 Dashboard de Transações</h2>
+    <h2 style="color: #fff; margin-bottom: 20px; font-size: 22px;">💰 Dashboard de Transações</h2>
     
     <!-- Resumo das Transações -->
-    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px;">
-        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.06);">
-            <div style="font-size: 28px;">📊</div>
-            <div style="color: #fff; font-size: 22px; font-weight: 700;">0</div>
-            <div style="color: rgba(255,255,255,0.4); font-size: 12px;">Total</div>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px;">
+        <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.06);">
+            <div style="font-size: 22px;">📊</div>
+            <div style="color: #fff; font-size: 18px; font-weight: 700;">0</div>
+            <div style="color: rgba(255,255,255,0.4); font-size: 11px;">Total</div>
         </div>
-        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid rgba(241,196,15,0.2);">
-            <div style="font-size: 28px;">⏳</div>
-            <div style="color: #f1c40f; font-size: 22px; font-weight: 700;">0</div>
-            <div style="color: rgba(255,255,255,0.4); font-size: 12px;">Pendentes</div>
+        <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid rgba(241,196,15,0.2);">
+            <div style="font-size: 22px;">⏳</div>
+            <div style="color: #f1c40f; font-size: 18px; font-weight: 700;">0</div>
+            <div style="color: rgba(255,255,255,0.4); font-size: 11px;">Pendentes</div>
         </div>
-        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid rgba(52,152,219,0.2);">
-            <div style="font-size: 28px;">💰</div>
-            <div style="color: #3498db; font-size: 22px; font-weight: 700;">0</div>
-            <div style="color: rgba(255,255,255,0.4); font-size: 12px;">Pagos</div>
+        <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid rgba(52,152,219,0.2);">
+            <div style="font-size: 22px;">💰</div>
+            <div style="color: #3498db; font-size: 18px; font-weight: 700;">0</div>
+            <div style="color: rgba(255,255,255,0.4); font-size: 11px;">Pagos</div>
         </div>
-        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid rgba(46,204,113,0.2);">
-            <div style="font-size: 28px;">✅</div>
-            <div style="color: #2ecc71; font-size: 22px; font-weight: 700;">0</div>
-            <div style="color: rgba(255,255,255,0.4); font-size: 12px;">Concluídas</div>
+        <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid rgba(46,204,113,0.2);">
+            <div style="font-size: 22px;">✅</div>
+            <div style="color: #2ecc71; font-size: 18px; font-weight: 700;">0</div>
+            <div style="color: rgba(255,255,255,0.4); font-size: 11px;">Concluídas</div>
         </div>
     </div>
     
-    <!-- Botões de Ação -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+    <!-- Botões de Ação (menores) -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px;">
         
         <!-- Nova Transação -->
         <a href="{% url 'criar_requisicao' %}" style="
             background: linear-gradient(135deg, #2ecc71, #27ae60);
             color: #fff;
-            padding: 16px 20px;
-            border-radius: 12px;
+            padding: 12px 15px;
+            border-radius: 10px;
             text-decoration: none;
             text-align: center;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(46,204,113,0.3);
+            box-shadow: 0 3px 12px rgba(46,204,113,0.25);
             display: block;
-        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(46,204,113,0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(46,204,113,0.3)'">
-            <div style="font-size: 28px;">➕</div>
-            <div style="font-size: 14px; font-weight: 600;">Nova Transação</div>
-            <div style="font-size: 11px; opacity: 0.7;">Iniciar uma transação</div>
+            font-size: 13px;
+        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(46,204,113,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 3px 12px rgba(46,204,113,0.25)'">
+            <div style="font-size: 22px;">➕</div>
+            <div style="font-size: 13px; font-weight: 600;">Nova Transação</div>
+            <div style="font-size: 10px; opacity: 0.7;">Iniciar</div>
         </a>
         
         <!-- Histórico -->
         <a href="{% url 'minhas_requisicoes' %}" style="
             background: linear-gradient(135deg, #3498db, #2980b9);
             color: #fff;
-            padding: 16px 20px;
-            border-radius: 12px;
+            padding: 12px 15px;
+            border-radius: 10px;
             text-decoration: none;
             text-align: center;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(52,152,219,0.3);
+            box-shadow: 0 3px 12px rgba(52,152,219,0.25);
             display: block;
-        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(52,152,219,0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(52,152,219,0.3)'">
-            <div style="font-size: 28px;">📋</div>
-            <div style="font-size: 14px; font-weight: 600;">Histórico</div>
-            <div style="font-size: 11px; opacity: 0.7;">Ver todas as transações</div>
+            font-size: 13px;
+        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(52,152,219,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 3px 12px rgba(52,152,219,0.25)'">
+            <div style="font-size: 22px;">📋</div>
+            <div style="font-size: 13px; font-weight: 600;">Histórico</div>
+            <div style="font-size: 10px; opacity: 0.7;">Ver tudo</div>
         </a>
         
         <!-- Relatórios -->
         <a href="#" style="
             background: linear-gradient(135deg, #9b59b6, #8e44ad);
             color: #fff;
-            padding: 16px 20px;
-            border-radius: 12px;
+            padding: 12px 15px;
+            border-radius: 10px;
             text-decoration: none;
             text-align: center;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(155,89,182,0.3);
+            box-shadow: 0 3px 12px rgba(155,89,182,0.25);
             display: block;
-        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(155,89,182,0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(155,89,182,0.3)'">
-            <div style="font-size: 28px;">📊</div>
-            <div style="font-size: 14px; font-weight: 600;">Relatórios</div>
-            <div style="font-size: 11px; opacity: 0.7;">Ver relatórios detalhados</div>
+            font-size: 13px;
+        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(155,89,182,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 3px 12px rgba(155,89,182,0.25)'">
+            <div style="font-size: 22px;">📊</div>
+            <div style="font-size: 13px; font-weight: 600;">Relatórios</div>
+            <div style="font-size: 10px; opacity: 0.7;">Análises</div>
         </a>
     </div>
     
     <!-- Últimas Transações (Cliente) -->
-    <div style="background: rgba(255,255,255,0.03); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05);">
-        <h3 style="color: #fff; margin-bottom: 10px; font-size: 16px;">🛒 Como Cliente</h3>
-        <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 8px; text-align: center;">
-            <p style="color: rgba(255,255,255,0.3); font-size: 14px;">
+    <div style="background: rgba(255,255,255,0.03); border-radius: 10px; padding: 12px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05);">
+        <h3 style="color: #fff; margin-bottom: 8px; font-size: 14px;">🛒 Como Cliente</h3>
+        <div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 8px; text-align: center;">
+            <p style="color: rgba(255,255,255,0.3); font-size: 13px;">
                 <i class="fas fa-info-circle"></i> 
                 Nenhuma transação encontrada
             </p>
@@ -96,10 +99,10 @@
     </div>
     
     <!-- Últimas Transações (Fornecedor) -->
-    <div style="background: rgba(255,255,255,0.03); border-radius: 12px; padding: 15px; border: 1px solid rgba(255,255,255,0.05);">
-        <h3 style="color: #fff; margin-bottom: 10px; font-size: 16px;">🏪 Como Fornecedor</h3>
-        <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 8px; text-align: center;">
-            <p style="color: rgba(255,255,255,0.3); font-size: 14px;">
+    <div style="background: rgba(255,255,255,0.03); border-radius: 10px; padding: 12px; border: 1px solid rgba(255,255,255,0.05);">
+        <h3 style="color: #fff; margin-bottom: 8px; font-size: 14px;">🏪 Como Fornecedor</h3>
+        <div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 8px; text-align: center;">
+            <p style="color: rgba(255,255,255,0.3); font-size: 13px;">
                 <i class="fas fa-info-circle"></i> 
                 Nenhuma transação encontrada
             </p>
@@ -107,19 +110,19 @@
     </div>
     
     <!-- Botão de Ajuda -->
-    <div style="text-align: center; margin-top: 20px;">
+    <div style="text-align: center; margin-top: 15px;">
         <a href="#" style="
-            background: rgba(255,255,255,0.08);
-            color: rgba(255,255,255,0.6);
-            padding: 10px 25px;
-            border-radius: 20px;
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.5);
+            padding: 6px 18px;
+            border-radius: 15px;
             text-decoration: none;
-            font-size: 13px;
-            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 12px;
+            border: 1px solid rgba(255,255,255,0.06);
             transition: all 0.3s ease;
             display: inline-block;
-        " onmouseover="this.style.background='rgba(255,255,255,0.15)'; this.style.color='#fff'" onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.color='rgba(255,255,255,0.6)'">
-            <i class="fas fa-life-ring"></i> Preciso de Ajuda
+        " onmouseover="this.style.background='rgba(255,255,255,0.12)'; this.style.color='#fff'" onmouseout="this.style.background='rgba(255,255,255,0.06)'; this.style.color='rgba(255,255,255,0.5)'">
+            <i class="fas fa-life-ring"></i> Ajuda
         </a>
     </div>
 </div>
