@@ -9,6 +9,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
             height: 100%;
+            width: 100%;
         }
         body {
             background: #0a0e1a;
@@ -17,6 +18,8 @@
             align-items: center;
             min-height: 100vh;
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
         .splash-container {
             text-align: center;
@@ -26,13 +29,20 @@
             align-items: center;
             justify-content: center;
             width: 100%;
+            height: 100vh;
+            cursor: pointer;
+        }
+        .logo-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
         }
         .logo-img {
             width: 400px;
             max-width: 90vw;
             height: auto;
             display: block;
-            margin: 0 auto;
             filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.3));
             animation: glowPulse 3s ease-in-out infinite;
         }
@@ -44,24 +54,112 @@
                 filter: drop-shadow(0 0 60px rgba(255, 255, 255, 0.6));
             }
         }
-        @media (max-width: 600px) {
-            .logo-img { 
+        .logo-img.static {
+            animation: none !important;
+            filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.3));
+        }
+        .loading-dots {
+            display: none;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 40px;
+            padding: 10px;
+        }
+        .loading-dots.active {
+            display: flex;
+        }
+        .dot {
+            width: 16px;
+            height: 16px;
+            background: #888888;
+            border-radius: 50%;
+            animation: dotBounce 1.4s infinite ease-in-out both;
+        }
+        .dot:nth-child(1) { animation-delay: -0.42s; }
+        .dot:nth-child(2) { animation-delay: -0.28s; }
+        .dot:nth-child(3) { animation-delay: -0.14s; }
+        .dot:nth-child(4) { animation-delay: 0s; }
+        @keyframes dotBounce {
+            0%, 80%, 100% {
+                transform: scale(0);
+                background: #888888;
+            }
+            40% {
+                transform: scale(1);
+                background: #cccccc;
+            }
+        }
+        @media (max-width: 768px) {
+            .splash-container {
+                padding: 10px;
+                height: 100vh;
+                justify-content: center;
+            }
+            .logo-img {
                 width: 280px;
                 max-width: 85vw;
+            }
+            .dot {
+                width: 12px;
+                height: 12px;
+            }
+            .loading-dots {
+                gap: 10px;
+                margin-top: 30px;
+            }
+        }
+        @media (max-width: 480px) {
+            .logo-img {
+                width: 220px;
+                max-width: 80vw;
             }
         }
     </style>
 </head>
 <body>
-    <div class="splash-container">
-        <img src="{% static 'core/images/logo.png' %}" alt="Nhonga" class="logo-img" id="logo">
+    <div class="splash-container" id="splashContainer">
+        <div class="logo-wrapper">
+            <img src="{% static 'core/images/logo.png' %}" alt="Nhonga" class="logo-img" id="logo">
+        </div>
+
+        <div class="loading-dots" id="loadingDots">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
     </div>
 
     <script>
-        // Aguarda 4 segundos e redireciona para o login
-        setTimeout(function() {
-            window.location.href = "/login/";
-        }, 4000);
+        const logo = document.getElementById('logo');
+        const splashContainer = document.getElementById('splashContainer');
+        const loadingDots = document.getElementById('loadingDots');
+        let isProcessing = false;
+        
+        // Detectar se é dispositivo móvel
+        const isMobile = window.innerWidth <= 768;
+
+        splashContainer.addEventListener('click', function(e) {
+            // No mobile: clicar para redirecionar
+            if (isMobile) {
+                if (isProcessing) return;
+                
+                isProcessing = true;
+                logo.classList.add('static');
+                loadingDots.classList.add('active');
+                
+                setTimeout(function() {
+                    window.location.href = "/login/";
+                }, 4000);
+            }
+        });
+
+        // No desktop: redirecionamento automático após 4 segundos
+        if (!isMobile) {
+            setTimeout(function() {
+                window.location.href = "/login/";
+            }, 4000);
+        }
     </script>
 </body>
 </html>
