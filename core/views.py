@@ -92,6 +92,11 @@ def login_view(request):
     
     return render(request, 'core/login.html')
 
+def logout_view(request):
+    """Faz logout do utilizador e redireciona para o login"""
+    logout(request)
+    return redirect('login')
+
 
 # ============================================
 # CONTACTOS
