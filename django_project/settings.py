@@ -5,9 +5,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-8&_8a1%n!2c6tbw7t#g5@k4v2k9d8j5h2m3w9x7q4z8p6r1n3b'
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    'web-production-a9ad2f.up.railway.app',
+    'localhost',
+    '127.0.0.1',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -66,7 +70,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = 'pt-pt'
-TIME_ZONE = 'Europe/Lisbon'
+TIME_ZONE = 'Africa/Maputo'
 USE_I18N = True
 USE_TZ = True
 
@@ -110,6 +114,34 @@ MPESA_PASSKEY = os.environ.get('MPESA_PASSKEY', '')
 MPESA_SHORTCODE = os.environ.get('MPESA_SHORTCODE', '174379')  # Código de teste
 MPESA_CALLBACK_URL = os.environ.get('MPESA_CALLBACK_URL', 'https://web-production-a9ad2f.up.railway.app/api/mpesa/callback/')
 MPESA_ENVIRONMENT = os.environ.get('MPESA_ENVIRONMENT', 'sandbox')  # 'sandbox' ou 'production'
+
+# ============================================
+# SEGURANÇA - SESSÕES E CSRF
+# ============================================
+
+# Sessões Seguras
+SESSION_COOKIE_SECURE = True          # Só envia cookies via HTTPS
+SESSION_COOKIE_HTTPONLY = True        # Impede acesso via JavaScript
+SESSION_COOKIE_SAMESITE = 'Lax'       # Protege contra CSRF
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Sessão expira ao fechar o browser
+
+# CSRF
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = True
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-a9ad2f.up.railway.app',
+]
+
+# Headers de Segurança
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+
+# HTTPS
+SECURE_SSL_REDIRECT = True
+SECURE_HSTS_SECONDS = 31536000  # 1 ano
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
 
 # ============================================
 # CONFIGURAÇÕES DE REDIRECIONAMENTO

@@ -51,17 +51,46 @@ def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+        
+        # Verificar se a conta está bloqueada
+        try:
+            user_obj = User.objects.get(username=username)
+            tentativa, created = TentativaLogin.objects.get_or_create(usuario=user_obj)
+            if tentativa.bloqueado:
+                messages.error(request, '🔒 Conta bloqueada por excesso de tentativas. Tente novamente mais tarde.')
+                return render(request, 'core/login.html')
+        except User.DoesNotExist:
+            pass
+        
         user = authenticate(request, username=username, password=password)
+        
         if user is not None:
             login(request, user)
+            # Resetar tentativas após login bem-sucedido
+            try:
+                tentativa, created = TentativaLogin.objects.get_or_create(usuario=user)
+                tentativa.tentativas = 0
+                tentativa.bloqueado = False
+                tentativa.save()
+            except:
+                pass
             return redirect('home')
         else:
-            messages.error(request, 'Credenciais inválidas')
+            # Incrementar tentativas
+            try:
+                user_obj = User.objects.get(username=username)
+                tentativa, created = TentativaLogin.objects.get_or_create(usuario=user_obj)
+                tentativa.tentativas += 1
+                if tentativa.tentativas >= 5:
+                    tentativa.bloqueado = True
+                    messages.error(request, '🔒 Conta bloqueada por excesso de tentativas.')
+                else:
+                    messages.error(request, f'Credenciais inválidas. Tentativa {tentativa.tentativas} de 5.')
+                tentativa.save()
+            except User.DoesNotExist:
+                messages.error(request, 'Credenciais inválidas.')
+    
     return render(request, 'core/login.html')
-
-def logout_view(request):
-    logout(request)
-    return redirect('login')
 
 
 # ============================================
