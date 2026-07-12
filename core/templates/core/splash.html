@@ -21,22 +21,11 @@
         .splash-container {
             text-align: center;
             padding: 20px;
-            cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             width: 100%;
-        }
-        .logo-wrapper {
-            display: inline-block;
-            transition: transform 0.3s ease;
-        }
-        .logo-wrapper:hover {
-            transform: scale(1.05);
-        }
-        .logo-wrapper:active {
-            transform: scale(0.95);
         }
         .logo-img {
             width: 400px;
@@ -55,84 +44,24 @@
                 filter: drop-shadow(0 0 60px rgba(255, 255, 255, 0.6));
             }
         }
-        .logo-img.static {
-            animation: none !important;
-            filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.3));
-        }
-        .loading-dots {
-            display: none;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 40px;
-            padding: 10px;
-        }
-        .loading-dots.active {
-            display: flex;
-        }
-        .dot {
-            width: 16px;
-            height: 16px;
-            background: #888888;
-            border-radius: 50%;
-            animation: dotBounce 1.4s infinite ease-in-out both;
-        }
-        .dot:nth-child(1) { animation-delay: -0.42s; }
-        .dot:nth-child(2) { animation-delay: -0.28s; }
-        .dot:nth-child(3) { animation-delay: -0.14s; }
-        .dot:nth-child(4) { animation-delay: 0s; }
-        @keyframes dotBounce {
-            0%, 80%, 100% {
-                transform: scale(0);
-                background: #888888;
-            }
-            40% {
-                transform: scale(1);
-                background: #cccccc;
-            }
-        }
         @media (max-width: 600px) {
             .logo-img { 
                 width: 280px;
                 max-width: 85vw;
             }
-            .dot { width: 12px; height: 12px; }
-            .loading-dots { gap: 10px; margin-top: 30px; }
         }
     </style>
 </head>
 <body>
     <div class="splash-container">
-        <div class="logo-wrapper" id="logoWrapper">
-            <img src="{% static 'core/images/logo.png' %}" alt="Nhonga" class="logo-img" id="logo">
-        </div>
-
-        <div class="loading-dots" id="loadingDots">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-        </div>
+        <img src="{% static 'core/images/logo.png' %}" alt="Nhonga" class="logo-img" id="logo">
     </div>
 
     <script>
-        const logo = document.getElementById('logo');
-        const logoWrapper = document.getElementById('logoWrapper');
-        const loadingDots = document.getElementById('loadingDots');
-        let isProcessing = false;
-
-        logoWrapper.addEventListener('click', function(e) {
-            e.stopPropagation();
-            
-            if (isProcessing) return;
-            
-            isProcessing = true;
-            logo.classList.add('static');
-            loadingDots.classList.add('active');
-            
-            setTimeout(function() {
-                window.location.href = "/login/";
-            }, 4000);
-        });
+        // Aguarda 4 segundos e redireciona para o login
+        setTimeout(function() {
+            window.location.href = "/login/";
+        }, 4000);
     </script>
 </body>
 </html>
