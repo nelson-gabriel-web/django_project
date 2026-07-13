@@ -74,5 +74,6 @@ urlpatterns = [
     # Avaliações
     path('avaliar/<int:transacao_id>/', views.avaliar, name='avaliar'),
     path('avaliacoes/<int:fornecedor_id>/', views.avaliacoes_fornecedor, name='avaliacoes_fornecedor'),
+path('termos-condicoes/', views.termos_condicoes, name='termos_condicoes'),
 
 ]

@@ -323,3 +323,26 @@ class Avaliacao(models.Model):
         unique_together = ['cliente', 'transacao']
     def __str__(self):
         return f"{self.cliente.username} → {self.fornecedor.username}: {self.nota}★"
+
+# ============================================
+# TERMOS E CONDIÇÕES
+# ============================================
+
+class TermosAceitacao(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='termos_aceites')
+    versao = models.CharField(max_length=10, default='1.0')
+    aceite = models.BooleanField(default=True)
+    data_aceite = models.DateTimeField(auto_now_add=True)
+    ip = models.GenericIPAddressField(null=True, blank=True)
+    
+    class Meta:
+        verbose_name = "Aceitação dos Termos"
+        verbose_name_plural = "Aceitações dos Termos"
+        ordering = ['-data_aceite']
+    
+    def __str__(self):
+        return f"{self.usuario.username} - v{self.versao} - {self.data_aceite.strftime('%d/%m/%Y')}"
+    
+    @staticmethod
+    def get_versao_atual():
+        return '1.0'

@@ -15,23 +15,33 @@ from django.http import JsonResponse
 from django.utils import timezone
 from datetime import datetime, timedelta
 from decimal import Decimal
+from .services.moderation import ImageModerationService
 
-from .models import Contato, TentativaLogin, PerfilUsuario, Moeda, PreferenciaMoeda, RequisicaoCompra, Transacao, HistoricoTransacao, TransacaoMpesa, Denuncia, Avaliacao, TermosAceitacao
-from .forms import ContatoForm, PerfilUsuarioForm, RequisicaoCompraForm, CustomUserCreationForm, AvaliacaoForm
-from .services.mpesa import MpesaService
+from .models import Contato, TentativaLogin, PerfilUsuario, Moeda, PreferenciaMoeda, RequisicaoCompra, Transacao, HistoricoTransacao
+from .forms import ContatoForm, PerfilUsuarioForm, RequisicaoCompraForm, CustomUserCreationForm
 from .constantes import PALAVRAS_PROIBIDAS
-from django.contrib.admin.views.decorators import staff_member_required
 
 
 # ============================================
 # SPLASH E HOME
 # ============================================
+def termos_condicoes(request):
+    """Página de Termos e Condições"""
+    return render(request, 'core/termos_condicoes.html')
 
 def splash(request):
     return render(request, 'core/splash.html')
 
 def home(request):
     return render(request, 'core/home.html')
+
+def verificar_produto_ilicito(titulo, descricao):
+    """Verifica se um produto contém palavras proibidas"""
+    texto = (titulo + ' ' + descricao).lower()
+    for palavra in PALAVRAS_PROIBIDAS:
+        if palavra.lower() in texto:
+            return True, palavra
+    return False, None
 
 
 # ============================================
@@ -44,6 +54,7 @@ def registar(request):
         if form.is_valid():
             user = form.save()
             PerfilUsuario.objects.create(usuario=user)
+            from .models import TermosAceitacao
             TermosAceitacao.objects.create(
                 usuario=user,
                 versao=TermosAceitacao.get_versao_atual(),
@@ -54,11 +65,8 @@ def registar(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'core/registar.html', {'form': form})
-
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        
+        # Verificar se a conta está bloqueada
         try:
             user_obj = User.objects.get(username=username)
             tentativa, created = TentativaLogin.objects.get_or_create(usuario=user_obj)
@@ -67,9 +75,12 @@ def login_view(request):
                 return render(request, 'core/login.html')
         except User.DoesNotExist:
             pass
+        
         user = authenticate(request, username=username, password=password)
+        
         if user is not None:
             login(request, user)
+            # Resetar tentativas após login bem-sucedido
             try:
                 tentativa, created = TentativaLogin.objects.get_or_create(usuario=user)
                 tentativa.tentativas = 0
@@ -79,6 +90,7 @@ def login_view(request):
                 pass
             return redirect('home')
         else:
+            # Incrementar tentativas
             try:
                 user_obj = User.objects.get(username=username)
                 tentativa, created = TentativaLogin.objects.get_or_create(usuario=user_obj)
@@ -91,9 +103,11 @@ def login_view(request):
                 tentativa.save()
             except User.DoesNotExist:
                 messages.error(request, 'Credenciais inválidas.')
+    
     return render(request, 'core/login.html')
 
 def logout_view(request):
+    """Faz logout do utilizador e redireciona para o login"""
     logout(request)
     return redirect('login')
 
@@ -191,6 +205,7 @@ def dashboard_fornecedor(request):
 
 @login_required
 def dashboard_transacoes(request):
+    """Dashboard de transações simplificado"""
     context = {
         'cliente_total': 0,
         'cliente_pendentes': 0,
@@ -362,11 +377,14 @@ def requisicoes_fornecedor(request):
     except:
         messages.warning(request, 'Complete seu perfil.')
         return redirect('perfil')
+    
     requisicoes = RequisicaoCompra.objects.filter(
         status__in=['pendente', 'em_analise']
     ).exclude(cliente=request.user).order_by('-data_criacao')
+    
     if perfil.provincia:
         requisicoes = requisicoes.filter(provincia=perfil.provincia)
+    
     return render(request, 'core/requisicoes/requisicoes_fornecedor.html', {
         'requisicoes': requisicoes,
         'perfil': perfil,
@@ -379,7 +397,9 @@ def interessar_requisicao(request, requisicao_id):
         if perfil.tipo != 'fornecedor':
             messages.error(request, 'Apenas fornecedores podem se interessar.')
             return redirect('home')
+        
         requisicao = get_object_or_404(RequisicaoCompra, id=requisicao_id)
+        
         if requisicao.status in ['pendente', 'em_analise']:
             requisicao.fornecedores_interessados.add(request.user)
             requisicao.status = 'em_analise'
@@ -389,6 +409,7 @@ def interessar_requisicao(request, requisicao_id):
             messages.error(request, 'Esta requisição não está disponível.')
     except:
         messages.error(request, 'Complete seu perfil primeiro.')
+    
     return redirect('requisicoes_fornecedor')
 
 
@@ -402,21 +423,28 @@ def alterar_password(request):
         password_atual = request.POST.get('password_atual')
         nova_password = request.POST.get('nova_password')
         confirmar_password = request.POST.get('confirmar_password')
+        
         user = request.user
+        
         if not user.check_password(password_atual):
             messages.error(request, 'Password atual incorreta.')
             return redirect('dashboard_seguranca')
+        
         if nova_password != confirmar_password:
             messages.error(request, 'As novas passwords não coincidem.')
             return redirect('dashboard_seguranca')
+        
         if len(nova_password) < 8:
             messages.error(request, 'A password deve ter pelo menos 8 caracteres.')
             return redirect('dashboard_seguranca')
+        
         user.set_password(nova_password)
         user.save()
+        
         logout(request)
         messages.success(request, 'Password alterada com sucesso! Faça login novamente.')
         return redirect('login')
+    
     return redirect('dashboard_seguranca')
 
 @login_required
@@ -425,10 +453,12 @@ def toggle_2fa(request):
         perfil = request.user.perfilusuario
         perfil.ativo_2fa = not perfil.ativo_2fa
         perfil.save()
+        
         if perfil.ativo_2fa:
             messages.success(request, '2FA ativado com sucesso!')
         else:
             messages.success(request, '2FA desativado com sucesso!')
+    
     return redirect('dashboard_seguranca')
 
 @login_required
@@ -439,6 +469,7 @@ def logout_all(request):
         for session in sessions:
             session.delete()
         messages.success(request, 'Todas as sessões foram terminadas.')
+    
     return redirect('dashboard_seguranca')
 
 
@@ -448,12 +479,14 @@ def logout_all(request):
 
 @login_required
 def mapa_fornecedores(request):
+    """Página com mapa de fornecedores próximos"""
     fornecedores = PerfilUsuario.objects.filter(
         tipo='fornecedor',
         status='ativo',
         latitude__isnull=False,
         longitude__isnull=False
     )
+    
     try:
         cliente = request.user.perfilusuario
         cliente_lat = float(cliente.latitude) if cliente.latitude else None
@@ -461,6 +494,7 @@ def mapa_fornecedores(request):
     except:
         cliente_lat = None
         cliente_lng = None
+    
     fornecedores_data = []
     for f in fornecedores:
         fornecedores_data.append({
@@ -470,6 +504,7 @@ def mapa_fornecedores(request):
             'telefone': f.telefone or 'Não disponível',
             'cidade': f.cidade or 'Não informada',
         })
+    
     context = {
         'fornecedores': fornecedores_data,
         'cliente_lat': cliente_lat,
@@ -477,32 +512,45 @@ def mapa_fornecedores(request):
         'total_fornecedores': len(fornecedores_data),
     }
     return render(request, 'core/mapa_fornecedores.html', context)
-
-
 # ============================================
 # VIEWS M-PESA
 # ============================================
 
+from .services.mpesa import MpesaService
+from .models import TransacaoMpesa, Transacao
+from decimal import Decimal
+import json
+
 @login_required
 def iniciar_pagamento(request, transacao_id):
+    """Inicia um pagamento via M-Pesa"""
     transacao = get_object_or_404(Transacao, id=transacao_id, cliente=request.user)
+    
     if request.method == 'POST':
         phone_number = request.POST.get('phone_number', '').strip()
+        
         if not phone_number:
             messages.error(request, 'Número de telefone é obrigatório.')
             return redirect('iniciar_pagamento', transacao_id=transacao.id)
+        
+        # Validar número (84 ou 85 para M-Pesa)
         if not phone_number.startswith('84') and not phone_number.startswith('85'):
             messages.error(request, 'Número de telefone inválido para M-Pesa. Use 84 ou 85.')
             return redirect('iniciar_pagamento', transacao_id=transacao.id)
+        
+        # Iniciar pagamento
         mpesa = MpesaService()
         referencia = f"NHONGA-{transacao.id}-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+        
         result = mpesa.stk_push(
             phone_number=phone_number,
             amount=transacao.valor_total,
             reference=referencia,
             description=f"Pagamento Nhonga - {transacao.titulo}"
         )
+        
         if result.get('success'):
+            # Salvar transação M-Pesa
             transacao_mpesa = TransacaoMpesa.objects.create(
                 usuario=request.user,
                 transacao=transacao,
@@ -512,18 +560,23 @@ def iniciar_pagamento(request, transacao_id):
                 amount=transacao.valor_total,
                 status='pending'
             )
+            
             messages.success(request, '✅ Pedido de pagamento enviado! Confirme no seu telemóvel M-Pesa.')
             return redirect('confirmar_pagamento', transacao_id=transacao.id)
         else:
             messages.error(request, f'❌ Erro: {result.get("message")}')
             return redirect('iniciar_pagamento', transacao_id=transacao.id)
+    
     return render(request, 'core/pagamento/iniciar_pagamento.html', {
         'transacao': transacao,
     })
 
 @login_required
 def confirmar_pagamento(request, transacao_id):
+    """Confirmação do pagamento"""
     transacao = get_object_or_404(Transacao, id=transacao_id, cliente=request.user)
+    
+    # Buscar transação M-Pesa
     try:
         transacao_mpesa = TransacaoMpesa.objects.filter(
             transacao=transacao,
@@ -531,9 +584,12 @@ def confirmar_pagamento(request, transacao_id):
         ).order_by('-data_criacao').first()
     except:
         transacao_mpesa = None
+    
+    # Se ainda pendente, consultar status
     if transacao_mpesa and transacao_mpesa.status == 'pending':
         mpesa = MpesaService()
         result = mpesa.query_status(transacao_mpesa.checkout_request_id)
+        
         if result.get('success'):
             if result.get('status') == 'success':
                 transacao_mpesa.mark_success()
@@ -543,6 +599,7 @@ def confirmar_pagamento(request, transacao_id):
                 messages.success(request, '✅ Pagamento confirmado com sucesso!')
             elif result.get('status') == 'failed':
                 transacao_mpesa.mark_failed(result.get('result_description', 'Falha no pagamento'))
+    
     return render(request, 'core/pagamento/confirmar_pagamento.html', {
         'transacao': transacao,
         'transacao_mpesa': transacao_mpesa,
@@ -550,37 +607,55 @@ def confirmar_pagamento(request, transacao_id):
 
 @csrf_exempt
 def callback_mpesa(request):
+    """Callback da M-Pesa para confirmação de pagamento"""
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
+            
+            # Extrair dados do callback
             result_code = data.get('Body', {}).get('stkCallback', {}).get('ResultCode')
             result_desc = data.get('Body', {}).get('stkCallback', {}).get('ResultDesc')
             checkout_request_id = data.get('Body', {}).get('stkCallback', {}).get('CheckoutRequestID')
+            
+            # Buscar transação
             try:
                 transacao_mpesa = TransacaoMpesa.objects.get(checkout_request_id=checkout_request_id)
-                if result_code == '0':
+                
+                if result_code == '0':  # Sucesso
                     transacao_mpesa.mark_success()
+                    
+                    # Atualizar transação principal
                     if transacao_mpesa.transacao:
                         transacao_mpesa.transacao.status = 'pago'
                         transacao_mpesa.transacao.data_pagamento = timezone.now()
                         transacao_mpesa.transacao.save()
                 else:
                     transacao_mpesa.mark_failed(result_desc)
+                
                 return JsonResponse({'status': 'ok'})
             except TransacaoMpesa.DoesNotExist:
                 return JsonResponse({'status': 'error', 'message': 'Transação não encontrada'}, status=404)
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    
     return JsonResponse({'status': 'error', 'message': 'Método não permitido'}, status=405)
 
+def termos(request):
+    """Página de Termos de Serviço"""
+    return render(request, 'core/termos.html')
 
 # ============================================
-# MODERAÇÃO
+# VIEWS DE MODERAÇÃO
 # ============================================
+
+from .models import Denuncia
+from django.contrib.admin.views.decorators import staff_member_required
 
 @staff_member_required
 def dashboard_moderador(request):
+    """Dashboard para moderadores"""
     denuncias = Denuncia.objects.all()
+    
     context = {
         'total_denuncias': denuncias.count(),
         'pendentes': denuncias.filter(status='pendente').count(),
@@ -593,13 +668,16 @@ def dashboard_moderador(request):
 
 @staff_member_required
 def detalhe_denuncia(request, denuncia_id):
+    """Detalhes de uma denúncia"""
     denuncia = get_object_or_404(Denuncia, id=denuncia_id)
+    
     if request.method == 'POST':
         acao = request.POST.get('acao')
         if acao in ['aprovado', 'rejeitado']:
             denuncia.status = acao
             denuncia.data_resolucao = timezone.now()
             denuncia.save()
+            
             if acao == 'aprovado':
                 try:
                     perfil = denuncia.fornecedor.perfilusuario
@@ -610,18 +688,26 @@ def detalhe_denuncia(request, denuncia_id):
                     messages.error(request, '❌ Erro ao suspender conta.')
             else:
                 messages.info(request, f'ℹ️ Denúncia rejeitada. Nenhuma ação tomada.')
+            
             return redirect('dashboard_moderador')
-    return render(request, 'core/moderacao/detalhe_denuncia.html', {'denuncia': denuncia})
+    
+    return render(request, 'core/moderacao/detalhe_denuncia.html', {
+        'denuncia': denuncia,
+    })
 
 @login_required
 def denunciar(request, usuario_id):
+    """Formulário de denúncia"""
     fornecedor = get_object_or_404(User, id=usuario_id)
+    
     if request.method == 'POST':
         categoria = request.POST.get('categoria')
         descricao = request.POST.get('descricao')
+        
         if not categoria or not descricao:
             messages.error(request, 'Por favor, preencha todos os campos.')
             return redirect('denunciar', usuario_id=usuario_id)
+        
         Denuncia.objects.create(
             denunciante=request.user,
             fornecedor=fornecedor,
@@ -629,86 +715,26 @@ def denunciar(request, usuario_id):
             descricao=descricao,
             status='pendente'
         )
+        
         messages.success(request, '✅ Denúncia registada com sucesso! A nossa equipa vai analisar.')
         return redirect('home')
+    
     return render(request, 'core/moderacao/denunciar.html', {
         'fornecedor': fornecedor,
         'categorias': Denuncia.CATEGORIA_CHOICES,
     })
 
-def termos_condicoes(request):
-    return render(request, 'core/termos_condicoes.html')
-
-
 # ============================================
-# AVALIAÇÕES
+# RELATÓRIO DE MODERAÇÃO
 # ============================================
 
-@login_required
-def avaliar(request, transacao_id):
-    transacao = get_object_or_404(Transacao, id=transacao_id, cliente=request.user)
-    if Avaliacao.objects.filter(transacao=transacao, cliente=request.user).exists():
-        messages.warning(request, 'Você já avaliou esta transação.')
-        return redirect('detalhe_transacao', transacao_id=transacao.id)
-    if transacao.status != 'concluido':
-        messages.warning(request, 'Só pode avaliar após a transação ser concluída.')
-        return redirect('detalhe_transacao', transacao_id=transacao.id)
-    if request.method == 'POST':
-        form = AvaliacaoForm(request.POST)
-        if form.is_valid():
-            avaliacao = form.save(commit=False)
-            avaliacao.cliente = request.user
-            avaliacao.fornecedor = transacao.fornecedor
-            avaliacao.transacao = transacao
-            avaliacao.save()
-            try:
-                fornecedor_obj = Fornecedor.objects.get(usuario=transacao.fornecedor)
-                avaliacoes = Avaliacao.objects.filter(fornecedor=transacao.fornecedor)
-                total = avaliacoes.count()
-                if total > 0:
-                    soma = sum(a.nota for a in avaliacoes)
-                    fornecedor_obj.avaliacao_media = round(soma / total, 2)
-                fornecedor_obj.total_avaliacoes = total
-                fornecedor_obj.save()
-            except Fornecedor.DoesNotExist:
-                pass
-            messages.success(request, '✅ Avaliação enviada com sucesso! Obrigado pela sua opinião.')
-            return redirect('detalhe_transacao', transacao_id=transacao.id)
-    else:
-        form = AvaliacaoForm()
-    return render(request, 'core/avaliacoes/avaliar.html', {
-        'form': form,
-        'transacao': transacao,
-        'fornecedor': transacao.fornecedor,
-    })
+from django.db.models import Count
 
-@login_required
-def avaliacoes_fornecedor(request, fornecedor_id):
-    fornecedor = get_object_or_404(User, id=fornecedor_id)
-    avaliacoes = Avaliacao.objects.filter(fornecedor=fornecedor).order_by('-data_criacao')
-    media = 0
-    if avaliacoes.exists():
-        total = sum(a.nota for a in avaliacoes)
-        media = round(total / avaliacoes.count(), 2)
-    distribuicao = {}
-    for i in range(1, 6):
-        distribuicao[i] = avaliacoes.filter(nota=i).count()
-    context = {
-        'fornecedor': fornecedor,
-        'avaliacoes': avaliacoes,
-        'media': media,
-        'total': avaliacoes.count(),
-        'distribuicao': distribuicao,
-    }
-    return render(request, 'core/avaliacoes/avaliacoes_fornecedor.html', context)
-
-def termos(request):
-    """Página de Termos de Serviço"""
 @staff_member_required
 def relatorio_moderacao(request):
     """Relatório de moderação para administradores"""
-    from django.db.models import Count
     
+    # Estatísticas
     total_produtos = RequisicaoCompra.objects.count()
     produtos_pendentes = RequisicaoCompra.objects.filter(status='pendente').count()
     produtos_cancelados = RequisicaoCompra.objects.filter(status='cancelado').count()
@@ -717,6 +743,7 @@ def relatorio_moderacao(request):
     denuncias_pendentes = Denuncia.objects.filter(status='pendente').count()
     denuncias_aprovadas = Denuncia.objects.filter(status='aprovado').count()
     
+    # Produtos por categoria
     produtos_categoria = RequisicaoCompra.objects.values('categoria').annotate(total=Count('id'))
     
     context = {
@@ -729,4 +756,101 @@ def relatorio_moderacao(request):
         'produtos_categoria': produtos_categoria,
     }
     return render(request, 'core/moderacao/relatorio.html', context)
-    return render(request, 'core/termos.html')
+
+# ============================================
+# VIEWS DE AVALIAÇÃO
+# ============================================
+
+from .models import Avaliacao
+from .forms import AvaliacaoForm
+
+@login_required
+def avaliar(request, transacao_id):
+    """Página para avaliar um fornecedor após uma transação"""
+    transacao = get_object_or_404(Transacao, id=transacao_id, cliente=request.user)
+    
+    # Verificar se já foi avaliado
+    if Avaliacao.objects.filter(transacao=transacao, cliente=request.user).exists():
+        messages.warning(request, 'Você já avaliou esta transação.')
+        return redirect('detalhe_transacao', transacao_id=transacao.id)
+    
+    # Verificar se a transação está concluída
+    if transacao.status != 'concluido':
+        messages.warning(request, 'Só pode avaliar após a transação ser concluída.')
+        return redirect('detalhe_transacao', transacao_id=transacao.id)
+    
+    if request.method == 'POST':
+        form = AvaliacaoForm(request.POST)
+        if form.is_valid():
+            avaliacao = form.save(commit=False)
+            avaliacao.cliente = request.user
+            avaliacao.fornecedor = transacao.fornecedor
+            avaliacao.transacao = transacao
+            avaliacao.save()
+            
+            # Atualizar média do fornecedor
+            atualizar_media_fornecedor(transacao.fornecedor)
+            
+            messages.success(request, '✅ Avaliação enviada com sucesso! Obrigado pela sua opinião.')
+            return redirect('detalhe_transacao', transacao_id=transacao.id)
+    else:
+        form = AvaliacaoForm()
+    
+    return render(request, 'core/avaliacoes/avaliar.html', {
+        'form': form,
+        'transacao': transacao,
+        'fornecedor': transacao.fornecedor,
+    })
+
+@login_required
+def avaliacoes_fornecedor(request, fornecedor_id):
+    """Lista de avaliações de um fornecedor"""
+    fornecedor = get_object_or_404(User, id=fornecedor_id)
+    avaliacoes = Avaliacao.objects.filter(fornecedor=fornecedor).order_by('-data_criacao')
+    
+    # Calcular média
+    media = 0
+    if avaliacoes.exists():
+        total = sum(a.nota for a in avaliacoes)
+        media = round(total / avaliacoes.count(), 2)
+    
+    # Distribuição de notas
+    distribuicao = {}
+    for i in range(1, 6):
+        distribuicao[i] = avaliacoes.filter(nota=i).count()
+    
+    context = {
+        'fornecedor': fornecedor,
+        'avaliacoes': avaliacoes,
+        'media': media,
+        'total': avaliacoes.count(),
+        'distribuicao': distribuicao,
+    }
+    return render(request, 'core/avaliacoes/avaliacoes_fornecedor.html', context)
+
+def atualizar_media_fornecedor(fornecedor):
+    """Atualiza a média de avaliações de um fornecedor"""
+    avaliacoes = Avaliacao.objects.filter(fornecedor=fornecedor)
+    total = avaliacoes.count()
+    
+    if total > 0:
+        soma = sum(a.nota for a in avaliacoes)
+        media = round(soma / total, 2)
+    else:
+        media = 0
+    
+    # Atualizar Fornecedor (se existir)
+    try:
+        fornecedor_obj = Fornecedor.objects.get(usuario=fornecedor)
+        fornecedor_obj.avaliacao_media = media
+        fornecedor_obj.total_avaliacoes = total
+        fornecedor_obj.save()
+    except Fornecedor.DoesNotExist:
+        pass
+    
+    # Atualizar PerfilUsuario (fallback)
+    try:
+        perfil = fornecedor.perfilusuario
+        # Se não tiver campo, ignorar
+    except:
+        pass

@@ -22,6 +22,17 @@
             <label style="color: #fff;">Confirmar Password</label>
             {{ form.password2 }}
         </div>
+<div class="form-group" style="margin: 15px 0;">
+    <label style="color: #fff; display: flex; align-items: center; gap: 10px; cursor: pointer;">
+        {{ form.aceita_termos }}
+        <span>Li e aceito os <a href="{% url 'termos_condicoes' %}" target="_blank" style="color: #c0c0c0; text-decoration: underline;">Termos e Condições</a></span>
+    </label>
+    {% if form.aceita_termos.errors %}
+        <div style="color: #e74c3c; font-size: 13px; margin-top: 5px;">
+            {{ form.aceita_termos.errors }}
+        </div>
+    {% endif %}
+</div>
         
         <button type="submit" class="btn-metal" style="width: 100%; margin-top: 10px;">
             <i class="fas fa-user-plus"></i> Criar Conta

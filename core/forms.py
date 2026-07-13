@@ -4,6 +4,17 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Contato, PerfilUsuario, RequisicaoCompra, Moeda
 
+class CustomUserCreationForm(UserCreationForm):
+    aceita_termos = forms.BooleanField(
+        required=True,
+        label='Li e aceito os Termos e Condições',
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+    
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+
 class ContatoForm(forms.ModelForm):
     class Meta:
         model = Contato
