@@ -1,0 +1,15 @@
+@login_required
+def criar_requisicao(request):
+    if request.method == 'POST':
+        form = RequisicaoCompraForm(request.POST)
+        if form.is_valid():
+            requisicao = form.save(commit=False)
+            
+            # VERIFICAÇÃO DE PRODUTOS ILÍCITOS
+            is_illegal, palavra = verificar_produto_ilicito(requisicao.titulo, requisicao.descricao)
+            if is_illegal:
+                messages.error(request, f'🚫 O produto contém termos proibidos: "{palavra}". Por favor, reveja o seu anúncio.')
+                return render(request, 'core/requisicoes/criar_requisicao.html', {'form': form})
+            
+            requisicao.cliente = request.user
+            # ... resto do código ...

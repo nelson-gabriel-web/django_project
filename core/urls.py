@@ -29,6 +29,7 @@ urlpatterns = [
     path('alterar-password/', views.alterar_password, name='alterar_password'),
     path('toggle-2fa/', views.toggle_2fa, name='toggle_2fa'),
     path('logout-all/', views.logout_all, name='logout_all'),
+    path('termos/', views.termos, name='termos'),
     
     # Moedas
     path('moedas/', views.moedas_list, name='moedas_list'),

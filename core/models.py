@@ -7,6 +7,34 @@ from decimal import Decimal
 # ============================================
 # MODELOS EXISTENTES
 # ============================================
+class Denuncia(models.Model):
+    CATEGORIA_CHOICES = (
+        ('drogas', '🚫 Drogas/Substâncias Ilícitas'),
+        ('armas', '🔫 Armas e Munições'),
+        ('falsificacao', '⚠️ Produto Contrafeito'),
+        ('fraude', '💰 Fraude/Engano'),
+        ('spam', '📧 Spam/Publicidade Indevida'),
+        ('outros', '📌 Outros'),
+    )
+    
+    STATUS_CHOICES = (
+        ('pendente', '⏳ Pendente'),
+        ('em_analise', '🔍 Em Análise'),
+        ('aprovado', '✅ Aprovado'),
+        ('rejeitado', '❌ Rejeitado'),
+    )
+    
+    denunciante = models.ForeignKey(User, on_delete=models.CASCADE, related_name='denuncias_feitas')
+    fornecedor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='denuncias_recebidas')
+    produto = models.CharField(max_length=200, blank=True, null=True)
+    categoria = models.CharField(max_length=20, choices=CATEGORIA_CHOICES)
+    descricao = models.TextField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    data_resolucao = models.DateTimeField(null=True, blank=True)
+    
+    def __str__(self):
+        return f"Denúncia #{self.id} - {self.denunciante.username}"
 
 class Contato(models.Model):
     nome = models.CharField(max_length=100)

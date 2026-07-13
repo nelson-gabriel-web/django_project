@@ -18,6 +18,7 @@ from decimal import Decimal
 
 from .models import Contato, TentativaLogin, PerfilUsuario, Moeda, PreferenciaMoeda, RequisicaoCompra, Transacao, HistoricoTransacao
 from .forms import ContatoForm, PerfilUsuarioForm, RequisicaoCompraForm
+from .constantes import PALAVRAS_PROIBIDAS
 
 
 # ============================================
@@ -29,6 +30,14 @@ def splash(request):
 
 def home(request):
     return render(request, 'core/home.html')
+
+def verificar_produto_ilicito(titulo, descricao):
+    """Verifica se um produto contém palavras proibidas"""
+    texto = (titulo + ' ' + descricao).lower()
+    for palavra in PALAVRAS_PROIBIDAS:
+        if palavra.lower() in texto:
+            return True, palavra
+    return False, None
 
 
 # ============================================
@@ -630,3 +639,7 @@ def callback_mpesa(request):
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
     
     return JsonResponse({'status': 'error', 'message': 'Método não permitido'}, status=405)
+
+def termos(request):
+    """Página de Termos de Serviço"""
+    return render(request, 'core/termos.html')

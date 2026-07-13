@@ -1,0 +1,58 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2 style="color: #fff; margin-bottom: 20px;">📋 Termos de Serviço - Nhonga</h2>
+    
+    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+        <p style="color: rgba(255,255,255,0.6); font-size: 14px;">
+            Última atualização: 13 de Julho 2026
+        </p>
+    </div>
+    
+    <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+        <h3 style="color: #fff; margin-bottom: 10px;">🚫 Produtos Proibidos</h3>
+        <p style="color: rgba(255,255,255,0.7); font-size: 14px; line-height: 1.6;">
+            É estritamente proibido anunciar, vender ou trocar qualquer um dos seguintes produtos na plataforma Nhonga:
+        </p>
+        <ul style="color: rgba(255,255,255,0.6); font-size: 14px; line-height: 1.8; margin-top: 10px; list-style: none; padding-left: 0;">
+            <li>🔴 <strong>Drogas e Substâncias Ilícitas</strong> - Cocaína, heroína, cannabis, metanfetamina, esteróides anabolizantes, medicamentos controlados</li>
+            <li>🔴 <strong>Armas e Munições</strong> - Armas de fogo, pistolas, rifles, munições, explosivos, armas brancas (facas, espadas)</li>
+            <li>🔴 <strong>Produtos Contrafeitos</strong> - Réplicas, falsificações, imitações de marcas registadas</li>
+            <li>🔴 <strong>Conteúdo Ilegal ou Ofensivo</strong> - Conteúdo violento, discriminatório, que promova ódio ou atividades ilegais</li>
+            <li>🔴 <strong>Animais e Espécies Protegidas</strong> - Venda de animais vivos ou produtos derivados de espécies ameaçadas</li>
+        </ul>
+    </div>
+    
+    <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+        <h3 style="color: #fff; margin-bottom: 10px;">⚠️ Consequências da Violação</h3>
+        <ul style="color: rgba(255,255,255,0.6); font-size: 14px; line-height: 1.8; list-style: none; padding-left: 0;">
+            <li>📌 <strong>1ª Violação:</strong> Remoção imediata do anúncio e aviso por escrito</li>
+            <li>📌 <strong>2ª Violação:</strong> Suspensão temporária da conta (30 dias)</li>
+            <li>📌 <strong>3ª Violação:</strong> Suspensão permanente da conta</li>
+            <li>📌 <strong>Infração Grave:</strong> Reporte às autoridades competentes</li>
+        </ul>
+    </div>
+    
+    <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+        <h3 style="color: #fff; margin-bottom: 10px;">📢 Como Denunciar</h3>
+        <p style="color: rgba(255,255,255,0.6); font-size: 14px; line-height: 1.6;">
+            Se encontrar algum anúncio suspeito, clique no botão <strong>"Denunciar"</strong> disponível em cada anúncio.
+            A nossa equipa analisará a denúncia e tomará as medidas necessárias.
+        </p>
+    </div>
+    
+    <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px;">
+        <h3 style="color: #fff; margin-bottom: 10px;">✅ Aceitação dos Termos</h3>
+        <p style="color: rgba(255,255,255,0.6); font-size: 14px; line-height: 1.6;">
+            Ao utilizar a plataforma Nhonga, concorda com estes termos e compromete-se a cumpri-los.
+        </p>
+        <div style="margin-top: 15px;">
+            <a href="{% url 'home' %}" class="btn-metal" style="width: auto; padding: 10px 30px; display: inline-block;">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
