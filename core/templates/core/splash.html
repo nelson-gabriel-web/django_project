@@ -44,6 +44,7 @@
             display: block;
             filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.3));
             animation: glowPulse 3s ease-in-out infinite;
+            margin: 0 auto;
         }
         @keyframes glowPulse {
             0%, 100% {
@@ -80,7 +81,6 @@
     </div>
 
     <script>
-        // Redireciona automaticamente para o login após 4 segundos
         setTimeout(function() {
             window.location.href = "/login/";
         }, 4000);

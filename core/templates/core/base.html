@@ -177,22 +177,39 @@
         </audio>
 
         <div class="header">
-            <h1>🔒 Nhonga</h1>
+    <div style="display: flex; align-items: center; justify-content: center; width: 100%; gap: 15px; flex-wrap: wrap;">
+        <h1 style="color: #fff; font-size: 20px; margin: 0;">🔒 Nhonga</h1>
+        <!-- Seletor de Moeda -->
+        <div class="moeda-selector">
+            <form method="post" action="{% url 'alternar_moeda' %}" style="display: inline;">
+                {% csrf_token %}
+                <select name="moeda" onchange="this.form.submit()" style="padding: 6px 12px; border-radius: 6px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); font-size: 13px; cursor: pointer;">
+                    <option value="">💱 Moeda</option>
+                    {% for moeda in moedas %}
+                        <option value="{{ moeda.id }}" 
+                            {% if request.session.moeda_usuario == moeda.id|stringformat:"s" %}selected{% endif %}>
+                            {{ moeda.simbolo }} {{ moeda.codigo }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </form>
         </div>
+    </div>
+</div>
 
         <button class="menu-toggle" onclick="toggleMenu()">☰ Menu</button>
 
-<div class="menu" id="mainMenu">
-    <a href="{% url 'home' %}">🏠 Início</a>
-    <a href="{% url 'perfil' %}">👤 Perfil</a>
-    <a href="{% url 'dashboard_seguranca' %}">🔒 Segurança</a>
-    <a href="{% url 'dashboard_cliente' %}">🛒 Cliente</a>
-    <a href="{% url 'dashboard_fornecedor' %}">🏢 Fornecedor</a>
-    <a href="{% url 'mapa_fornecedores' %}">🗺️ Mapa</a>
-    <a href="{% url 'dashboard_transacoes' %}">💰 Transações</a>
+<div class="menu" id="mainMenu" style="display: none; flex-direction: column; gap: 6px; width: 100%; padding: 10px 0;">
+    <a href="{% url 'home' %}" style="display: block; padding: 10px 14px; text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 500; border-radius: 8px; background: transparent; font-size: 14px; transition: all 0.3s ease; text-align: center;">🏠 Início</a>
+    <a href="{% url 'perfil' %}" style="display: block; padding: 10px 14px; text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 500; border-radius: 8px; background: transparent; font-size: 14px; transition: all 0.3s ease; text-align: center;">👤 Perfil</a>
+    <a href="{% url 'dashboard_seguranca' %}" style="display: block; padding: 10px 14px; text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 500; border-radius: 8px; background: transparent; font-size: 14px; transition: all 0.3s ease; text-align: center;">🔒 Segurança</a>
+    <a href="{% url 'dashboard_cliente' %}" style="display: block; padding: 10px 14px; text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 500; border-radius: 8px; background: transparent; font-size: 14px; transition: all 0.3s ease; text-align: center;">🛒 Cliente</a>
+    <a href="{% url 'dashboard_fornecedor' %}" style="display: block; padding: 10px 14px; text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 500; border-radius: 8px; background: transparent; font-size: 14px; transition: all 0.3s ease; text-align: center;">🏢 Fornecedor</a>
+    <a href="{% url 'mapa_fornecedores' %}" style="display: block; padding: 10px 14px; text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 500; border-radius: 8px; background: transparent; font-size: 14px; transition: all 0.3s ease; text-align: center;">🗺️ Mapa</a>
+    <a href="{% url 'dashboard_transacoes' %}" style="display: block; padding: 10px 14px; text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 500; border-radius: 8px; background: transparent; font-size: 14px; transition: all 0.3s ease; text-align: center;">💰 Transações</a>
+    <a href="{% url 'sobre' %}" style="display: block; padding: 10px 14px; text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 500; border-radius: 8px; background: transparent; font-size: 14px; transition: all 0.3s ease; text-align: center;">🌍 Sobre</a>
     {% if user.is_authenticated %}
-    <a href="{% url 'sobre' %}">🌍 Sobre</a>
-    <a href="{% url 'logout' %}" class="sair">🔓 Sair</a>
+        <a href="{% url 'logout' %}" style="display: block; padding: 10px 14px; text-decoration: none; color: rgba(255,255,255,0.7); font-weight: 500; border-radius: 8px; background: transparent; font-size: 14px; transition: all 0.3s ease; text-align: center;">🔓 Sair</a>
     {% endif %}
 </div>
         {% if messages %}
