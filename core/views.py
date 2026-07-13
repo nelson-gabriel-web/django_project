@@ -730,3 +730,7 @@ def relatorio_moderacao(request):
     }
     return render(request, 'core/moderacao/relatorio.html', context)
     return render(request, 'core/termos.html')
+
+def sobre(request):
+    """Página Sobre Nós"""
+    return render(request, 'core/sobre.html')
