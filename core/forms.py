@@ -16,11 +16,16 @@ class PerfilUsuarioForm(forms.ModelForm):
             'nacionalidade', 'estado_civil', 'cpf', 'nuit',
             'endereco', 'endereco_completo', 'bairro', 'cidade',
             'provincia', 'pais', 'telefone', 'tipo', 'foto',
-            'latitude', 'longitude',  # <-- ADICIONA AQUI
             'receber_notificacoes', 'receber_emails', 'whatsapp', 'sms'
         ]
         widgets = {
-            'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
+            'data_nascimento': forms.SelectDateWidget(
+                years=range(1900, 2026),
+                attrs={'class': 'form-control', 'style': 'display: inline-block; width: auto; margin-right: 5px;'}
+            ),
+            'endereco': forms.Textarea(attrs={'rows': 3}),
+            'endereco_completo': forms.Textarea(attrs={'rows': 3}),
+        },
             'endereco': forms.Textarea(attrs={'rows': 3}),
             'endereco_completo': forms.Textarea(attrs={'rows': 3}),
         }
