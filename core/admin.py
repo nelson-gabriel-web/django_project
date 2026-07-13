@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
-from .models import Contato, PerfilUsuario, Moeda, Categoria, Fornecedor, RequisicaoCompra, Transacao, HistoricoTransacao, TransacaoMpesa, Denuncia
+from .models import Contato, PerfilUsuario, Moeda, Categoria, Fornecedor, RequisicaoCompra, Transacao, HistoricoTransacao, TransacaoMpesa, Denuncia, Avaliacao, TermosAceitacao
 
-# Registrar modelos (apenas uma vez)
+# Registrar modelos
 admin.site.register(Contato)
 admin.site.register(PerfilUsuario)
 admin.site.register(Moeda)
@@ -13,13 +13,19 @@ admin.site.register(Transacao)
 admin.site.register(HistoricoTransacao)
 admin.site.register(TransacaoMpesa)
 admin.site.register(Denuncia)
+admin.site.register(Avaliacao)
+admin.site.register(TermosAceitacao)
 
-# Criar grupo de moderadores (executar apenas uma vez)
+# Função para criar grupo de moderadores (executada apenas uma vez)
 def criar_grupo_moderadores():
-    grupo, created = Group.objects.get_or_create(name='Moderadores')
-    if created:
-        print('✅ Grupo "Moderadores" criado!')
-    return grupo
+    try:
+        grupo, created = Group.objects.get_or_create(name='Moderadores')
+        if created:
+            print('✅ Grupo "Moderadores" criado!')
+        return grupo
+    except:
+        # Se a base de dados ainda não estiver pronta, ignora
+        pass
 
-# Executar a função quando o Django iniciar
+# Executar a função
 criar_grupo_moderadores()
