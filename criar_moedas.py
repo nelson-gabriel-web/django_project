@@ -1,12 +1,12 @@
 import os
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'meu_site.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'django_project.settings')
 django.setup()
 
 from core.models import Moeda
 
-print("🔄 Criando moedas...")
+print("🔧 A criar moedas...")
 
 # Criar Metical (moeda base)
 mzn, created = Moeda.objects.get_or_create(
@@ -47,9 +47,22 @@ eur, created = Moeda.objects.get_or_create(
 )
 print(f'✅ Euro: {"criado" if created else "já existe"}')
 
+# Criar Rand Sul-Africano
+zar, created = Moeda.objects.get_or_create(
+    codigo='ZAR',
+    defaults={
+        'nome': 'Rand Sul-Africano',
+        'simbolo': 'R',
+        'taxa_cambio': 0.028,
+        'ativa': True,
+        'padrao': False
+    }
+)
+print(f'✅ Rand: {"criado" if created else "já existe"}')
+
 # Listar todas as moedas
 print('\n📋 Moedas disponíveis:')
-for m in Moeda.objects.all():
-    print(f'   - {m.codigo}: {m.nome} ({m.simbolo}) - Taxa: {m.taxa_cambio}')
+for m in Moeda.objects.filter(ativa=True):
+    print(f'   - {m.simbolo} {m.codigo}: {m.nome} (Taxa: {m.taxa_cambio})')
 
 print('\n✅ Script finalizado!')

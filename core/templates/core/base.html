@@ -229,23 +229,23 @@
             <source src="{% static 'core/sounds/erro.mp3' %}" type="audio/mpeg">
         </audio>
 
-        <div class="header">
-            <h1>🔒 Nhonga</h1>
-            <div class="moeda-selector" style="margin-top: 5px;">
-                <form method="post" action="{% url 'alternar_moeda' %}" style="display: inline;">
-                    {% csrf_token %}
-                    <select name="moeda" onchange="this.form.submit()" style="padding: 4px 10px; border-radius: 6px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); font-size: 12px; cursor: pointer;">
-                        <option value="">💱 Moeda</option>
-                        {% for moeda in moedas %}
-                            <option value="{{ moeda.id }}" 
-                                {% if request.session.moeda_usuario == moeda.id|stringformat:"s" %}selected{% endif %}>
-                                {{ moeda.simbolo }} {{ moeda.codigo }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </form>
-            </div>
-        </div>
+       <div class="header">
+    <h1>🔒 Nhonga</h1>
+    <div class="moeda-selector" style="margin-top: 5px;">
+        <form method="post" action="{% url 'alternar_moeda' %}" style="display: inline;">
+            {% csrf_token %}
+            <select name="moeda" onchange="this.form.submit()" style="padding: 4px 10px; border-radius: 6px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); font-size: 12px; cursor: pointer;">
+                <option value="">💱 Moeda</option>
+                {% for moeda in moedas %}
+                    <option value="{{ moeda.id }}" 
+                        {% if request.session.moeda_usuario == moeda.id|stringformat:"s" %}selected{% endif %}>
+                        {{ moeda.simbolo }} {{ moeda.codigo }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+</div>
 
         <button class="menu-toggle" onclick="toggleMenu()">☰ Menu</button>
 
