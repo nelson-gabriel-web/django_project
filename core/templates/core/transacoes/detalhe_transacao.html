@@ -102,6 +102,12 @@
         {% empty %}
             <p style="color: rgba(255,255,255,0.4);">Nenhum registo de atividade.</p>
         {% endfor %}
+{% if is_cliente and transacao.status == 'concluido' and not transacao.avaliacao %}
+    <a href="{% url 'avaliar' transacao.id %}" class="btn-metal" style="width: auto; padding: 10px 20px; background: #f1c40f; color: #1a1a2e; box-shadow: none;">
+        ⭐ Avaliar Fornecedor
+    </a>
+{% endif %}
     </div>
 </div>
 {% endblock %}
+

@@ -71,4 +71,8 @@ urlpatterns = [
     path('denunciar/<int:usuario_id>/', views.denunciar, name='denunciar'),
     path('moderador/relatorio/', views.relatorio_moderacao, name='relatorio_moderacao'),
 
+    # Avaliações
+    path('avaliar/<int:transacao_id>/', views.avaliar, name='avaliar'),
+    path('avaliacoes/<int:fornecedor_id>/', views.avaliacoes_fornecedor, name='avaliacoes_fornecedor'),
+
 ]

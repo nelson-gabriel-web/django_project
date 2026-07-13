@@ -1,0 +1,72 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container" style="max-width: 600px; margin: 0 auto;">
+    <h2 style="color: #fff; text-align: center; margin-bottom: 20px;">⭐ Avaliar Fornecedor</h2>
+    
+    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+        <p style="color: rgba(255,255,255,0.6);">
+            <i class="fas fa-info-circle"></i> 
+            Está a avaliar: <strong style="color: #fff;">{{ fornecedor.username }}</strong>
+        </p>
+        <p style="color: rgba(255,255,255,0.4); font-size: 13px;">
+            Transação: <strong style="color: #fff;">{{ transacao.titulo }}</strong>
+        </p>
+    </div>
+    
+    <form method="post" style="background: rgba(255,255,255,0.05); padding: 30px; border-radius: 12px;">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label style="color: #fff; font-size: 16px; display: block; margin-bottom: 10px;">
+                Como avalia a sua experiência?
+            </label>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
+                {% for radio in form.nota %}
+                    <label style="color: #fff; cursor: pointer; font-size: 24px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; border: 2px solid transparent; transition: all 0.3s;">
+                        {{ radio.tag }}
+                        <span style="font-size: 28px;">
+                            {% if radio.choice_label == '1 ★' %}⭐{% endif %}
+                            {% if radio.choice_label == '2 ★' %}⭐⭐{% endif %}
+                            {% if radio.choice_label == '3 ★' %}⭐⭐⭐{% endif %}
+                            {% if radio.choice_label == '4 ★' %}⭐⭐⭐⭐{% endif %}
+                            {% if radio.choice_label == '5 ★' %}⭐⭐⭐⭐⭐{% endif %}
+                        </span>
+                    </label>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label style="color: #fff;">Comentário (opcional)</label>
+            {{ form.comentario }}
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button type="submit" class="btn-metal" style="flex: 1;">
+                <i class="fas fa-paper-plane"></i> Enviar Avaliação
+            </button>
+            <a href="{% url 'detalhe_transacao' transacao.id %}" class="btn-metal" style="background: #444; box-shadow: none; flex: 0.3; text-align: center;">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Destacar a nota selecionada
+    document.querySelectorAll('input[name="nota"]').forEach(function(input) {
+        input.addEventListener('change', function() {
+            document.querySelectorAll('label').forEach(function(label) {
+                label.style.borderColor = 'transparent';
+                label.style.background = 'rgba(255,255,255,0.05)';
+            });
+            if (this.checked) {
+                this.closest('label').style.borderColor = '#f1c40f';
+                this.closest('label').style.background = 'rgba(241,196,15,0.15)';
+            }
+        });
+    });
+</script>
+{% endblock %}

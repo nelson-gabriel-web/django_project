@@ -745,3 +745,101 @@ def relatorio_moderacao(request):
         'produtos_categoria': produtos_categoria,
     }
     return render(request, 'core/moderacao/relatorio.html', context)
+
+# ============================================
+# VIEWS DE AVALIAÇÃO
+# ============================================
+
+from .models import Avaliacao
+from .forms import AvaliacaoForm
+
+@login_required
+def avaliar(request, transacao_id):
+    """Página para avaliar um fornecedor após uma transação"""
+    transacao = get_object_or_404(Transacao, id=transacao_id, cliente=request.user)
+    
+    # Verificar se já foi avaliado
+    if Avaliacao.objects.filter(transacao=transacao, cliente=request.user).exists():
+        messages.warning(request, 'Você já avaliou esta transação.')
+        return redirect('detalhe_transacao', transacao_id=transacao.id)
+    
+    # Verificar se a transação está concluída
+    if transacao.status != 'concluido':
+        messages.warning(request, 'Só pode avaliar após a transação ser concluída.')
+        return redirect('detalhe_transacao', transacao_id=transacao.id)
+    
+    if request.method == 'POST':
+        form = AvaliacaoForm(request.POST)
+        if form.is_valid():
+            avaliacao = form.save(commit=False)
+            avaliacao.cliente = request.user
+            avaliacao.fornecedor = transacao.fornecedor
+            avaliacao.transacao = transacao
+            avaliacao.save()
+            
+            # Atualizar média do fornecedor
+            atualizar_media_fornecedor(transacao.fornecedor)
+            
+            messages.success(request, '✅ Avaliação enviada com sucesso! Obrigado pela sua opinião.')
+            return redirect('detalhe_transacao', transacao_id=transacao.id)
+    else:
+        form = AvaliacaoForm()
+    
+    return render(request, 'core/avaliacoes/avaliar.html', {
+        'form': form,
+        'transacao': transacao,
+        'fornecedor': transacao.fornecedor,
+    })
+
+@login_required
+def avaliacoes_fornecedor(request, fornecedor_id):
+    """Lista de avaliações de um fornecedor"""
+    fornecedor = get_object_or_404(User, id=fornecedor_id)
+    avaliacoes = Avaliacao.objects.filter(fornecedor=fornecedor).order_by('-data_criacao')
+    
+    # Calcular média
+    media = 0
+    if avaliacoes.exists():
+        total = sum(a.nota for a in avaliacoes)
+        media = round(total / avaliacoes.count(), 2)
+    
+    # Distribuição de notas
+    distribuicao = {}
+    for i in range(1, 6):
+        distribuicao[i] = avaliacoes.filter(nota=i).count()
+    
+    context = {
+        'fornecedor': fornecedor,
+        'avaliacoes': avaliacoes,
+        'media': media,
+        'total': avaliacoes.count(),
+        'distribuicao': distribuicao,
+    }
+    return render(request, 'core/avaliacoes/avaliacoes_fornecedor.html', context)
+
+def atualizar_media_fornecedor(fornecedor):
+    """Atualiza a média de avaliações de um fornecedor"""
+    avaliacoes = Avaliacao.objects.filter(fornecedor=fornecedor)
+    total = avaliacoes.count()
+    
+    if total > 0:
+        soma = sum(a.nota for a in avaliacoes)
+        media = round(soma / total, 2)
+    else:
+        media = 0
+    
+    # Atualizar Fornecedor (se existir)
+    try:
+        fornecedor_obj = Fornecedor.objects.get(usuario=fornecedor)
+        fornecedor_obj.avaliacao_media = media
+        fornecedor_obj.total_avaliacoes = total
+        fornecedor_obj.save()
+    except Fornecedor.DoesNotExist:
+        pass
+    
+    # Atualizar PerfilUsuario (fallback)
+    try:
+        perfil = fornecedor.perfilusuario
+        # Se não tiver campo, ignorar
+    except:
+        pass

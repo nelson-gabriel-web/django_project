@@ -1,3 +1,4 @@
+from .models import Contato, PerfilUsuario, RequisicaoCompra, Moeda, Avaliacao
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -87,3 +88,24 @@ class RequisicaoCompraForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if Moeda.objects.exists():
             self.fields['moeda'].queryset = Moeda.objects.filter(ativa=True)
+
+# ============================================
+# FORMULÁRIO DE AVALIAÇÃO
+# ============================================
+
+class AvaliacaoForm(forms.ModelForm):
+    class Meta:
+        model = Avaliacao
+        fields = ['nota', 'comentario']
+        widgets = {
+            'nota': forms.RadioSelect(choices=[(i, f'{i} ★') for i in range(1, 6)]),
+            'comentario': forms.Textarea(attrs={
+                'rows': 4,
+                'placeholder': 'Compartilhe a sua experiência com este fornecedor...',
+                'class': 'form-control'
+            }),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['nota'].required = True
