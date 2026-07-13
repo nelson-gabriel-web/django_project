@@ -65,4 +65,9 @@ urlpatterns = [
     path('pagamento/confirmar/<int:transacao_id>/', views.confirmar_pagamento, name='confirmar_pagamento'),
     path('api/mpesa/callback/', views.callback_mpesa, name='callback_mpesa'),
 
+    # Moderação
+    path('moderador/dashboard/', views.dashboard_moderador, name='dashboard_moderador'),
+    path('moderador/denuncia/<int:denuncia_id>/', views.detalhe_denuncia, name='detalhe_denuncia'),
+    path('denunciar/<int:usuario_id>/', views.denunciar, name='denunciar'),
+
 ]

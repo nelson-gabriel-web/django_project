@@ -1,0 +1,77 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2 style="color: #fff; margin-bottom: 20px;">🛡️ Dashboard de Moderação</h2>
+    
+    <!-- Estatísticas -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px;">
+        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center;">
+            <div style="font-size: 28px;">📋</div>
+            <div style="color: #fff; font-size: 22px; font-weight: 700;">{{ total_denuncias }}</div>
+            <div style="color: rgba(255,255,255,0.4); font-size: 12px;">Total Denúncias</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid rgba(241,196,15,0.2);">
+            <div style="font-size: 28px;">⏳</div>
+            <div style="color: #f1c40f; font-size: 22px; font-weight: 700;">{{ pendentes }}</div>
+            <div style="color: rgba(255,255,255,0.4); font-size: 12px;">Pendentes</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid rgba(52,152,219,0.2);">
+            <div style="font-size: 28px;">🔍</div>
+            <div style="color: #3498db; font-size: 22px; font-weight: 700;">{{ em_analise }}</div>
+            <div style="color: rgba(255,255,255,0.4); font-size: 12px;">Em Análise</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid rgba(46,204,113,0.2);">
+            <div style="font-size: 28px;">✅</div>
+            <div style="color: #2ecc71; font-size: 22px; font-weight: 700;">{{ resolvidas }}</div>
+            <div style="color: rgba(255,255,255,0.4); font-size: 12px;">Resolvidas</div>
+        </div>
+    </div>
+    
+    <!-- Lista de Denúncias Pendentes -->
+    <div style="background: rgba(255,255,255,0.03); border-radius: 12px; padding: 15px; border: 1px solid rgba(255,255,255,0.05);">
+        <h3 style="color: #fff; margin-bottom: 15px;">⏳ Denúncias Pendentes</h3>
+        
+        {% if denuncias_pendentes %}
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Denunciante</th>
+                            <th>Fornecedor</th>
+                            <th>Categoria</th>
+                            <th>Data</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for denuncia in denuncias_pendentes %}
+                        <tr>
+                            <td>{{ denuncia.id }}</td>
+                            <td>{{ denuncia.denunciante.username }}</td>
+                            <td>{{ denuncia.fornecedor.username }}</td>
+                            <td>{{ denuncia.get_categoria_display }}</td>
+                            <td>{{ denuncia.data_criacao|date:"d/m/Y H:i" }}</td>
+                            <td>
+                                <div class="actions">
+                                    <a href="{% url 'detalhe_denuncia' denuncia.id %}" class="btn-metal" style="padding: 4px 12px; font-size: 12px;">
+                                        Analisar
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p style="color: rgba(255,255,255,0.4); text-align: center; padding: 20px;">
+                <i class="fas fa-check-circle" style="color: #2ecc71;"></i> 
+                Nenhuma denúncia pendente
+            </p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

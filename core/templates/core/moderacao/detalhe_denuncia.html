@@ -1,0 +1,71 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2 style="color: #fff; margin-bottom: 20px;">🔍 Detalhe da Denúncia #{{ denuncia.id }}</h2>
+    
+    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+                <p style="color: rgba(255,255,255,0.5); font-size: 13px;">Denunciante</p>
+                <p style="color: #fff; font-weight: 600;">{{ denuncia.denunciante.username }}</p>
+            </div>
+            <div>
+                <p style="color: rgba(255,255,255,0.5); font-size: 13px;">Fornecedor</p>
+                <p style="color: #fff; font-weight: 600;">{{ denuncia.fornecedor.username }}</p>
+            </div>
+            <div>
+                <p style="color: rgba(255,255,255,0.5); font-size: 13px;">Categoria</p>
+                <p style="color: #f1c40f;">{{ denuncia.get_categoria_display }}</p>
+            </div>
+            <div>
+                <p style="color: rgba(255,255,255,0.5); font-size: 13px;">Data</p>
+                <p style="color: #fff;">{{ denuncia.data_criacao|date:"d/m/Y H:i" }}</p>
+            </div>
+        </div>
+        
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05);">
+            <p style="color: rgba(255,255,255,0.5); font-size: 13px;">Descrição</p>
+            <p style="color: #fff; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">{{ denuncia.descricao }}</p>
+        </div>
+        
+        <div style="margin-top: 15px;">
+            <p style="color: rgba(255,255,255,0.5); font-size: 13px;">Status</p>
+            <p style="color: 
+                {% if denuncia.status == 'pendente' %}#f1c40f{% endif %}
+                {% if denuncia.status == 'em_analise' %}#3498db{% endif %}
+                {% if denuncia.status == 'aprovado' %}#2ecc71{% endif %}
+                {% if denuncia.status == 'rejeitado' %}#e74c3c{% endif %};
+                font-weight: 600;
+            ">
+                {{ denuncia.get_status_display }}
+            </p>
+        </div>
+    </div>
+    
+    <!-- Ações do Moderador -->
+    {% if denuncia.status == 'pendente' or denuncia.status == 'em_analise' %}
+    <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px;">
+        <h3 style="color: #fff; margin-bottom: 15px;">⚖️ Decisão</h3>
+        <form method="post">
+            {% csrf_token %}
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button type="submit" name="acao" value="aprovado" class="btn-metal" style="background: #e74c3c; box-shadow: none; width: auto; padding: 10px 30px;">
+                    🚫 Suspender Fornecedor
+                </button>
+                <button type="submit" name="acao" value="rejeitado" class="btn-metal" style="background: #2ecc71; box-shadow: none; width: auto; padding: 10px 30px;">
+                    ✅ Rejeitar Denúncia
+                </button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+    
+    <div style="margin-top: 20px;">
+        <a href="{% url 'dashboard_moderador' %}" class="btn-metal" style="width: auto; padding: 10px 30px; background: #444; box-shadow: none; display: inline-block;">
+            ↩️ Voltar
+        </a>
+    </div>
+</div>
+{% endblock %}

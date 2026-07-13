@@ -643,3 +643,83 @@ def callback_mpesa(request):
 def termos(request):
     """Página de Termos de Serviço"""
     return render(request, 'core/termos.html')
+
+# ============================================
+# VIEWS DE MODERAÇÃO
+# ============================================
+
+from .models import Denuncia
+from django.contrib.admin.views.decorators import staff_member_required
+
+@staff_member_required
+def dashboard_moderador(request):
+    """Dashboard para moderadores"""
+    denuncias = Denuncia.objects.all()
+    
+    context = {
+        'total_denuncias': denuncias.count(),
+        'pendentes': denuncias.filter(status='pendente').count(),
+        'em_analise': denuncias.filter(status='em_analise').count(),
+        'resolvidas': denuncias.filter(status__in=['aprovado', 'rejeitado']).count(),
+        'denuncias_pendentes': denuncias.filter(status='pendente').order_by('-data_criacao'),
+        'denuncias_resolvidas': denuncias.filter(status__in=['aprovado', 'rejeitado']).order_by('-data_resolucao'),
+    }
+    return render(request, 'core/moderacao/dashboard_moderador.html', context)
+
+@staff_member_required
+def detalhe_denuncia(request, denuncia_id):
+    """Detalhes de uma denúncia"""
+    denuncia = get_object_or_404(Denuncia, id=denuncia_id)
+    
+    if request.method == 'POST':
+        acao = request.POST.get('acao')
+        if acao in ['aprovado', 'rejeitado']:
+            denuncia.status = acao
+            denuncia.data_resolucao = timezone.now()
+            denuncia.save()
+            
+            if acao == 'aprovado':
+                try:
+                    perfil = denuncia.fornecedor.perfilusuario
+                    perfil.status = 'cancelado'
+                    perfil.save()
+                    messages.success(request, f'✅ Denúncia aprovada! Conta de {denuncia.fornecedor.username} suspensa.')
+                except:
+                    messages.error(request, '❌ Erro ao suspender conta.')
+            else:
+                messages.info(request, f'ℹ️ Denúncia rejeitada. Nenhuma ação tomada.')
+            
+            return redirect('dashboard_moderador')
+    
+    return render(request, 'core/moderacao/detalhe_denuncia.html', {
+        'denuncia': denuncia,
+    })
+
+@login_required
+def denunciar(request, usuario_id):
+    """Formulário de denúncia"""
+    fornecedor = get_object_or_404(User, id=usuario_id)
+    
+    if request.method == 'POST':
+        categoria = request.POST.get('categoria')
+        descricao = request.POST.get('descricao')
+        
+        if not categoria or not descricao:
+            messages.error(request, 'Por favor, preencha todos os campos.')
+            return redirect('denunciar', usuario_id=usuario_id)
+        
+        Denuncia.objects.create(
+            denunciante=request.user,
+            fornecedor=fornecedor,
+            categoria=categoria,
+            descricao=descricao,
+            status='pendente'
+        )
+        
+        messages.success(request, '✅ Denúncia registada com sucesso! A nossa equipa vai analisar.')
+        return redirect('home')
+    
+    return render(request, 'core/moderacao/denunciar.html', {
+        'fornecedor': fornecedor,
+        'categorias': Denuncia.CATEGORIA_CHOICES,
+    })
