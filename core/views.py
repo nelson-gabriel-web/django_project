@@ -704,6 +704,7 @@ def avaliacoes_fornecedor(request, fornecedor_id):
 
 def termos(request):
     """Página de Termos de Serviço"""
+    return render(request, 'core/termos.html')
 @staff_member_required
 def relatorio_moderacao(request):
     """Relatório de moderação para administradores"""
