@@ -69,5 +69,6 @@ urlpatterns = [
     path('moderador/dashboard/', views.dashboard_moderador, name='dashboard_moderador'),
     path('moderador/denuncia/<int:denuncia_id>/', views.detalhe_denuncia, name='detalhe_denuncia'),
     path('denunciar/<int:usuario_id>/', views.denunciar, name='denunciar'),
+    path('moderador/relatorio/', views.relatorio_moderacao, name='relatorio_moderacao'),
 
 ]

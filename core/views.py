@@ -15,6 +15,7 @@ from django.http import JsonResponse
 from django.utils import timezone
 from datetime import datetime, timedelta
 from decimal import Decimal
+from .services.moderation import ImageModerationService
 
 from .models import Contato, TentativaLogin, PerfilUsuario, Moeda, PreferenciaMoeda, RequisicaoCompra, Transacao, HistoricoTransacao
 from .forms import ContatoForm, PerfilUsuarioForm, RequisicaoCompraForm
@@ -307,40 +308,28 @@ def pedidos_proximos(request):
 # REQUISIÇÕES DE COMPRA
 # ============================================
 
-@login_required
 def criar_requisicao(request):
     if request.method == 'POST':
-        form = RequisicaoCompraForm(request.POST)
+        form = RequisicaoCompraForm(request.POST, request.FILES)
         if form.is_valid():
             requisicao = form.save(commit=False)
+            
+            # Verificar palavras proibidas
+            is_illegal, palavra = verificar_produto_ilicito(requisicao.titulo, requisicao.descricao)
+            if is_illegal:
+                messages.error(request, f'🚫 O produto contém termos proibidos: "{palavra}"')
+                return render(request, 'core/requisicoes/criar_requisicao.html', {'form': form})
+            
+            # Verificar imagem (se houver)
+            if 'imagem' in request.FILES:
+                moderation_service = ImageModerationService()
+                resultado = moderation_service.moderar_imagem_arquivo(request.FILES['imagem'])
+                
+                if not resultado.get('safe', True):
+                    messages.error(request, f'🚫 {resultado.get("message")}')
+                    return render(request, 'core/requisicoes/criar_requisicao.html', {'form': form})
+            
             requisicao.cliente = request.user
-            
-            try:
-                perfil = request.user.perfilusuario
-                requisicao.cidade = perfil.cidade or 'Maputo'
-                requisicao.provincia = perfil.provincia or 'Maputo'
-                requisicao.endereco_entrega = perfil.endereco_completo or perfil.endereco or 'Endereço não informado'
-            except:
-                requisicao.cidade = 'Maputo'
-                requisicao.provincia = 'Maputo'
-            
-            requisicao.data_limite = timezone.now() + timedelta(days=7)
-            requisicao.save()
-            
-            try:
-                requisicao.notificar_fornecedores()
-                messages.success(request, f'✅ Requisição "{requisicao.titulo}" criada! Fornecedores notificados.')
-            except:
-                messages.success(request, f'✅ Requisição "{requisicao.titulo}" criada!')
-            
-            return redirect('minhas_requisicoes')
-    else:
-        form = RequisicaoCompraForm()
-    
-    return render(request, 'core/requisicoes/criar_requisicao.html', {
-        'form': form,
-        'moedas': Moeda.objects.filter(ativa=True),
-    })
 
 @login_required
 def minhas_requisicoes(request):
@@ -723,3 +712,36 @@ def denunciar(request, usuario_id):
         'fornecedor': fornecedor,
         'categorias': Denuncia.CATEGORIA_CHOICES,
     })
+
+# ============================================
+# RELATÓRIO DE MODERAÇÃO
+# ============================================
+
+from django.db.models import Count
+
+@staff_member_required
+def relatorio_moderacao(request):
+    """Relatório de moderação para administradores"""
+    
+    # Estatísticas
+    total_produtos = RequisicaoCompra.objects.count()
+    produtos_pendentes = RequisicaoCompra.objects.filter(status='pendente').count()
+    produtos_cancelados = RequisicaoCompra.objects.filter(status='cancelado').count()
+    
+    total_denuncias = Denuncia.objects.count()
+    denuncias_pendentes = Denuncia.objects.filter(status='pendente').count()
+    denuncias_aprovadas = Denuncia.objects.filter(status='aprovado').count()
+    
+    # Produtos por categoria
+    produtos_categoria = RequisicaoCompra.objects.values('categoria').annotate(total=Count('id'))
+    
+    context = {
+        'total_produtos': total_produtos,
+        'produtos_pendentes': produtos_pendentes,
+        'produtos_cancelados': produtos_cancelados,
+        'total_denuncias': total_denuncias,
+        'denuncias_pendentes': denuncias_pendentes,
+        'denuncias_aprovadas': denuncias_aprovadas,
+        'produtos_categoria': produtos_categoria,
+    }
+    return render(request, 'core/moderacao/relatorio.html', context)

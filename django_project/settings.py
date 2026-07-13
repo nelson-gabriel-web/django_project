@@ -140,6 +140,14 @@ SECURE_HSTS_SECONDS = 0  # <-- MUDAR PARA 0
 SECURE_HSTS_INCLUDE_SUBDOMAINS = False
 SECURE_HSTS_PRELOAD = False
 
+# ============================================
+# CONFIGURAÇÕES AWS (MODERAÇÃO DE IMAGENS)
+# ============================================
+
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID', '')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY', '')
+AWS_REGION = os.environ.get('AWS_REGION', 'us-east-1')
+
 
 # ============================================
 # CONFIGURAÇÕES DE REDIRECIONAMENTO

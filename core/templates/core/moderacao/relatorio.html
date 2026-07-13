@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2 style="color: #fff; margin-bottom: 20px;">📊 Relatório de Moderação</h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px;">
+        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center;">
+            <div style="font-size: 28px;">📦</div>
+            <div style="color: #fff; font-size: 22px; font-weight: 700;">{{ total_produtos }}</div>
+            <div style="color: rgba(255,255,255,0.4); font-size: 12px;">Total Produtos</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid rgba(241,196,15,0.2);">
+            <div style="font-size: 28px;">⏳</div>
+            <div style="color: #f1c40f; font-size: 22px; font-weight: 700;">{{ produtos_pendentes }}</div>
+            <div style="color: rgba(255,255,255,0.4); font-size: 12px;">Produtos Pendentes</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid rgba(231,76,60,0.2);">
+            <div style="font-size: 28px;">❌</div>
+            <div style="color: #e74c3c; font-size: 22px; font-weight: 700;">{{ produtos_cancelados }}</div>
+            <div style="color: rgba(255,255,255,0.4); font-size: 12px;">Produtos Removidos</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid rgba(46,204,113,0.2);">
+            <div style="font-size: 28px;">✅</div>
+            <div style="color: #2ecc71; font-size: 22px; font-weight: 700;">{{ denuncias_aprovadas }}</div>
+            <div style="color: rgba(255,255,255,0.4); font-size: 12px;">Denúncias Aprovadas</div>
+        </div>
+    </div>
+    
+    <!-- Categorias -->
+    <div style="background: rgba(255,255,255,0.03); border-radius: 12px; padding: 15px;">
+        <h3 style="color: #fff; margin-bottom: 15px;">📂 Produtos por Categoria</h3>
+        {% if produtos_categoria %}
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Categoria</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in produtos_categoria %}
+                        <tr>
+                            <td>{{ item.categoria|default:"Sem categoria" }}</td>
+                            <td>{{ item.total }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p style="color: rgba(255,255,255,0.4); text-align: center; padding: 20px;">
+                Nenhum produto encontrado
+            </p>
+        {% endif %}
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <a href="{% url 'dashboard_moderador' %}" class="btn-metal" style="width: auto; padding: 10px 30px; background: #444; box-shadow: none; display: inline-block;">
+            ↩️ Voltar
+        </a>
+    </div>
+</div>
+{% endblock %}
