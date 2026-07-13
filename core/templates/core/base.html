@@ -24,36 +24,22 @@
             border: 1px solid rgba(255, 255, 255, 0.06);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
-<div style="text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05);">
-    <a href="{% url 'termos' %}" style="color: rgba(255,255,255,0.3); font-size: 12px; text-decoration: none; margin: 0 10px;">
-        📋 Termos de Serviço
-    </a>
-    <span style="color: rgba(255,255,255,0.1);">|</span>
-    <span style="color: rgba(255,255,255,0.2); font-size: 12px;">
-        © 2026 Nhonga
-<a href="{% url 'termos_condicoes' %}" style="color: rgba(255,255,255,0.3); font-size: 12px; text-decoration: none; margin: 0 10px;">
-    📋 Termos e Condições
-</a>
-    </span>
-</div>
-
-
         .header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding-bottom: 12px;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.06);
-    margin-bottom: 16px;
-}
-.header h1 {
-    font-size: 20px;
-    color: #fff;
-    margin: 0;
-}
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.06);
+            margin-bottom: 16px;
+        }
+        .header h1 {
+            font-size: 20px;
+            color: #fff;
+            margin: 0;
+        }
         .menu-toggle {
-            display: block;
+            display: none;
             background: linear-gradient(135deg, #c0c0c0, #e8e8e8, #a0a0a0);
             color: #1a1a2e;
             border: none;
@@ -71,42 +57,39 @@
             box-shadow: 0 8px 25px rgba(192, 192, 192, 0.5);
         }
         .menu {
-    display: none;
-    flex-direction: row;
-    gap: 6px;
-    width: 100%;
-    padding: 10px 0;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-.menu.open {
-    display: flex !important;
-}
-.menu a {
-    display: block;
-    padding: 8px 12px;
-    text-decoration: none;
-    color: rgba(255, 255, 255, 0.8);
-    font-weight: 500;
-    border-radius: 8px;
-    background: transparent;
-    font-size: 13px;
-    transition: all 0.3s ease;
-    text-align: center;
-    white-space: nowrap;
-}
-.menu a:hover {
-    background: rgba(192, 192, 192, 0.15);
-    color: #c0c0c0;
-    transform: translateY(-2px);
-}
-.menu a.sair {
-    color: rgba(255, 255, 255, 0.7);
-}
-.menu a.sair:hover {
-    background: rgba(220, 53, 69, 0.15);
-    color: #ff6b6b;
-} color: #ff6b6b; }
+            display: flex !important;
+            flex-direction: row;
+            gap: 6px;
+            width: 100%;
+            padding: 8px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .menu a {
+            display: block;
+            padding: 6px 12px;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            border-radius: 6px;
+            background: transparent;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .menu a:hover {
+            background: rgba(192, 192, 192, 0.15);
+            color: #c0c0c0;
+            transform: translateY(-2px);
+        }
+        .menu a.sair {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .menu a.sair:hover {
+            background: rgba(220, 53, 69, 0.15);
+            color: #ff6b6b;
+        }
         .mensagem {
             padding: 10px 14px;
             border-radius: 8px;
@@ -160,6 +143,67 @@
             color: rgba(255, 255, 255, 0.4);
         }
         .password-toggle:hover { color: #c0c0c0; }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .footer a {
+            color: rgba(255,255,255,0.3);
+            font-size: 12px;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .footer a:hover {
+            color: rgba(255,255,255,0.6);
+        }
+        .footer span {
+            color: rgba(255,255,255,0.1);
+        }
+        .footer .copyright {
+            color: rgba(255,255,255,0.2);
+            font-size: 12px;
+        }
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            .menu {
+                display: none !important;
+                flex-direction: column;
+                gap: 4px;
+                padding: 10px 0;
+            }
+            .menu.open {
+                display: flex !important;
+            }
+            .menu a {
+                padding: 10px 14px;
+                font-size: 14px;
+                white-space: normal;
+                text-align: left;
+            }
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+        @media (min-width: 769px) {
+            .menu {
+                display: flex !important;
+                flex-direction: row;
+                gap: 6px;
+                padding: 8px 0;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .menu a {
+                padding: 6px 12px;
+                font-size: 13px;
+                white-space: nowrap;
+            }
+        }
         @media (max-width: 480px) {
             body { padding: 8px; }
             .container { padding: 12px; border-radius: 12px; }
@@ -172,8 +216,6 @@
             .container { max-width: 900px; padding: 24px; }
             .header { flex-direction: row; justify-content: space-between; text-align: left; }
             .menu-toggle { display: none; }
-            .menu { display: flex !important; flex-direction: row; gap: 12px; width: auto; padding: 0; }
-            .menu a { background: transparent; padding: 6px 12px; }
             .btn-metal { width: auto; }
         }
     </style>
@@ -188,40 +230,39 @@
         </audio>
 
         <div class="header">
-    <h1>🔒 Nhonga</h1>
-    <!-- Seletor de Moeda -->
-    <div class="moeda-selector" style="margin-top: 5px;">
-        <form method="post" action="{% url 'alternar_moeda' %}" style="display: inline;">
-            {% csrf_token %}
-            <select name="moeda" onchange="this.form.submit()" style="padding: 4px 10px; border-radius: 6px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); font-size: 12px; cursor: pointer;">
-                <option value="">💱 Moeda</option>
-                {% for moeda in moedas %}
-                    <option value="{{ moeda.id }}" 
-                        {% if request.session.moeda_usuario == moeda.id|stringformat:"s" %}selected{% endif %}>
-                        {{ moeda.simbolo }} {{ moeda.codigo }}
-                    </option>
-                {% endfor %}
-            </select>
-        </form>
-    </div>
-</div>
-</div>
+            <h1>🔒 Nhonga</h1>
+            <div class="moeda-selector" style="margin-top: 5px;">
+                <form method="post" action="{% url 'alternar_moeda' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <select name="moeda" onchange="this.form.submit()" style="padding: 4px 10px; border-radius: 6px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); font-size: 12px; cursor: pointer;">
+                        <option value="">💱 Moeda</option>
+                        {% for moeda in moedas %}
+                            <option value="{{ moeda.id }}" 
+                                {% if request.session.moeda_usuario == moeda.id|stringformat:"s" %}selected{% endif %}>
+                                {{ moeda.simbolo }} {{ moeda.codigo }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+        </div>
 
         <button class="menu-toggle" onclick="toggleMenu()">☰ Menu</button>
 
-<div class="menu" id="mainMenu" style="display: none; flex-direction: column; gap: 6px; width: 100%; padding: 10px 0;">
-    <a href="{% url 'home' %}" style="display: block; padding: 10px 14px; text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 500; border-radius: 8px; background: transparent; font-size: 14px; transition: all 0.3s ease; text-align: center;">🏠 Início</a>
-    <a href="{% url 'perfil' %}" style="display: block; padding: 10px 14px; text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 500; border-radius: 8px; background: transparent; font-size: 14px; transition: all 0.3s ease; text-align: center;">👤 Perfil</a>
-    <a href="{% url 'dashboard_seguranca' %}" style="display: block; padding: 10px 14px; text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 500; border-radius: 8px; background: transparent; font-size: 14px; transition: all 0.3s ease; text-align: center;">🔒 Segurança</a>
-    <a href="{% url 'dashboard_cliente' %}" style="display: block; padding: 10px 14px; text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 500; border-radius: 8px; background: transparent; font-size: 14px; transition: all 0.3s ease; text-align: center;">🛒 Cliente</a>
-    <a href="{% url 'dashboard_fornecedor' %}" style="display: block; padding: 10px 14px; text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 500; border-radius: 8px; background: transparent; font-size: 14px; transition: all 0.3s ease; text-align: center;">🏢 Fornecedor</a>
-    <a href="{% url 'mapa_fornecedores' %}" style="display: block; padding: 10px 14px; text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 500; border-radius: 8px; background: transparent; font-size: 14px; transition: all 0.3s ease; text-align: center;">🗺️ Mapa</a>
-    <a href="{% url 'dashboard_transacoes' %}" style="display: block; padding: 10px 14px; text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 500; border-radius: 8px; background: transparent; font-size: 14px; transition: all 0.3s ease; text-align: center;">💰 Transações</a>
-    <a href="{% url 'sobre' %}" style="display: block; padding: 10px 14px; text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 500; border-radius: 8px; background: transparent; font-size: 14px; transition: all 0.3s ease; text-align: center;">🌍 Sobre</a>
-    {% if user.is_authenticated %}
-        <a href="{% url 'logout' %}" style="display: block; padding: 10px 14px; text-decoration: none; color: rgba(255,255,255,0.7); font-weight: 500; border-radius: 8px; background: transparent; font-size: 14px; transition: all 0.3s ease; text-align: center;">🔓 Sair</a>
-    {% endif %}
-</div>
+        <div class="menu" id="mainMenu">
+            <a href="{% url 'home' %}">🏠 Início</a>
+            <a href="{% url 'perfil' %}">👤 Perfil</a>
+            <a href="{% url 'dashboard_seguranca' %}">🔒 Segurança</a>
+            <a href="{% url 'dashboard_cliente' %}">🛒 Cliente</a>
+            <a href="{% url 'dashboard_fornecedor' %}">🏢 Fornecedor</a>
+            <a href="{% url 'mapa_fornecedores' %}">🗺️ Mapa</a>
+            <a href="{% url 'dashboard_transacoes' %}">💰 Transações</a>
+            <a href="{% url 'sobre' %}">🌍 Sobre</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="sair">🔓 Sair</a>
+            {% endif %}
+        </div>
+
         {% if messages %}
             {% for message in messages %}
                 <div class="mensagem mensagem-{{ message.tags }}">
@@ -232,6 +273,14 @@
 
         {% block content %}
         {% endblock %}
+
+        <div class="footer">
+            <a href="{% url 'termos' %}">📋 Termos de Serviço</a>
+            <span>|</span>
+            <a href="{% url 'termos_condicoes' %}">📋 Termos e Condições</a>
+            <br>
+            <span class="copyright">© 2026 Nhonga</span>
+        </div>
     </div>
 
     <script>
