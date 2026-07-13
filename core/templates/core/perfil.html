@@ -8,20 +8,28 @@
     <form method="post" enctype="multipart/form-data" style="background: rgba(255,255,255,0.05); padding: 30px; border-radius: 12px;">
         {% csrf_token %}
         
-        <!-- Foto de Perfil -->
+        <!-- Foto de Perfil com funcionalidade de ajuste -->
         <div style="text-align: center; margin-bottom: 20px;">
-            {% if perfil.foto %}
-                <img src="{{ perfil.foto.url }}" alt="Foto de Perfil" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #c0c0c0;">
-            {% else %}
-                <div style="width: 150px; height: 150px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto; border: 3px solid #c0c0c0;">
-                    <span style="font-size: 60px; color: rgba(255,255,255,0.3);">👤</span>
+            <div style="position: relative; display: inline-block;">
+                {% if perfil.foto %}
+                    <img src="{{ perfil.foto.url }}" alt="Foto de Perfil" id="fotoPerfil" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #c0c0c0; cursor: pointer;">
+                {% else %}
+                    <div id="fotoPerfil" style="width: 150px; height: 150px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto; border: 3px solid #c0c0c0; cursor: pointer;">
+                        <span style="font-size: 60px; color: rgba(255,255,255,0.3);">👤</span>
+                    </div>
+                {% endif %}
+                <div style="position: absolute; bottom: 5px; right: 5px; background: #c0c0c0; border-radius: 50%; padding: 8px 10px; cursor: pointer; font-size: 14px;" onclick="document.getElementById('id_foto').click();">
+                    📷
                 </div>
-            {% endif %}
+            </div>
             <div style="margin-top: 10px;">
                 <label for="id_foto" style="color: #fff; cursor: pointer; background: rgba(255,255,255,0.1); padding: 8px 20px; border-radius: 20px; display: inline-block;">
                     📷 Alterar Foto
                 </label>
                 {{ form.foto }}
+                <button type="button" onclick="ajustarFoto()" style="background: rgba(52,152,219,0.2); color: #3498db; border: 1px solid rgba(52,152,219,0.3); padding: 8px 20px; border-radius: 20px; cursor: pointer; margin-left: 10px;">
+                    🔄 Ajustar
+                </button>
             </div>
         </div>
         
@@ -36,11 +44,9 @@
         </div>
         
         <div class="form-group">
-           <label style="color: #fff;">Data de Nascimento</label>
-        <div style="display: flex; gap: 5px; flex-wrap: wrap;">
-        {{ form.data_nascimento }}
-    </div>
-</div>
+            <label style="color: #fff;">Data de Nascimento</label>
+            {{ form.data_nascimento }}
+        </div>
         
         <div class="form-group">
             <label style="color: #fff;">Género</label>
@@ -65,39 +71,6 @@
         <div class="form-group">
             <label style="color: #fff;">Endereço</label>
             {{ form.endereco }}
-	<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-    <div class="form-group">
-        <label style="color: #fff;">Latitude</label>
-        {{ form.latitude }}
-    </div>
-    <div class="form-group">
-        <label style="color: #fff;">Longitude</label>
-        {{ form.longitude }}
-    </div>
-	<script>
-function obterLocalizacao() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                document.getElementById('id_latitude').value = position.coords.latitude;
-                document.getElementById('id_longitude').value = position.coords.longitude;
-                alert('📍 Localização obtida com sucesso!');
-            },
-            function(error) {
-                alert('❌ Erro ao obter localização: ' + error.message);
-            }
-        );
-    } else {
-        alert('❌ Geolocalização não suportada neste navegador.');
-    }
-}
-</script>
-</div>
-
-<button type="button" onclick="obterLocalizacao()" class="btn-metal" style="margin-bottom: 15px; width: auto; padding: 8px 16px; font-size: 13px;">
-    📍 Obter Localização Atual
-</button>	
-
         </div>
         
         <div class="form-group">
@@ -131,10 +104,151 @@ function obterLocalizacao() {
     </form>
 </div>
 
+<!-- Modal para ajustar foto -->
+<div id="modalAjustarFoto" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: #1a1a2e; padding: 30px; border-radius: 12px; max-width: 500px; width: 90%;">
+        <h3 style="color: #fff; margin-bottom: 20px;">📷 Ajustar Foto</h3>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <img id="previewFoto" src="" alt="Preview" style="max-width: 100%; max-height: 300px; border-radius: 12px;">
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px;">
+            <button onclick="zoomIn()" class="btn-metal" style="width: auto; padding: 8px 20px;">➕ Zoom</button>
+            <button onclick="zoomOut()" class="btn-metal" style="width: auto; padding: 8px 20px;">➖ Zoom</button>
+            <button onclick="resetZoom()" class="btn-metal" style="width: auto; padding: 8px 20px;">🔄 Reset</button>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="salvarAjuste()" class="btn-metal" style="flex: 1;">✅ Salvar</button>
+            <button onclick="fecharModalAjuste()" class="btn-metal" style="background: #444; box-shadow: none; flex: 0.3;">Cancelar</button>
+        </div>
+    </div>
+</div>
+
 <style>
-    /* Esconder o input de file padrão e estilizar */
     #id_foto {
         display: none;
     }
+    .form-control {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 8px;
+        background: rgba(255,255,255,0.06);
+        color: #fff;
+        font-size: 15px;
+        outline: none;
+        transition: border-color 0.3s;
+    }
+    .form-control:focus {
+        border-color: #c0c0c0;
+    }
+    select.form-control {
+        appearance: auto;
+    }
 </style>
+
+<script>
+    let currentZoom = 1;
+    let currentImage = null;
+
+    function ajustarFoto() {
+        const foto = document.getElementById('fotoPerfil');
+        if (foto.tagName === 'IMG') {
+            currentImage = foto.src;
+            document.getElementById('previewFoto').src = foto.src;
+            document.getElementById('modalAjustarFoto').style.display = 'flex';
+            currentZoom = 1;
+            document.getElementById('previewFoto').style.transform = `scale(${currentZoom})`;
+        } else {
+            alert('⚠️ Por favor, selecione uma foto primeiro.');
+        }
+    }
+
+    function fecharModalAjuste() {
+        document.getElementById('modalAjustarFoto').style.display = 'none';
+    }
+
+    function zoomIn() {
+        currentZoom += 0.1;
+        document.getElementById('previewFoto').style.transform = `scale(${currentZoom})`;
+    }
+
+    function zoomOut() {
+        if (currentZoom > 0.2) {
+            currentZoom -= 0.1;
+            document.getElementById('previewFoto').style.transform = `scale(${currentZoom})`;
+        }
+    }
+
+    function resetZoom() {
+        currentZoom = 1;
+        document.getElementById('previewFoto').style.transform = `scale(${currentZoom})`;
+    }
+
+    function salvarAjuste() {
+        const preview = document.getElementById('previewFoto');
+        // Criar um canvas para capturar a imagem ajustada
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        img.src = preview.src;
+        img.onload = function() {
+            const width = img.width * currentZoom;
+            const height = img.height * currentZoom;
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // Converter para blob e criar download
+            canvas.toBlob(function(blob) {
+                const file = new File([blob], 'foto_ajustada.png', {type: 'image/png'});
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                document.getElementById('id_foto').files = dataTransfer.files;
+                
+                // Atualizar preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('fotoPerfil').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+                
+                fecharModalAjuste();
+                alert('✅ Foto ajustada com sucesso! Clique em "Salvar" para guardar as alterações.');
+            }, 'image/png');
+        };
+    }
+
+    // Preview da foto ao selecionar
+    document.getElementById('id_foto').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const fotoElement = document.getElementById('fotoPerfil');
+                if (fotoElement.tagName === 'IMG') {
+                    fotoElement.src = e.target.result;
+                } else {
+                    const img = document.createElement('img');
+                    img.id = 'fotoPerfil';
+                    img.src = e.target.result;
+                    img.style.width = '150px';
+                    img.style.height = '150px';
+                    img.style.borderRadius = '50%';
+                    img.style.objectFit = 'cover';
+                    img.style.border = '3px solid #c0c0c0';
+                    img.style.cursor = 'pointer';
+                    fotoElement.parentNode.replaceChild(img, fotoElement);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Fechar modal ao clicar fora
+    document.getElementById('modalAjustarFoto').addEventListener('click', function(e) {
+        if (e.target === this) {
+            fecharModalAjuste();
+        }
+    });
+</script>
 {% endblock %}
