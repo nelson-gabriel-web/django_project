@@ -400,11 +400,11 @@ class TransacaoEmola(models.Model):
         blank=True,
         related_name='pagamentos_emola'
     )
-    phone_number = models.CharField(max_length=9)  # 86 ou 87 + 7 dígitos
+    phone_number = models.CharField(max_length=9)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     reference = models.CharField(max_length=50, unique=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-    response_data = models.JSONField(default=dict, blank=True)  # Guardar resposta da API
+    response_data = models.JSONField(default=dict, blank=True)
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_confirmacao = models.DateTimeField(null=True, blank=True)
     
@@ -424,7 +424,6 @@ class TransacaoEmola(models.Model):
         verbose_name = "Transação E-Mola"
         verbose_name_plural = "Transações E-Mola"
         ordering = ['-data_criacao']
-
 # ============================================
 # TERMOS E CONDIÇÕES
 # ============================================

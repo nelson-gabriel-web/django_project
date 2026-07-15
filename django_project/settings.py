@@ -229,10 +229,9 @@ STRIPE_CANCEL_URL = os.environ.get('STRIPE_CANCEL_URL', 'https://web-production-
 # ============================================
 
 EMOLA_API_URL = os.environ.get('EMOLA_API_URL', 'https://e2payments.explicador.co.mz')
-EMOLA_CLIENT_ID = os.environ.get('EMOLA_CLIENT_ID', '')
-EMOLA_CLIENT_SECRET = os.environ.get('EMOLA_CLIENT_SECRET', '')
-EMOLA_WALLET_ID = os.environ.get('EMOLA_WALLET_ID', '')
-
+EMOLA_CLIENT_ID = os.environ.get('EMOLA_CLIENT_ID', 'test_client')
+EMOLA_CLIENT_SECRET = os.environ.get('EMOLA_CLIENT_SECRET', 'test_secret')
+EMOLA_WALLET_ID = os.environ.get('EMOLA_WALLET_ID', 'test_wallet')
 
 # ============================================
 # CONFIGURAÇÕES DE REDIRECIONAMENTO

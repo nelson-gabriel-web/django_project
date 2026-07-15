@@ -875,12 +875,8 @@ from .models import TransacaoEmola
 
 @login_required
 def pagamento_emola(request, transacao_id):
-    """
-    Inicia pagamento com E-Mola
-    """
     transacao = get_object_or_404(Transacao, id=transacao_id, cliente=request.user)
     
-    # Verificar se já tem pagamento
     emola_pagamento = TransacaoEmola.objects.filter(
         transacao=transacao,
         usuario=request.user
@@ -893,7 +889,6 @@ def pagamento_emola(request, transacao_id):
     if request.method == 'POST':
         phone = request.POST.get('phone', '').strip()
         
-        # Validar número
         if len(phone) != 9 or not phone.startswith(('86', '87')):
             messages.error(request, 'Número E-Mola inválido. Deve ter 9 dígitos e começar com 86 ou 87.')
             return redirect('pagamento_emola', transacao_id=transacao.id)
@@ -902,7 +897,6 @@ def pagamento_emola(request, transacao_id):
         result = emola_service.processar_pagamento(transacao, phone)
         
         if result['success']:
-            # Guardar no banco
             pagamento_emola = TransacaoEmola.objects.create(
                 usuario=request.user,
                 transacao=transacao,
@@ -913,23 +907,18 @@ def pagamento_emola(request, transacao_id):
                 response_data=result.get('response', {})
             )
             
-            messages.success(request, '✅ Pedido de pagamento enviado! Confirme no seu telemóvel E-Mola (USSD *898#).')
+            messages.success(request, '✅ Pedido de pagamento enviado! Confirme no seu telemóvel E-Mola.')
             return redirect('confirmar_pagamento_emola', transacao_id=transacao.id)
         else:
             messages.error(request, f'❌ {result.get("error", "Falha no pagamento")}')
-            return redirect('pagamento_emola', transacao_id=transacao.id)
     
     return render(request, 'core/pagamento/emola/iniciar.html', {
         'transacao': transacao,
         'emola_pagamento': emola_pagamento
     })
 
-
 @login_required
 def confirmar_pagamento_emola(request, transacao_id):
-    """
-    Confirma o status do pagamento E-Mola
-    """
     transacao = get_object_or_404(Transacao, id=transacao_id, cliente=request.user)
     
     try:
@@ -949,35 +938,26 @@ def confirmar_pagamento_emola(request, transacao_id):
         if result['success']:
             if result['status'] == 'success':
                 emola_pagamento.mark_success()
-                
-                # Atualizar transação principal
                 transacao.status = 'pago'
                 transacao.data_pagamento = timezone.now()
                 transacao.save()
-                
-                messages.success(request, '✅ Pagamento E-Mola confirmado com sucesso!')
+                messages.success(request, '✅ Pagamento E-Mola confirmado!')
                 return redirect('detalhe_transacao', transacao_id=transacao.id)
             elif result['status'] == 'failed':
                 emola_pagamento.mark_failed('Pagamento falhou')
                 messages.error(request, '❌ Pagamento falhou.')
-            else:
-                messages.info(request, '⏳ Pagamento ainda pendente. Aguarde a confirmação.')
         else:
-            messages.error(request, f'❌ Erro: {result.get("error", "Falha na verificação")}')
+            messages.error(request, f'❌ Erro: {result.get("error")}')
     
     return render(request, 'core/pagamento/emola/confirmar.html', {
         'transacao': transacao,
         'emola_pagamento': emola_pagamento
     })
 
-
 @login_required
 def pagamento_emola_sucesso(request):
-    """Página de sucesso após pagamento E-Mola"""
     return render(request, 'core/pagamento/emola/sucesso.html')
-
 
 @login_required
 def pagamento_emola_cancelado(request):
-    """Página quando o pagamento é cancelado"""
     return render(request, 'core/pagamento/emola/cancelado.html')
