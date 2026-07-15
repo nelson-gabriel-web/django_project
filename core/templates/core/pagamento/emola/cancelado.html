@@ -1,0 +1,22 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Pagamento Cancelado - Nhonga{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="card shadow">
+                <div class="card-body py-5">
+                    <div class="display-1 text-warning mb-4">⚠️</div>
+                    <h1 class="display-4 mb-3">Pagamento Cancelado</h1>
+                    <p class="lead">O pagamento E-Mola foi cancelado.</p>
+                    <p class="text-muted">Pode tentar novamente quando quiser.</p>
+                    <hr>
+                    <a href="{% url 'home' %}" class="btn btn-primary btn-lg">Voltar ao Início</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -78,3 +78,19 @@ urlpatterns = [
     path('sobre/', views.sobre, name='sobre'),
 
 ]
+
+# ============================================
+# URLs VISA/STRIPE
+# ============================================
+path('pagamento/visa/<int:transacao_id>/', views.pagamento_visa, name='pagamento_visa'),
+path('pagamento/visa/confirmar/<int:transacao_id>/', views.confirmar_pagamento_visa, name='confirmar_pagamento_visa'),
+path('pagamento/sucesso/', views.pagamento_sucesso, name='pagamento_sucesso'),
+path('pagamento/cancelado/', views.pagamento_cancelado, name='pagamento_cancelado'),
+
+# ============================================
+# URLs E-MOLA
+# ============================================
+path('pagamento/emola/<int:transacao_id>/', views.pagamento_emola, name='pagamento_emola'),
+path('pagamento/emola/confirmar/<int:transacao_id>/', views.confirmar_pagamento_emola, name='confirmar_pagamento_emola'),
+path('pagamento/emola/sucesso/', views.pagamento_emola_sucesso, name='pagamento_emola_sucesso'),
+path('pagamento/emola/cancelado/', views.pagamento_emola_cancelado, name='pagamento_emola_cancelado'),

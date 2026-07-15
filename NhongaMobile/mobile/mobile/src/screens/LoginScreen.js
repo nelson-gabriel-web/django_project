@@ -10,24 +10,18 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import { useAuth } from '../context/AuthContext';
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { login, loading } = useAuth();
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     if (!username || !password) {
       Alert.alert('Erro', 'Preencha todos os campos');
       return;
     }
-    const result = await login(username, password);
-    if (result.success) {
-      navigation.replace('Home');
-    } else {
-      Alert.alert('Erro', result.error);
-    }
+    // Simular login
+    navigation.replace('Home');
   };
 
   return (
@@ -62,22 +56,12 @@ const LoginScreen = ({ navigation }) => {
             secureTextEntry
           />
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleLogin}
-            disabled={loading}
-          >
-            <Text style={styles.buttonText}>
-              {loading ? 'A entrar...' : 'Entrar'}
-            </Text>
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Entrar</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Register')}
-          >
-            <Text style={styles.linkText}>
-              Não tem conta? Registe-se
-            </Text>
+          <TouchableOpacity onPress={() => {}}>
+            <Text style={styles.linkText}>Não tem conta? Registe-se</Text>
           </TouchableOpacity>
         </View>
       </View>

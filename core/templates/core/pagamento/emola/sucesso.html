@@ -1,0 +1,22 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Pagamento Confirmado - Nhonga{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="card shadow">
+                <div class="card-body py-5">
+                    <div class="display-1 text-success mb-4">✅</div>
+                    <h1 class="display-4 mb-3">Pagamento Confirmado!</h1>
+                    <p class="lead">O seu pagamento E-Mola foi processado com sucesso.</p>
+                    <p class="text-muted">Você receberá uma confirmação por SMS.</p>
+                    <hr>
+                    <a href="{% url 'home' %}" class="btn btn-primary btn-lg">Voltar ao Início</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

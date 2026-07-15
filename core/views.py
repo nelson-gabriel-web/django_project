@@ -735,3 +735,249 @@ def relatorio_moderacao(request):
 def sobre(request):
     """Página Sobre Nós"""
     return render(request, 'core/sobre.html')
+
+# ============================================
+# PAGAMENTOS COM VISA (STRIPE)
+# ============================================
+
+from .services.stripe_service import StripeService
+from .models import TransacaoStripe
+
+@login_required
+def pagamento_visa(request, transacao_id):
+    """
+    Inicia pagamento com VISA via Stripe
+    """
+    transacao = get_object_or_404(Transacao, id=transacao_id, cliente=request.user)
+    
+    # Verificar se já tem pagamento Stripe
+    stripe_pagamento = TransacaoStripe.objects.filter(
+        transacao=transacao,
+        usuario=request.user
+    ).filter(status__in=['pending', 'success']).first()
+    
+    if stripe_pagamento and stripe_pagamento.status == 'success':
+        messages.info(request, 'Este pagamento já foi concluído.')
+        return redirect('detalhe_transacao', transacao_id=transacao.id)
+    
+    if request.method == 'POST':
+        email = request.POST.get('email', transacao.cliente.email)
+        nome_cartao = request.POST.get('nome_cartao', '')
+        
+        stripe_service = StripeService()
+        result = stripe_service.criar_pagamento(transacao, email)
+        
+        if result['success']:
+            # Guardar no banco de dados
+            pagamento_stripe = TransacaoStripe.objects.create(
+                usuario=request.user,
+                transacao=transacao,
+                payment_intent_id=result['payment_intent_id'],
+                client_secret=result['client_secret'],
+                amount=result['amount'],
+                moeda='USD',
+                status='pending',
+                email_cliente=email,
+                nome_cartao=nome_cartao
+            )
+            
+            return render(request, 'core/pagamento/visa/checkout.html', {
+                'transacao': transacao,
+                'client_secret': result['client_secret'],
+                'publishable_key': settings.STRIPE_PUBLISHABLE_KEY,
+                'payment_intent_id': result['payment_intent_id'],
+                'stripe_pagamento': pagamento_stripe
+            })
+        else:
+            messages.error(request, f'❌ {result.get("message", "Erro ao iniciar pagamento")}')
+            return redirect('pagamento_visa', transacao_id=transacao.id)
+    
+    return render(request, 'core/pagamento/visa/iniciar_pagamento.html', {
+        'transacao': transacao,
+        'stripe_pagamento': stripe_pagamento,
+        'stripe_public_key': settings.STRIPE_PUBLISHABLE_KEY
+    })
+
+
+@login_required
+def confirmar_pagamento_visa(request, transacao_id):
+    """
+    Confirma o status do pagamento VISA
+    """
+    transacao = get_object_or_404(Transacao, id=transacao_id, cliente=request.user)
+    
+    try:
+        stripe_pagamento = TransacaoStripe.objects.get(
+            transacao=transacao,
+            usuario=request.user,
+            status='pending'
+        )
+    except TransacaoStripe.DoesNotExist:
+        messages.error(request, 'Pagamento não encontrado.')
+        return redirect('detalhe_transacao', transacao_id=transacao.id)
+    
+    if request.method == 'POST':
+        payment_intent_id = request.POST.get('payment_intent_id')
+        if payment_intent_id != stripe_pagamento.payment_intent_id:
+            messages.error(request, 'ID do pagamento inválido.')
+            return redirect('confirmar_pagamento_visa', transacao_id=transacao.id)
+        
+        stripe_service = StripeService()
+        result = stripe_service.confirmar_pagamento(payment_intent_id)
+        
+        if result['success']:
+            if result['status'] == 'success':
+                stripe_pagamento.status = 'success'
+                stripe_pagamento.data_confirmacao = timezone.now()
+                stripe_pagamento.metodo_pagamento = result.get('metodo_pagamento', 'card')
+                stripe_pagamento.ultimos_4_digitos = result.get('ultimos_4_digitos', '')
+                stripe_pagamento.save()
+                
+                # Atualizar transação principal
+                transacao.status = 'pago'
+                transacao.data_pagamento = timezone.now()
+                transacao.save()
+                
+                messages.success(request, '✅ Pagamento VISA confirmado com sucesso!')
+                return redirect('detalhe_transacao', transacao_id=transacao.id)
+            else:
+                messages.error(request, f'❌ Pagamento falhou. Status: {result["status"]}')
+                stripe_pagamento.status = 'failed'
+                stripe_pagamento.save()
+        else:
+            messages.error(request, f'❌ Erro: {result.get("error", "Falha na confirmação")}')
+            stripe_pagamento.status = 'failed'
+            stripe_pagamento.save()
+    
+    return render(request, 'core/pagamento/visa/confirmar_pagamento.html', {
+        'transacao': transacao,
+        'stripe_pagamento': stripe_pagamento
+    })
+
+
+@login_required
+def pagamento_sucesso(request):
+    """Página de sucesso após pagamento VISA"""
+    return render(request, 'core/pagamento/visa/sucesso.html')
+
+
+@login_required
+def pagamento_cancelado(request):
+    """Página quando o pagamento é cancelado"""
+    return render(request, 'core/pagamento/visa/cancelado.html')
+
+# ============================================
+# PAGAMENTOS COM E-MOLA
+# ============================================
+
+from .services.emola_service import EmolaService
+from .models import TransacaoEmola
+
+@login_required
+def pagamento_emola(request, transacao_id):
+    """
+    Inicia pagamento com E-Mola
+    """
+    transacao = get_object_or_404(Transacao, id=transacao_id, cliente=request.user)
+    
+    # Verificar se já tem pagamento
+    emola_pagamento = TransacaoEmola.objects.filter(
+        transacao=transacao,
+        usuario=request.user
+    ).filter(status__in=['pending', 'success']).first()
+    
+    if emola_pagamento and emola_pagamento.status == 'success':
+        messages.info(request, 'Este pagamento já foi concluído.')
+        return redirect('detalhe_transacao', transacao_id=transacao.id)
+    
+    if request.method == 'POST':
+        phone = request.POST.get('phone', '').strip()
+        
+        # Validar número
+        if len(phone) != 9 or not phone.startswith(('86', '87')):
+            messages.error(request, 'Número E-Mola inválido. Deve ter 9 dígitos e começar com 86 ou 87.')
+            return redirect('pagamento_emola', transacao_id=transacao.id)
+        
+        emola_service = EmolaService()
+        result = emola_service.processar_pagamento(transacao, phone)
+        
+        if result['success']:
+            # Guardar no banco
+            pagamento_emola = TransacaoEmola.objects.create(
+                usuario=request.user,
+                transacao=transacao,
+                phone_number=phone,
+                amount=transacao.valor_total,
+                reference=result['reference'],
+                status='pending',
+                response_data=result.get('response', {})
+            )
+            
+            messages.success(request, '✅ Pedido de pagamento enviado! Confirme no seu telemóvel E-Mola (USSD *898#).')
+            return redirect('confirmar_pagamento_emola', transacao_id=transacao.id)
+        else:
+            messages.error(request, f'❌ {result.get("error", "Falha no pagamento")}')
+            return redirect('pagamento_emola', transacao_id=transacao.id)
+    
+    return render(request, 'core/pagamento/emola/iniciar.html', {
+        'transacao': transacao,
+        'emola_pagamento': emola_pagamento
+    })
+
+
+@login_required
+def confirmar_pagamento_emola(request, transacao_id):
+    """
+    Confirma o status do pagamento E-Mola
+    """
+    transacao = get_object_or_404(Transacao, id=transacao_id, cliente=request.user)
+    
+    try:
+        emola_pagamento = TransacaoEmola.objects.get(
+            transacao=transacao,
+            usuario=request.user,
+            status='pending'
+        )
+    except TransacaoEmola.DoesNotExist:
+        messages.error(request, 'Pagamento não encontrado.')
+        return redirect('detalhe_transacao', transacao_id=transacao.id)
+    
+    if request.method == 'POST':
+        emola_service = EmolaService()
+        result = emola_service.verificar_status(emola_pagamento.reference)
+        
+        if result['success']:
+            if result['status'] == 'success':
+                emola_pagamento.mark_success()
+                
+                # Atualizar transação principal
+                transacao.status = 'pago'
+                transacao.data_pagamento = timezone.now()
+                transacao.save()
+                
+                messages.success(request, '✅ Pagamento E-Mola confirmado com sucesso!')
+                return redirect('detalhe_transacao', transacao_id=transacao.id)
+            elif result['status'] == 'failed':
+                emola_pagamento.mark_failed('Pagamento falhou')
+                messages.error(request, '❌ Pagamento falhou.')
+            else:
+                messages.info(request, '⏳ Pagamento ainda pendente. Aguarde a confirmação.')
+        else:
+            messages.error(request, f'❌ Erro: {result.get("error", "Falha na verificação")}')
+    
+    return render(request, 'core/pagamento/emola/confirmar.html', {
+        'transacao': transacao,
+        'emola_pagamento': emola_pagamento
+    })
+
+
+@login_required
+def pagamento_emola_sucesso(request):
+    """Página de sucesso após pagamento E-Mola"""
+    return render(request, 'core/pagamento/emola/sucesso.html')
+
+
+@login_required
+def pagamento_emola_cancelado(request):
+    """Página quando o pagamento é cancelado"""
+    return render(request, 'core/pagamento/emola/cancelado.html')

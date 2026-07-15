@@ -20,12 +20,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',                    # ← Django REST Framework
+    'rest_framework_simplejwt',          # ← Simple JWT (para autenticação)
     'whitenoise.runserver_nostatic',
-    'rest_framework',
-    'rest_framework_simplejwt',
-    'corsheaders',
     'core',
 ]
+
+# Configuração do REST Framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -38,6 +47,23 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Configuração do Simple JWT
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+}
 
 ROOT_URLCONF = 'django_project.urls'
 
@@ -187,6 +213,25 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
 }
+
+# ============================================
+# CONFIGURAÇÕES STRIPE (VISA/MASTERCARD)
+# ============================================
+
+STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', 'pk_test_...')
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', 'sk_test_...')
+STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', 'whsec_...')
+STRIPE_SUCCESS_URL = os.environ.get('STRIPE_SUCCESS_URL', 'https://web-production-a9ad2f.up.railway.app/pagamento/sucesso/')
+STRIPE_CANCEL_URL = os.environ.get('STRIPE_CANCEL_URL', 'https://web-production-a9ad2f.up.railway.app/pagamento/cancelado/')
+
+# ============================================
+# CONFIGURAÇÕES E-MOLA
+# ============================================
+
+EMOLA_API_URL = os.environ.get('EMOLA_API_URL', 'https://e2payments.explicador.co.mz')
+EMOLA_CLIENT_ID = os.environ.get('EMOLA_CLIENT_ID', '')
+EMOLA_CLIENT_SECRET = os.environ.get('EMOLA_CLIENT_SECRET', '')
+EMOLA_WALLET_ID = os.environ.get('EMOLA_WALLET_ID', '')
 
 
 # ============================================

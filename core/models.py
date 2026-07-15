@@ -325,6 +325,107 @@ class Avaliacao(models.Model):
         return f"{self.cliente.username} → {self.fornecedor.username}: {self.nota}★"
 
 # ============================================
+# TRANSAÇÕES STRIPE (VISA/MASTERCARD)
+# ============================================
+
+class TransacaoStripe(models.Model):
+    STATUS_CHOICES = (
+        ('pending', '⏳ Pendente'),
+        ('success', '✅ Sucesso'),
+        ('failed', '❌ Falhou'),
+        ('refunded', '🔄 Reembolsado'),
+    )
+    
+    usuario = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='transacoes_stripe'
+    )
+    transacao = models.ForeignKey(
+        'Transacao', 
+        on_delete=models.CASCADE, 
+        null=True, 
+        blank=True, 
+        related_name='pagamentos_stripe'
+    )
+    payment_intent_id = models.CharField(max_length=100, unique=True)
+    client_secret = models.CharField(max_length=200, blank=True, null=True)
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    moeda = models.CharField(max_length=3, default='USD')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    metodo_pagamento = models.CharField(max_length=50, blank=True, null=True)
+    ultimos_4_digitos = models.CharField(max_length=4, blank=True, null=True)
+    nome_cartao = models.CharField(max_length=100, blank=True, null=True)
+    email_cliente = models.EmailField(blank=True, null=True)
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    data_confirmacao = models.DateTimeField(null=True, blank=True)
+    
+    def __str__(self):
+        return f"Stripe {self.id} - {self.usuario.username} - {self.amount} {self.moeda}"
+    
+    def mark_success(self):
+        self.status = 'success'
+        self.data_confirmacao = timezone.now()
+        self.save()
+    
+    def mark_failed(self, motivo):
+        self.status = 'failed'
+        self.save()
+    
+    class Meta:
+        verbose_name = "Transação Stripe"
+        verbose_name_plural = "Transações Stripe"
+        ordering = ['-data_criacao']
+
+# ============================================
+# TRANSAÇÕES E-MOLA
+# ============================================
+
+class TransacaoEmola(models.Model):
+    STATUS_CHOICES = (
+        ('pending', '⏳ Pendente'),
+        ('success', '✅ Sucesso'),
+        ('failed', '❌ Falhou'),
+    )
+    
+    usuario = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='transacoes_emola'
+    )
+    transacao = models.ForeignKey(
+        'Transacao', 
+        on_delete=models.CASCADE, 
+        null=True, 
+        blank=True,
+        related_name='pagamentos_emola'
+    )
+    phone_number = models.CharField(max_length=9)  # 86 ou 87 + 7 dígitos
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    reference = models.CharField(max_length=50, unique=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    response_data = models.JSONField(default=dict, blank=True)  # Guardar resposta da API
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    data_confirmacao = models.DateTimeField(null=True, blank=True)
+    
+    def __str__(self):
+        return f"E-Mola {self.id} - {self.phone_number} - {self.amount} MZN"
+    
+    def mark_success(self):
+        self.status = 'success'
+        self.data_confirmacao = timezone.now()
+        self.save()
+    
+    def mark_failed(self, motivo):
+        self.status = 'failed'
+        self.save()
+    
+    class Meta:
+        verbose_name = "Transação E-Mola"
+        verbose_name_plural = "Transações E-Mola"
+        ordering = ['-data_criacao']
+
+# ============================================
 # TERMOS E CONDIÇÕES
 # ============================================
 

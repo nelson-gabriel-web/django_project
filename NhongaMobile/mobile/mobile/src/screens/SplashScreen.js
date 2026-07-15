@@ -1,20 +1,15 @@
 import React, { useEffect } from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, Text, Image, StyleSheet, ActivityIndicator } from 'react-native';
 
 const SplashScreen = ({ navigation }) => {
   useEffect(() => {
-    const checkAuth = async () => {
-      const token = await AsyncStorage.getItem('accessToken');
-      setTimeout(() => {
-        if (token) {
-          navigation.replace('Home');
-        } else {
-          navigation.replace('Login');
-        }
-      }, 2000);
-    };
-    checkAuth();
+    // Aguarda 3 segundos e navega para o Login
+    const timer = setTimeout(() => {
+      navigation.replace('Login');
+    }, 3000);
+
+    // Limpar o timer quando o componente for desmontado
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -26,6 +21,7 @@ const SplashScreen = ({ navigation }) => {
       />
       <Text style={styles.title}>Nhonga</Text>
       <Text style={styles.subtitle}>Conectando oportunidades</Text>
+      <ActivityIndicator size="small" color="#c0c0c0" style={{ marginTop: 30 }} />
     </View>
   );
 };
@@ -36,6 +32,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0a0e1a',
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
   },
   logo: {
     width: 150,

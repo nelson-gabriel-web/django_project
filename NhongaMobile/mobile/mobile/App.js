@@ -1,41 +1,62 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { AuthProvider } from './src/context/AuthContext';
-import SplashScreen from './src/screens/SplashScreen';
-import LoginScreen from './src/screens/LoginScreen';
-import RegisterScreen from './src/screens/RegisterScreen';
-import HomeScreen from './src/screens/HomeScreen';
-
-const Stack = createStackNavigator();
+import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 
 export default function App() {
   return (
-    <AuthProvider>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Splash">
-          <Stack.Screen 
-            name="Splash" 
-            component={SplashScreen} 
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen 
-            name="Login" 
-            component={LoginScreen} 
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen 
-            name="Register" 
-            component={RegisterScreen} 
-            options={{ title: 'Registar' }}
-          />
-          <Stack.Screen 
-            name="Home" 
-            component={HomeScreen} 
-            options={{ title: 'Nhonga' }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </AuthProvider>
+    <View style={styles.container}>
+      <Image
+        source={require('./assets/logo.png')}
+        style={styles.logo}
+        resizeMode="contain"
+      />
+      <Text style={styles.title}>🚀 Nhonga Mobile</Text>
+      <Text style={styles.subtitle}>Conectando oportunidades</Text>
+      
+      <TouchableOpacity 
+        style={styles.button}
+        onPress={() => Alert.alert('✅ Sucesso!', 'A app está a funcionar!')}
+      >
+        <Text style={styles.buttonText}>Testar App</Text>
+      </TouchableOpacity>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#0a0e1a',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    marginBottom: 10,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#c0c0c0',
+    marginTop: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.5)',
+    marginTop: 5,
+  },
+  button: {
+    backgroundColor: '#c0c0c0',
+    padding: 14,
+    borderRadius: 8,
+    marginTop: 30,
+    width: 200,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#1a1a2e',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+});

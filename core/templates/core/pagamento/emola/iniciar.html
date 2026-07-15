@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Pagamento E-Mola - Nhonga{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">📱 Pagamento com E-Mola</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>📋 Detalhes da Transação</strong>
+                        <hr>
+                        <p><strong>Título:</strong> {{ transacao.titulo }}</p>
+                        <p><strong>Valor:</strong> {{ transacao.valor_total|floatformat:2 }} MZN</p>
+                        <p><strong>Fornecedor:</strong> {{ transacao.fornecedor.username }}</p>
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Número E-Mola</label>
+                            <div class="input-group">
+                                <span class="input-group-text">+258</span>
+                                <input type="tel" class="form-control" id="phone" name="phone" 
+                                       placeholder="861234567" required pattern="[86][0-9]{8}">
+                            </div>
+                            <small class="text-muted">
+                                Número de 9 dígitos que começa com 86 ou 87.
+                                Exemplo: 861234567
+                            </small>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Como funciona?</strong>
+                            <p class="mb-0 small">
+                                Vai receber uma notificação no seu telemóvel E-Mola.
+                                Confirme o pagamento usando o USSD <strong>*898#</strong>.
+                            </p>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                📱 Pagar com E-Mola
+                            </button>
+                            <a href="{% url 'detalhe_transacao' transacao.id %}" class="btn btn-outline-secondary">
+                                ↩️ Voltar
+                            </a>
+                        </div>
+                    </form>
+
+                    <div class="mt-4 text-center">
+                        <img src="https://www.movitel.co.mz/images/emola-logo.png" alt="E-Mola" height="50" style="opacity: 0.7;">
+                        <p class="text-muted small mt-2">🔒 Pagamento seguro via e2payments</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

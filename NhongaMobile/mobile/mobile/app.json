@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "NhongaMobile",
+    "slug": "NhongaMobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0a0e1a"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logo.png",
+        "backgroundColor": "#0a0e1a"
+      },
+      "package": "com.nelson_gabriel.NhongaMobile"
+    },
+    "web": {
+      "favicon": "./assets/logo.png"
+    },
+    "sdkVersion": "54.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "10706ea7-0f8e-413d-9953-3e82c3964bc2"
+      }
+    }
+  }
+}
