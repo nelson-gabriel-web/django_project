@@ -1,113 +1,88 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
+{% block title %}Detalhes da Transação - Nhonga{% endblock %}
+
 {% block content %}
-<div class="container">
-    <h2 style="color: #fff; margin-bottom: 20px;">📄 Detalhe da Transação #{{ transacao.id }}</h2>
-    
-    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <div>
-                <p style="color: rgba(255,255,255,0.5); font-size: 13px;">Cliente</p>
-                <p style="color: #fff;">{{ transacao.cliente.username }}</p>
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">📋 Detalhes da Transação #{{ transacao.id }}</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Status -->
+                    <div class="mb-3">
+                        <span class="badge {% if transacao.status == 'pago' %}bg-success{% elif transacao.status == 'pendente' %}bg-warning{% else %}bg-secondary{% endif %} fs-6">
+                            Status: {{ transacao.get_status_display }}
+                        </span>
+                    </div>
+
+                    <!-- Informações -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Título:</strong> {{ transacao.titulo }}</p>
+                            <p><strong>Descrição:</strong> {{ transacao.descricao|default:"Sem descrição" }}</p>
+                            <p><strong>Valor:</strong> {{ transacao.valor_total|floatformat:2 }} MZN</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Cliente:</strong> {{ transacao.cliente.username }}</p>
+                            <p><strong>Fornecedor:</strong> {{ transacao.fornecedor.username }}</p>
+                            <p><strong>Data:</strong> {{ transacao.data_criacao|date:"d/m/Y H:i" }}</p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Ações -->
+                    <div class="d-grid gap-2">
+                        {% if transacao.status == 'pendente' and transacao.cliente == request.user %}
+                            <a href="{% url 'escolher_pagamento' transacao.id %}" class="btn btn-success btn-lg">
+                                💰 Pagar Agora
+                            </a>
+                        {% endif %}
+
+                        {% if transacao.status == 'pago' %}
+                            <div class="alert alert-success text-center">
+                                ✅ Pagamento confirmado em {{ transacao.data_pagamento|date:"d/m/Y H:i" }}
+                            </div>
+                        {% endif %}
+
+                        <a href="{% url 'minhas_requisicoes' %}" class="btn btn-outline-secondary">
+                            ↩️ Voltar às Minhas Requisições
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div>
-                <p style="color: rgba(255,255,255,0.5); font-size: 13px;">Fornecedor</p>
-                <p style="color: #fff;">{{ transacao.fornecedor.username }}</p>
+
+            <!-- Histórico de pagamentos (se houver) -->
+            {% if transacao.pagamentos_stripe.all or transacao.pagamentos_emola.all %}
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="mb-0">📜 Histórico de Pagamentos</h5>
+                </div>
+                <div class="card-body">
+                    {% for pagamento in transacao.pagamentos_stripe.all %}
+                        <div class="alert alert-info">
+                            💳 VISA: {{ pagamento.amount }} USD - {{ pagamento.get_status_display }}
+                            {% if pagamento.data_confirmacao %}
+                                <small class="text-muted">({{ pagamento.data_confirmacao|date:"d/m/Y H:i" }})</small>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    {% for pagamento in transacao.pagamentos_emola.all %}
+                        <div class="alert alert-success">
+                            📱 E-Mola: {{ pagamento.amount }} MZN - {{ pagamento.get_status_display }}
+                            {% if pagamento.data_confirmacao %}
+                                <small class="text-muted">({{ pagamento.data_confirmacao|date:"d/m/Y H:i" }})</small>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
-            <div>
-                <p style="color: rgba(255,255,255,0.5); font-size: 13px;">Produto</p>
-                <p style="color: #fff;">{{ transacao.titulo }}</p>
-            </div>
-            <div>
-                <p style="color: rgba(255,255,255,0.5); font-size: 13px;">Valor Total</p>
-                <p style="color: #2ecc71; font-size: 18px; font-weight: 600;">{{ transacao.valor_total }} MT</p>
-            </div>
-            <div>
-                <p style="color: rgba(255,255,255,0.5); font-size: 13px;">Comissão (4%)</p>
-                <p style="color: #f1c40f;">{{ transacao.comissao }} MT</p>
-            </div>
-            <div>
-                <p style="color: rgba(255,255,255,0.5); font-size: 13px;">Status</p>
-                <p style="color: 
-                    {% if transacao.status == 'pendente' %}#f1c40f{% endif %}
-                    {% if transacao.status == 'pago' %}#3498db{% endif %}
-                    {% if transacao.status == 'enviado' %}#9b59b6{% endif %}
-                    {% if transacao.status == 'confirmado' %}#2ecc71{% endif %}
-                    {% if transacao.status == 'concluido' %}#27ae60{% endif %}
-                    {% if transacao.status == 'cancelado' %}#e74c3c{% endif %};
-                    font-weight: 600;">
-                    {{ transacao.get_status_display }}
-                </p>
-            </div>
+            {% endif %}
         </div>
-        
-        {% if transacao.codigo_confirmacao %}
-        <div style="background: rgba(255,215,0,0.1); padding: 10px; border-radius: 8px; margin-top: 10px; border: 1px solid rgba(255,215,0,0.2);">
-            <p style="color: #f1c40f; font-size: 14px;">
-                🔑 Código de Confirmação: <strong>{{ transacao.codigo_confirmacao }}</strong>
-                <span style="color: rgba(255,255,255,0.4); font-size: 12px; margin-left: 10px;">
-                    (Entregue fisicamente ao cliente)
-                </span>
-            </p>
-        </div>
-        {% endif %}
-    </div>
-    
-    <!-- Ações -->
-    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
-        {% if is_cliente and transacao.status == 'pendente' %}
-            <a href="{% url 'pagar_transacao' transacao.id %}" class="btn-metal" style="width: auto; padding: 10px 20px; background: #2ecc71;">
-                💳 Pagar
-            </a>
-        {% endif %}
-        
-        {% if is_fornecedor and transacao.status == 'pago' %}
-            <a href="{% url 'confirmar_envio' transacao.id %}" class="btn-metal" style="width: auto; padding: 10px 20px; background: #3498db;">
-                📦 Confirmar Envio
-            </a>
-        {% endif %}
-        
-        {% if is_cliente and transacao.status == 'enviado' %}
-            <a href="{% url 'confirmar_rececao' transacao.id %}" class="btn-metal" style="width: auto; padding: 10px 20px; background: #2ecc71;">
-                ✅ Confirmar Receção
-            </a>
-        {% endif %}
-        
-        {% if is_cliente and transacao.status != 'concluido' and transacao.status != 'cancelado' %}
-            <a href="{% url 'abrir_disputa' transacao.id %}" class="btn-metal" style="width: auto; padding: 10px 20px; background: #e74c3c;">
-                ⚠️ Abrir Disputa
-            </a>
-        {% endif %}
-        
-        <a href="{% url 'minhas_transacoes' %}" class="btn-metal" style="width: auto; padding: 10px 20px; background: #444; box-shadow: none;">
-            ↩️ Voltar
-        </a>
-    </div>
-    
-    <!-- Histórico -->
-    <h3 style="color: #fff; margin: 20px 0 10px;">📜 Histórico</h3>
-    <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px;">
-        {% for h in historico %}
-            <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding: 8px 0;">
-                <span style="color: rgba(255,255,255,0.6); font-size: 13px;">
-                    {{ h.data|date:"d/m/Y H:i" }} - 
-                    <span style="color: #fff;">{{ h.status_anterior }}</span>
-                    → <span style="color: #2ecc71;">{{ h.status_novo }}</span>
-                    {% if h.observacao %}
-                        <span style="color: rgba(255,255,255,0.4); font-size: 12px;">({{ h.observacao }})</span>
-                    {% endif %}
-                </span>
-            </div>
-        {% empty %}
-            <p style="color: rgba(255,255,255,0.4);">Nenhum registo de atividade.</p>
-        {% endfor %}
-{% if is_cliente and transacao.status == 'concluido' and not transacao.avaliacao %}
-    <a href="{% url 'avaliar' transacao.id %}" class="btn-metal" style="width: auto; padding: 10px 20px; background: #f1c40f; color: #1a1a2e; box-shadow: none;">
-        ⭐ Avaliar Fornecedor
-    </a>
-{% endif %}
     </div>
 </div>
 {% endblock %}
-

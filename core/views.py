@@ -961,3 +961,69 @@ def pagamento_emola_sucesso(request):
 @login_required
 def pagamento_emola_cancelado(request):
     return render(request, 'core/pagamento/emola/cancelado.html')
+
+# ============================================
+# PÁGINA DE ESCOLHA DE PAGAMENTO
+# ============================================
+
+@login_required
+def escolher_pagamento(request, transacao_id):
+    """
+    Página onde o utilizador escolhe o método de pagamento
+    """
+    transacao = get_object_or_404(Transacao, id=transacao_id, cliente=request.user)
+    
+    # Verificar se a transação já foi paga
+    if transacao.status == 'pago':
+        messages.info(request, 'Esta transação já foi paga.')
+        return redirect('detalhe_transacao', transacao_id=transacao.id)
+    
+    context = {
+        'transacao': transacao,
+    }
+    return render(request, 'core/pagamento/escolher.html', context)
+
+# ============================================
+# DETALHES DA TRANSAÇÃO
+# ============================================
+
+@login_required
+def detalhe_transacao(request, transacao_id):
+    """
+    Página de detalhes de uma transação
+    """
+    transacao = get_object_or_404(Transacao, id=transacao_id)
+    
+    # Verificar se o utilizador é o cliente ou fornecedor
+    if transacao.cliente != request.user and transacao.fornecedor != request.user:
+        messages.error(request, 'Não tens permissão para ver esta transação.')
+        return redirect('home')
+    
+    context = {
+        'transacao': transacao,
+    }
+    return render(request, 'core/transacoes/detalhe_transacao.html', context)
+
+# ============================================
+# PAGAMENTO M-PESA
+# ============================================
+
+@login_required
+def pagamento_mpesa(request, transacao_id):
+    """
+    Página de pagamento M-Pesa
+    """
+    transacao = get_object_or_404(Transacao, id=transacao_id, cliente=request.user)
+    
+    if request.method == 'POST':
+        phone = request.POST.get('phone', '').strip()
+        
+        if len(phone) != 9 or not phone.startswith(('84', '85')):
+            messages.error(request, 'Número M-Pesa inválido. Deve ter 9 dígitos e começar com 84 ou 85.')
+            return redirect('pagamento_mpesa', transacao_id=transacao.id)
+        
+        # Aqui vai a lógica do M-Pesa
+        messages.info(request, 'Pagamento M-Pesa em desenvolvimento. Use E-Mola ou VISA.')
+        return redirect('escolher_pagamento', transacao_id=transacao.id)
+    
+    return render(request, 'core/pagamento/mpesa.html', {'transacao': transacao})

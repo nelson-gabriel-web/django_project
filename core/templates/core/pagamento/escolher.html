@@ -22,19 +22,37 @@
 
                     <div class="row g-4 mt-3">
                         <!-- M-Pesa -->
-                        <div class="col-md-4">
-                            <div class="card h-100 text-center payment-option">
-                                <div class="card-body">
-                                    <div class="display-4 mb-3">📱</div>
-                                    <h5>M-Pesa</h5>
-                                    <p class="text-muted small">Vodacom</p>
-                                    <p class="text-muted small">(84/85)</p>
-                                    <a href="{% url 'pagamento_mpesa' transacao.id %}" class="btn btn-success w-100">
-                                        Pagar com M-Pesa
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                        <div class="row g-4 mt-3">
+    <!-- E-Mola -->
+    <div class="col-md-6">
+        <div class="card h-100 text-center payment-option">
+            <div class="card-body">
+                <div class="display-4 mb-3">📱</div>
+                <h5>E-Mola</h5>
+                <p class="text-muted small">Movitel</p>
+                <p class="text-muted small">(86/87)</p>
+                <a href="{% url 'pagamento_emola' transacao.id %}" class="btn btn-success w-100">
+                    Pagar com E-Mola
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- VISA -->
+    <div class="col-md-6">
+        <div class="card h-100 text-center payment-option">
+            <div class="card-body">
+                <div class="display-4 mb-3">💳</div>
+                <h5>VISA/Mastercard</h5>
+                <p class="text-muted small">Cartão Internacional</p>
+                <p class="text-muted small">(Stripe)</p>
+                <a href="{% url 'pagamento_visa' transacao.id %}" class="btn btn-primary w-100">
+                    Pagar com Cartão
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
                         <!-- E-Mola -->
                         <div class="col-md-4">

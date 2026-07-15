@@ -53,6 +53,9 @@ urlpatterns = [
     path('requisicao/<int:requisicao_id>/cancelar/', views.cancelar_requisicao, name='cancelar_requisicao'),
     path('requisicoes/fornecedor/', views.requisicoes_fornecedor, name='requisicoes_fornecedor'),
     path('requisicao/<int:requisicao_id>/interessar/', views.interessar_requisicao, name='interessar_requisicao'),
+
+    # Detalhes
+    path('transacao/<int:transacao_id>/', views.detalhe_transacao, name='detalhe_transacao'),
     
     # Mapa
     path('mapa/', views.mapa_fornecedores, name='mapa_fornecedores'),
@@ -61,9 +64,10 @@ urlpatterns = [
     path('dashboard/transacoes/', views.dashboard_transacoes, name='dashboard_transacoes'),
 
     # Pagamentos M-Pesa
-    path('pagamento/iniciar/<int:transacao_id>/', views.iniciar_pagamento, name='iniciar_pagamento'),
-    path('pagamento/confirmar/<int:transacao_id>/', views.confirmar_pagamento, name='confirmar_pagamento'),
-    path('api/mpesa/callback/', views.callback_mpesa, name='callback_mpesa'),
+    path('pagamento/mpesa/<int:transacao_id>/', views.pagamento_mpesa, name='pagamento_mpesa'),
+path('pagamento/emola/<int:transacao_id>/', views.pagamento_emola, name='pagamento_emola'),
+path('pagamento/visa/<int:transacao_id>/', views.pagamento_visa, name='pagamento_visa'),
+path('pagamento/mpesa/<int:transacao_id>/', views.pagamento_mpesa, name='pagamento_mpesa'),
 
     # Moderação
     path('moderador/dashboard/', views.dashboard_moderador, name='dashboard_moderador'),
@@ -94,3 +98,13 @@ path('pagamento/emola/<int:transacao_id>/', views.pagamento_emola, name='pagamen
 path('pagamento/emola/confirmar/<int:transacao_id>/', views.confirmar_pagamento_emola, name='confirmar_pagamento_emola'),
 path('pagamento/emola/sucesso/', views.pagamento_emola_sucesso, name='pagamento_emola_sucesso'),
 path('pagamento/emola/cancelado/', views.pagamento_emola_cancelado, name='pagamento_emola_cancelado'),
+
+# ============================================
+# URL DE ESCOLHA DE PAGAMENTO
+# ============================================
+path('pagamento/escolher/<int:transacao_id>/', views.escolher_pagamento, name='escolher_pagamento'),
+
+# ============================================
+# URL DA TRANSAÇÃO
+# ============================================
+path('transacao/<int:transacao_id>/', views.detalhe_transacao, name='detalhe_transacao'),
